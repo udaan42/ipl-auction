@@ -53,7 +53,31 @@ URL : http://localhost:3000/
 
 Navigate to http://localhost:3000/swagger/ for the API documentation.
 
-### 4. Useful Link
+### 4. Running Java and NodeJs service together
+
+Run jcrud springboot app
+
+```
+$ cd jcrud
+$ .\gradlew bootRun
+```
+
+Open new cmd prompt (windows) or terminal (unix) to run node app
+
+```
+ $ npm run build
+```
+
+Eg. node server calling java api
+https://localhost:3000/api/test
+
+Eg. node client calling service which calls java api
+https://localhost:3000/message
+
+Eg. jcrud springboot endpoint
+https://localhost:8080/greeting
+
+### 5. Useful Link
 - Web framework for Node.js - [Express](http://expressjs.com/)
 - JavaScript ORM  for Node.js - [Bookshelf](http://bookshelfjs.org/)
 - SQL Query Builder for Postgres, MSSQL, MySQL, MariaDB, SQLite3, and Oracle - [Knex](http://knexjs.org/)
