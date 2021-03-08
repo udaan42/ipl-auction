@@ -15,13 +15,17 @@ const useStyles = makeStyles((theme) => ({
       height: theme.spacing(15),
     },
   },
+
   leagueItem: {
       marginLeft: 0,
       paddingLeft: 10,
       paddingTop: 10,
       backgroundColor: "#c4d7f5",
+      transition: 'transform 250ms, box-shadow 250ms',
       '&:hover': {
-          cursor: "pointer"
+          cursor: "pointer",
+          transform: 'translateY(-10px)',
+          boxShadow: '0 0 11px rgba(33,33,33,.2)'
       }
   },
   leaguePoint: {
@@ -48,7 +52,7 @@ export default function LeagueItem(props) {
 
   return (
       <div className={classes.root}>
-        <Paper className={classes.leagueItem} elevation={3} onClick={handleClick}>
+        <Paper className={classes.leagueItem} elevation={1} onClick={handleClick}>
             {/* <FiberManualRecordIcon className={classes.leaguePoint} /> */}
             <Typography className={classes.leagueName} variant="h6" align="center">
                 {/* <FiberManualRecordIcon className={classes.leaguePoint} /> */}

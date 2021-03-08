@@ -5,6 +5,8 @@
 - [NodeJs](https://nodejs.org/en/)
 - [NPM](https://npmjs.org/) - Node package manager
 - [MySQL](https://www.mysql.com/downloads/) - Relational database management system (RDBMS)
+- [Java](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) - Java 11 SDK
+- [Gradle](https://gradle.org/install/)
 
 ### 2. Installation
 
@@ -31,13 +33,51 @@ List of NPM Commands:
   $ npm run clean      # remove dist and node_modules folder and install dependencies
  ```
 
+ Build jcrud - (java based springboot app)
+
+```
+$ cd jcrud
+$ .\gradlew clean build
+```
+
+Run jcrud app - (java based springboot app)
+
+```
+$ cd jcrud
+$ .\gradlew bootRun
+```
+
 ### 3. Usage
 
 URL : http://localhost:3000/
 
 Navigate to http://localhost:3000/swagger/ for the API documentation.
 
-### 4. Useful Link
+### 4. Running Java and NodeJs service together
+
+Run jcrud springboot app
+
+```
+$ cd jcrud
+$ .\gradlew bootRun
+```
+
+Open new cmd prompt (windows) or terminal (unix) to run node app
+
+```
+ $ npm run build
+```
+
+Eg. node server calling java api
+https://localhost:3000/api/test
+
+Eg. node client calling service which calls java api
+https://localhost:3000/message
+
+Eg. jcrud springboot endpoint
+https://localhost:8080/greeting
+
+### 5. Useful Link
 - Web framework for Node.js - [Express](http://expressjs.com/)
 - JavaScript ORM  for Node.js - [Bookshelf](http://bookshelfjs.org/)
 - SQL Query Builder for Postgres, MSSQL, MySQL, MariaDB, SQLite3, and Oracle - [Knex](http://knexjs.org/)
@@ -54,3 +94,4 @@ Navigate to http://localhost:3000/swagger/ for the API documentation.
 - Environment configuration - [dotenv](https://www.npmjs.com/package/dotenv)
 - Code linting tool - [ESLint](http://eslint.org/)
 - Code formatter - [Prettier](https://www.npmjs.com/package/prettier)
+- SprintBoot - [Getting started](https://spring.io/guides/gs/rest-service/#scratch)
