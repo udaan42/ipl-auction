@@ -12,7 +12,7 @@ export const login = ({ email, password }) => {
       .then((response) => {
         dispatch(loginSuccess(response.data.token));
         setLocalStorage(JWT_TOKEN, response.data.token);
-        dispatch(push('/dashboard'));
+        dispatch(push('/leagues'));
       })
       .catch((error) => {
         dispatch(loginFailure(error.response.data));

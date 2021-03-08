@@ -15,10 +15,19 @@ import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { mainListItems, secondaryListItems } from './Sidebar';
 import Header from '../header/Header';
+import { useHistory } from "react-router-dom";
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import EmojiEventsIcon from '@material-ui/icons/EmojiEvents';
+import PeopleIcon from '@material-ui/icons/People';
+import BarChartIcon from '@material-ui/icons/BarChart';
+import LayersIcon from '@material-ui/icons/Layers';
+import ForumIcon from '@material-ui/icons/Forum';
+
 
 
 function Copyright() {
@@ -113,9 +122,18 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+  footer: {
+    padding: theme.spacing(3,2),
+    marginTop: 'auto',
+    textAlign: 'center',
+    position: "fixed",
+    width: "100%",
+    bottom: "0"
+  }
 }));
 
-export default function Layout() {
+export default function Layout(props) {
+  const history = useHistory();
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
 
@@ -127,6 +145,12 @@ export default function Layout() {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  const updateRoute = (val) => {
+    history.push(val);
+  }
+
+  const { children } = props;
 
   return (
     <div className={classes.root}>
@@ -145,18 +169,49 @@ export default function Layout() {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{secondaryListItems}</List>
+        <List>
+          <ListItem button onClick={ () => {updateRoute("/leagues")}}>
+          <ListItemIcon>
+            <EmojiEventsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Leagues" />
+        </ListItem>
+        <ListItem button onClick={ () => {updateRoute("/rooms")}}>
+          <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
+          <ListItemText primary="Auction Room" />
+        </ListItem>
+        <ListItem button onClick={ () => {updateRoute("/rules")}}>
+          <ListItemIcon>
+            <ForumIcon />
+          </ListItemIcon>
+          <ListItemText primary="Rules" />
+        </ListItem>
+        <ListItem button onClick={ () => {updateRoute("/players")}}>
+          <ListItemIcon>
+            <BarChartIcon />
+            </ListItemIcon>
+          <ListItemText primary="Players" />
+        </ListItem>
+        </List>
+        {/* <Divider />
+        <List>{secondaryListItems}</List> */}
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
+        
         <Container maxWidth="lg" className={classes.container}>
-          <Box pt={4}>
+          {children}
+        </Container>
+      </main>
+      <footer className={classes.footer}>
+        <Container maxWidth="sm">
+          <Box>
             <Copyright />
           </Box>
         </Container>
-      </main>
+      </footer>
     </div>
   );
 }

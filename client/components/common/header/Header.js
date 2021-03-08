@@ -10,15 +10,18 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import clsx from 'clsx';
+import Badge from '@material-ui/core/Badge';
+import Logout from './Logout';
 
 import * as authService from '../../../services/authService';
 
-const drawerWidth = 250;
+const drawerWidth = 240;
 
 const styles = theme => ({
     appBar: {
-        position: 'absolute',
-        zIndex: theme.zIndex.navDrawer + 1,
+        zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -32,21 +35,34 @@ const styles = theme => ({
             duration: theme.transitions.duration.enteringScreen,
         }),
     },
-    menuButton: {
-        marginLeft: 45
+    toolbar: {
+        paddingRight: 24, // keep right padding when drawer closed
     },
-    menuButtonShift: {
-        marginLeft: -15
+    toolbarIcon: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        padding: '0 8px',
+        ...theme.mixins.toolbar,
     },
     flex: {
         flex: 1
-    }
+    },
+    menuButton: {
+        marginRight: 36,
+    },
+    menuButtonHidden: {
+        display: 'none',
+    },
+    title: {
+        flexGrow: 1,
+    },
 });
 
 class Header extends Component {
 
     logOut(e) {
-        e.preventDefault();
+        // e.preventDefault();
         this.props.actions.logout();
     }
 
@@ -54,20 +70,29 @@ class Header extends Component {
         const {classes, navDrawerOpen, handleToggleDrawer} = this.props;
 
         return (
-            <div>
-                <AppBar className={classNames(classes.appBar, navDrawerOpen && classes.appBarShift)}>
-                    <Toolbar>
-                        <IconButton aria-label="Menu" onClick={handleToggleDrawer}
-                                    className={classNames(!navDrawerOpen && classes.menuButton, navDrawerOpen && classes.menuButtonShift)}>
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography type="title" color="inherit" className={classes.flex}>
+                <AppBar position="absolute" className={clsx(classes.appBar, navDrawerOpen && classes.appBarShift)}>
+                    <Toolbar className={classes.toolbar}>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleToggleDrawer}
+                        className={clsx(classes.menuButton, navDrawerOpen && classes.menuButtonHidden)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                        IPL Mock Auction 2021
+                    </Typography>
 
-                        </Typography>
-                        <Button onClick={this.logOut.bind(this)}>Logout</Button>
+                    <Logout onLogout={this.logOut.bind(this)} />
+                    {/* <IconButton color="inherit" onClick={this.logOut.bind(this)}>
+                        <Badge color="secondary">
+                            <ExitToAppIcon />
+                        </Badge>
+                    </IconButton> */}
                     </Toolbar>
                 </AppBar>
-            </div>
         )
     }
 }

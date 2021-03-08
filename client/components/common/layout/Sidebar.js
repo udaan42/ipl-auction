@@ -5,30 +5,37 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import EmojiEventsIcon from '@material-ui/icons/EmojiEvents';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import ForumIcon from '@material-ui/icons/Forum';
+import { useHistory } from "react-router-dom";
 
-export const mainListItems = (
+const updateRoute = () => {
+  const history = useHistory();
+  history.push("/auction");
+}
+
+export const mainListItems =  (
   <div>
+    <ListItem button onClick={updateRoute}>
+      <ListItemIcon>
+        <EmojiEventsIcon />
+      </ListItemIcon>
+      <ListItemText primary="Leagues" />
+    </ListItem>
     <ListItem button>
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Team" />
     </ListItem>
-    {/* <ListItem button>
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Teams" />
-    </ListItem> */}
     <ListItem button>
       <ListItemIcon>
-        <PeopleIcon />
+        <ForumIcon />
       </ListItemIcon>
-      <ListItemText primary="Leagues" />
+      <ListItemText primary="Rules" />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
@@ -36,12 +43,6 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Scores" />
     </ListItem>
-    {/* <ListItem button>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Integrations" />
-    </ListItem> */}
   </div>
 );
 
