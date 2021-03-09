@@ -14,6 +14,22 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compile 'com.amazonaws:aws-java-sdk-dynamodb:1.11.0'
+	implementation group: 'org.springframework.data', name: 'spring-data-commons', version: '1.5.0.RELEASE'
+	// https://mvnrepository.com/artifact/com.github.derjust/spring-data-dynamodb
+	implementation group: 'com.github.derjust', name: 'spring-data-dynamodb', version: '5.1.0'
+	// https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder
+	implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.6'
+	// https://mvnrepository.com/artifact/ch.qos.logback/logback-core
+	implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+	// https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+	testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+	// https://mvnrepository.com/artifact/ch.qos.logback/logback-access
+	implementation group: 'ch.qos.logback', name: 'logback-access', version: '1.2.3'
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
