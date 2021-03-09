@@ -1,5 +1,6 @@
 package com.iplauction.jcrud.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.iplauction.jcrud.mapper.LeagueInfoLeagueInfoVOMapper;
 import com.iplauction.jcrud.mapper.LeagueInfoVOLeagueInfoMapper;
 import com.iplauction.jcrud.model.LeagueInfo;
@@ -24,6 +25,9 @@ public class LeagueInfoService {
     @Autowired
     LeagueInfoVOLeagueInfoMapper leagueInfoVOLeagueInfoMapper;
 
+    @Autowired
+    private DynamoDBMapper dynamoDBMapper;
+
     public List<LeagueInfoVO> getAllLeagueDetails() throws Exception {
 
         List<LeagueInfoVO> leagueInfoVOS = new ArrayList<>();
@@ -38,7 +42,7 @@ public class LeagueInfoService {
     public LeagueInfoVO getLeagueInfoById(String leagueId) throws Exception {
 
         LeagueInfoVO leagueInfoVO = null;
-        Optional<LeagueInfo> leagueInfo = Optional.ofNullable(leagueInfoRepository.findOne(leagueId));
+        Optional<LeagueInfo> leagueInfo = leagueInfoRepository.findById((leagueId));
 
         if(leagueInfo!=null){
             leagueInfoVO = leagueInfoLeagueInfoVOMapper.map(leagueInfo.get());
