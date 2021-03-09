@@ -1,0 +1,19 @@
+<configuration>
+    <appender name="standard_output" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{EEE-dd HH:mm:ss,SSS} %blue([%thread]) %highlight(%-5level) %C{0}:%M - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender  name="json_console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="standard_output" />
+    </root>
+
+</configuration>
+
