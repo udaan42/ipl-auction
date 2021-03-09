@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { useHistory } from "react-router-dom";
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,17 +45,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LeagueItem(props) {
   const classes = useStyles();
+  const history = useHistory();
 
   const handleClick = () => {
-      console.log("Click")
+    let url = `/leagues/${props.item.id}`
+    history.push(url);
   }
 
   return (
       <div className={classes.root}>
         <Paper className={classes.leagueItem} elevation={1} onClick={handleClick}>
-            {/* <FiberManualRecordIcon className={classes.leaguePoint} /> */}
             <Typography className={classes.leagueName} variant="h6" align="center">
-                {/* <FiberManualRecordIcon className={classes.leaguePoint} /> */}
                 {props.item.name}
             </Typography> 
             <Typography  variant="subtitle1" align="center">
