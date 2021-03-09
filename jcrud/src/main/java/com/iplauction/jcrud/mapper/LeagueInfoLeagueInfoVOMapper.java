@@ -17,6 +17,7 @@ public class LeagueInfoLeagueInfoVOMapper implements Mapper<LeagueInfo, LeagueIn
         leagueInfoVO.setCreatedDateTime(source.getCreatedDateTime());
         leagueInfoVO.setUserRole(source.getUserRole());
         leagueInfoVO.setLastModifiedDateTime(source.getLastModifiedDateTime());
+        leagueInfoVO.setTeamName(source.getTeamName());
         return leagueInfoVO;
     }
 }
