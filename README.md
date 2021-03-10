@@ -77,7 +77,31 @@ https://localhost:3000/message
 Eg. jcrud springboot endpoint
 https://localhost:8080/greeting
 
-### 5. Useful Link
+### 5. Running the services in docker
+
+Install docker application using this [link](https://www.docker.com/get-started).
+
+To build docker images
+```
+docker-compose build
+```
+
+To run
+```
+docker-compose up -d
+```
+
+To build & run in one command
+```
+docker-compose up --build -d
+```
+
+To stop all the services
+```
+docker-compose down
+```
+
+### 6. Useful Link
 - Web framework for Node.js - [Express](http://expressjs.com/)
 - JavaScript ORM  for Node.js - [Bookshelf](http://bookshelfjs.org/)
 - SQL Query Builder for Postgres, MSSQL, MySQL, MariaDB, SQLite3, and Oracle - [Knex](http://knexjs.org/)

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.iplauction'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -28,8 +28,6 @@ dependencies {
 	implementation group: 'ch.qos.logback', name: 'logback-access', version: '1.2.3'
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
-
-
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }

@@ -1,0 +1,16 @@
+version: "3"
+services:
+  node-frontend:
+    image: nodeapp
+    build: .
+    environment:
+      NODE_ENV: development
+      APP_HOST: 0.0.0.0
+    ports:
+      - 3000:3000
+  jcrud:
+    image: jcrud
+    build:
+      context: ./jcrud
+    ports:
+      - 8080:8080
