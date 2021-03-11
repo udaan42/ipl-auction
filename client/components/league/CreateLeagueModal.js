@@ -1,41 +1,59 @@
 import React, {useState} from 'react';
 import {Button, Modal} from 'react-bootstrap';
 import CreateLeagueForm from './CreateLeagueForm';
+import { USER_ID } from '../../config/config';
+import { getLocalStorage } from '../../utils/storageUtil';
 
 export default function CreateLeagueModal(props) {
-    const [show, setShow] = useState(false);
   
     const handleClose = () => {
         props.onExit();
-    }
-    const handleShow = () => setShow(true);
+    }  
 
     const submitForm = (formProps) =>  {
-        console.log(formProps);
+      if(props.form == 1 && props.show){
+        props.onNext();
+      }
     }
 
     const switchType = () => {
         props.onChangeFormType();
     }
+
+    const nextClick = (leagueName, selectedOption, selectedTeam) => {
+      const userId = getLocalStorage(USER_ID);
+      if(selectedOption.value == "moderator"){
+        props.onExit();
+        let data = {
+          "leagueName": leagueName,
+          "userId": userId,
+          "userName": "test",
+          "userRole": "admin",
+          "auctionRole": selectedOption.value,
+          "teamName": selectedTeam.value
+        }
+      }else if(props.form == 2 ){
+        props.onNext();
+      }else{
+        let data = {
+          "leagueName": leagueName,
+          "userId": userId,
+          "userName": "test",
+          "userRole": "admin",
+          "auctionRole": selectedOption.value,
+          "teamName": selectedTeam.value
+        }
+        console.log(data);
+  
+        props.onExit();  
+      }
+      
+    }
   
     return (
       <>
         <Modal show={props.show} onHide={handleClose}>
-            <CreateLeagueForm onSubmit={submitForm} errorMessage={null} joinAnotherLeague={switchType}/>
-          {/* <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <CreateLeagueForm onSubmit={submitForm} errorMessage="None" />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleClose}>
-              Save Changes
-            </Button>
-          </Modal.Footer> */}
+            {<CreateLeagueForm form={props.form} onSubmit={submitForm} buttonClick={nextClick} errorMessage={null} joinAnotherLeague={switchType}/>}
         </Modal>
       </>
     );

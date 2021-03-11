@@ -1,27 +1,59 @@
 import React, {useState} from 'react';
 import {Button, Modal} from 'react-bootstrap';
 import JoinLeagueForm from './JoinLeagueForm';
+import { USER_ID } from '../../config/config';
+import { getLocalStorage } from '../../utils/storageUtil';
 
 export default function JoinLeagueModal(props) {
-    const [show, setShow] = useState(false);
   
     const handleClose = () => {
         props.onExit();
     }
-    const handleShow = () => setShow(true);
 
     const submitForm = (formProps) =>  {
-        console.log(formProps);
+      if(props.form == 1 && props.show){
+        props.onNext();
+      }
     }
 
     const switchType = () => {
         props.onChangeFormType();
     }
+
+    const nextClick = (leagueName, selectedOption, selectedTeam) => {
+      const userId = getLocalStorage(USER_ID);
+      if(selectedOption.value == "moderator"){
+        props.onExit();
+        let data = {
+          "leagueName": leagueName,
+          "userId": userId,
+          "userName": "test",
+          "userRole": "admin",
+          "auctionRole": selectedOption.value,
+          "teamName": selectedTeam.value
+        }
+      }else if(props.form == 2 ){
+        props.onNext();
+      }else{
+        let data = {
+          "leagueName": leagueName,
+          "userId": userId,
+          "userName": "test",
+          "userRole": "admin",
+          "auctionRole": selectedOption.value,
+          "teamName": selectedTeam.value
+        }
+        console.log(data);
+  
+        props.onExit();  
+      }
+      
+    }
   
     return (
       <>
         <Modal show={props.show} onHide={handleClose}>
-            <JoinLeagueForm onSubmit={submitForm} errorMessage={null} joinAnotherLeague={switchType}/>
+            <JoinLeagueForm form={props.form} onSubmit={submitForm} buttonClick={nextClick} errorMessage={null} joinAnotherLeague={switchType}/>
         </Modal>
       </>
     );

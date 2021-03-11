@@ -32,7 +32,8 @@ class League extends React.Component{
     state = {
         showCreateLeagueForm: false,
         showJoinLeagueForm: false,
-        userLeague: false
+        userLeague: false,
+        form: 1
     }
 
     onCreateFormOpen = () => {
@@ -43,6 +44,7 @@ class League extends React.Component{
 
     onCreateFormClose = () => {
         this.setState({
+            form: 1,
             showCreateLeagueForm: false
         })
     }
@@ -55,7 +57,8 @@ class League extends React.Component{
 
     onJoinFormClose = () => {
         this.setState({
-            showJoinLeagueForm: false
+            showJoinLeagueForm: false,
+            form: 1
         })
     }
 
@@ -64,6 +67,14 @@ class League extends React.Component{
             showJoinLeagueForm: !this.state.showJoinLeagueForm,
             showCreateLeagueForm: !this.state.showCreateLeagueForm
         })
+    }
+
+    onNextForm = () => {
+        if(this.state.form < 3) {
+            this.setState({
+                form: this.state.form + 1
+            })
+        }
     }
     render(){
         return(
@@ -82,13 +93,13 @@ class League extends React.Component{
                             <Button variant="primary" color="primary" onClick={this.onCreateFormOpen}>
                                 Create a New League
                             </Button>
-                            <CreateLeagueModal show={this.state.showCreateLeagueForm} onExit={this.onCreateFormClose} onChangeFormType={this.changeType}/>
+                            <CreateLeagueModal form={this.state.form} onNext={this.onNextForm} show={this.state.showCreateLeagueForm} onExit={this.onCreateFormClose} onChangeFormType={this.changeType}/>
                         </Grid>
                         <Grid item xs="3">
                             <Button variant="outline-secondary" color="primary" onClick={this.onJoinFormOpen}>
                                 Join an existing League
                             </Button>
-                            <JoinLeagueModal show={this.state.showJoinLeagueForm} onExit={this.onJoinFormClose} onChangeFormType={this.changeType}/>
+                            <JoinLeagueModal form={this.state.form} onNext={this.onNextForm} show={this.state.showJoinLeagueForm} onExit={this.onJoinFormClose} onChangeFormType={this.changeType}/>
                         </Grid>
                     </Grid>
 
