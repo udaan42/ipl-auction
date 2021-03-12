@@ -1,16 +1,17 @@
 package com.iplauction.jcrud.model;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+
 import java.util.Date;
+import java.util.List;
 
 public class LeagueInfoVO {
     private String leagueId;
     private String leagueName;
-    private String userId;
-    private String userName;
-    private String userRole;
-    private String teamName;
+    private List<LeagueUserVO> leagueUser;
     private Date createdDateTime;
     private Date lastModifiedDateTime;
+    private Boolean isActive = true;
 
     public String getLeagueId() {
         return leagueId;
@@ -28,36 +29,12 @@ public class LeagueInfoVO {
         this.leagueName = leagueName;
     }
 
-    public String getUserId() {
-        return userId;
+    public List<LeagueUserVO> getLeagueUser() {
+        return leagueUser;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserRole() {
-        return userRole;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
-    }
-
-    public String getTeamName() {
-        return teamName;
-    }
-
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
+    public void setLeagueUser(List<LeagueUserVO> leagueUser) {
+        this.leagueUser = leagueUser;
     }
 
     public Date getCreatedDateTime() {
@@ -74,5 +51,12 @@ public class LeagueInfoVO {
 
     public void setLastModifiedDateTime(Date lastModifiedDateTime) {
         this.lastModifiedDateTime = lastModifiedDateTime;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 }
