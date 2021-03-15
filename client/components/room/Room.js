@@ -3,6 +3,7 @@ import {Button} from 'react-bootstrap';
 import { API_URL, JWT_TOKEN, USER_ID } from '../../config/config';
 import { getLocalStorage } from '../../utils/storageUtil';
 import axios from 'axios';
+import PlayerStats from './PlayerStats';
 
 class Room extends React.Component{
 
@@ -21,7 +22,7 @@ class Room extends React.Component{
         }
 
         // POST CALL
-        axios.post(API_URL + 'rooms/1', data)
+        axios.post(API_URL + 'room', data)
         .then((response) => {
            console.log(response)
         })
@@ -40,6 +41,10 @@ class Room extends React.Component{
                 <Button onClick={this.handleClick}>
                     Start Auction
                 </Button>
+                <div>
+                    <PlayerStats />
+                </div>
+                
             </div>
         )
     }

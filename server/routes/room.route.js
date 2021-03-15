@@ -11,9 +11,8 @@ router.route('/:id').get( (req, res) => {
     });
 })
 
-router.route('/:id').post( (req, res) => {
+router.route('/').post( (req, res) => {
     console.log(req.params);
-    console.log(req);
     return res.json({
         "data": "Test"
     });

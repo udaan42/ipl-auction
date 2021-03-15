@@ -11,6 +11,9 @@ class LeagueContainer extends React.Component{
 
     constructor(props) {
         super(props);
+        this.state = {
+            leagues: []
+        }
     }
 
     componentDidMount(){
@@ -19,13 +22,16 @@ class LeagueContainer extends React.Component{
         .then((response) => response.json())
         .then((data) => {
           console.log(data.payload.leagueInfos);
+          this.setState({
+              leagues: data.payload.leagueInfos
+          })
         })
         .catch(console.log)
     }
 
     render(){
         return(
-            <League list={leagues} />
+            <League list={leagues} leagues={this.state.leagues} />
         )
     }
 }
