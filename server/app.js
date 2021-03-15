@@ -14,14 +14,26 @@ import webpackConfig from '../webpack/webpack.config.dev';
 
 if (process.env.NODE_ENV === 'development') {
 
-    const compiler = webpack(webpackConfig);
-    app.use(webpackDevMiddleware(compiler, {noInfo: true, publicPath: webpackConfig.output.publicPath}));
-    app.use(webpackHotMiddleware(compiler));
+  const compiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: webpackConfig.output.publicPath }));
+  app.use(webpackHotMiddleware(compiler));
 }
+
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+server.listen(app.get('port'), () => {
+  console.log('socket listening');
+});
+
+io.on('connection', (socket) => {
+  console.log(socket.id);
+  require('./auction-room-socket.js')(socket);
+});
 
 // Swagger API documentation
 app.get('/swagger.json', (req, res) => {
-   res.json(swagger);
+  res.json(swagger);
 });
 
 // Request logger
@@ -44,7 +56,7 @@ app.use(errorHandler.notFound);
 app.use(errorHandler.methodNotAllowed);
 
 app.listen(app.get('port'), app.get('host'), () => {
-    console.log(`Server running at http://${app.get('host')}:${app.get('port')}`);
+  console.log(`Server running at http://${app.get('host')}:${app.get('port')}`);
 });
 
 export default app;

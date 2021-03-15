@@ -2,8 +2,7 @@ import express from 'express';
 
 const router = express.Router();
 
-
-router.route('/:id').get( (req, res) => {
+router.route('/:id').get((req, res) => {
     console.log(req.params);
     console.log(req);
     return res.json({
@@ -11,10 +10,9 @@ router.route('/:id').get( (req, res) => {
     });
 })
 
-router.route('/').post( (req, res) => {
-    console.log(req.params);
-    return res.json({
-        "data": "Test"
-    });
-})
+router.route('/:id').post((req, res) => {
+    console.log(req.body);
+    console.log('Store room creation details');
+    res.sendStatus(201);
+});
 export default router;
