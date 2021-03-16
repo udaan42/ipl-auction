@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 import {Button, Modal} from 'react-bootstrap';
 import JoinLeagueForm from './JoinLeagueForm';
-import { USER_ID } from '../../config/config';
+import { API_ENDPOINT, USER_ID } from '../../config/config';
 import { getLocalStorage } from '../../utils/storageUtil';
+import axios from 'axios';
+
 
 export default function JoinLeagueModal(props) {
   
@@ -20,30 +22,45 @@ export default function JoinLeagueModal(props) {
         props.onChangeFormType();
     }
 
-    const nextClick = (leagueName, selectedOption, selectedTeam) => {
+    const apiCall = (data) => {
+      const url = `${API_ENDPOINT}iplauction/league/joinLeague/${data.leagueId}`;
+        // POST CALL
+        axios.post(url, data)
+        .then((response) => {
+           console.log(response)
+        })
+        .catch((error) => {
+           console.log(error);
+        });
+    }
+
+    const nextClick = (leagueId, selectedOption, selectedTeam) => {
       const userId = getLocalStorage(USER_ID);
       if(selectedOption.value == "moderator"){
         props.onExit();
         let data = {
-          "leagueName": leagueName,
+          "leagueId": leagueId,
           "userId": userId,
           "userName": "test",
-          "userRole": "admin",
-          "auctionRole": selectedOption.value,
-          "teamName": selectedTeam.value
+          "userRole": "player",
+          "leagueRole": selectedOption.value,
+          "teamName": selectedTeam.value,
+          "points": 0
         }
+        apiCall(data);
       }else if(props.form == 2 ){
         props.onNext();
       }else{
         let data = {
-          "leagueName": leagueName,
+          "leagueId": leagueId,
           "userId": userId,
           "userName": "test",
-          "userRole": "admin",
-          "auctionRole": selectedOption.value,
-          "teamName": selectedTeam.value
+          "userRole": "player",
+          "leagueRole": selectedOption.value,
+          "teamName": selectedTeam.value,
+          "points": 0
         }
-        console.log(data);
+        apiCall(data);
   
         props.onExit();  
       }

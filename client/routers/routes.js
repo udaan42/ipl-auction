@@ -5,6 +5,7 @@ import loadable from '@loadable/component';
 // Import custom components
 import PrivateRoute from './PrivateRoute';
 import RestrictRoute from './RestrictRoute';
+import ProtectedRoomRoute from './ProtectedRoomRoute'
 import MainLayout from '../components/common/layout/MainLayout';
 import Layout from '../components/common/layout/Layout';
 import NotFound from '../components/error/NotFound';

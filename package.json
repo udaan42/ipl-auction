@@ -72,6 +72,8 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "serve-favicon": "^2.5.0",
+    "socket.io": "^4.0.0",
+    "socket.io-client": "^4.0.0",
     "swagger-jsdoc": "^4.0.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
@@ -80,6 +82,7 @@
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.10.5",
     "@babel/node": "^7.10.5",
+    "@babel/plugin-transform-runtime": "7.10.5",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-proposal-function-bind": "^7.10.5",
     "@babel/preset-env": "^7.10.4",

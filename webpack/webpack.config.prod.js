@@ -33,7 +33,7 @@ var config = {
                 options: {
                     babelrc: false,
                     presets: ['@babel/preset-env', '@babel/preset-react'],
-                    plugins: ['@babel/plugin-proposal-function-bind', '@babel/plugin-proposal-class-properties'],
+                    plugins: ['@babel/plugin-proposal-function-bind', '@babel/plugin-proposal-class-properties', "@babel/plugin-transform-runtime"],
                 },
             }
         ]
