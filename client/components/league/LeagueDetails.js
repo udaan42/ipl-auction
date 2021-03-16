@@ -12,6 +12,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import _ from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     fontWeight: 500,
     marginBottom: 25
+  },
+  leagueID:{
+    textAlign: "center",
+    fontWeight: 400,
+    marginBottom: 25,
+    fontStyle: "italic"
   },
   rank:{
     fontSize: theme.typography.pxToRem(15),
@@ -71,12 +78,15 @@ export default function LeagueDetails(props) {
       setExpanded(isExpanded ? panel : false);
     };
 
-    const { standings } = props;
-    console.log(standings);
+    let standings = [];
+    if(!_.isEmpty(props.detail)){
+      standings = props.detail.leagueUsers;
+    }
   
     return (
       <div className={classes.root}>
-        <Typography variant="h4" className={classes.title}> Hifliers</Typography>
+        <Typography variant="h4" className={classes.title}> {(props.detail) ? props.detail.leagueName: ""}</Typography>
+        <Typography variant="h6" className={classes.title}> League ID - {(props.detail) ? (<span className={classes.leagueID}>{props.detail.leagueId}</span>): ""}</Typography>
         <Accordion>
             <AccordionSummary
                 aria-controls="title-content"
@@ -89,17 +99,18 @@ export default function LeagueDetails(props) {
             </AccordionSummary>
         </Accordion>
         {standings.map((item)=>{
-            return(
+            if(item.leagueRole == "player"){
+              return(
                 <Accordion expanded={expanded === item.teamName} onChange={handleChange(item.teamName)}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1bh-content"
-                        id={item.name}
+                        id={item.userName}
                     >
                         <Typography className={classes.heading}>{item.rank}</Typography>
-                        <Typography className={classes.heading}>{item.name}</Typography>
+                        <Typography className={classes.heading}>{item.userName}</Typography>
                         <Typography className={classes.secondaryHeading}>{item.teamName}</Typography>
-                        <Typography className={classes.secondaryHeading}>{item.score}</Typography>
+                        <Typography className={classes.secondaryHeading}>{item.points}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <TableContainer component={Paper}>
@@ -112,7 +123,7 @@ export default function LeagueDetails(props) {
                                 </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {item.team.map((row) => (
+                                    {item.playersSquad.map((row) => (
                                         <TableRow key={row.name}>
                                             <TableCell component="th" scope="row">
                                                 {row.name}
@@ -126,7 +137,9 @@ export default function LeagueDetails(props) {
                         </TableContainer>
                     </AccordionDetails>
                 </Accordion>
-            )
+              )
+            }
+            
         })}
       </div>
     );

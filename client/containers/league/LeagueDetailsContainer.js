@@ -1,6 +1,8 @@
 import React from 'react';
 import LeagueDetails from '../../components/league/LeagueDetails';
-import { useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom';
+import { API_ENDPOINT } from '../../config/config';
+import  getLeagueDetails  from '../../fetch/LeagueDetails';
 
 const detail = {'id':1,'name': "Hifliers", "role":"player", "teams": ["CSK", "DC", "RCB", "MI", "PK"]};
 const standings = [
@@ -506,10 +508,17 @@ const standings = [
 const LeagueDetailsContainer = (props) => {
 
     const { id } = useParams();
-    console.log(id);
+    let leagueUsers = [];
+    let data = null;
+    const url = `${API_ENDPOINT}iplauction/league/${id}`;;
+    data = getLeagueDetails(url);
+   //  if(data.length > 0){
+   //     leagueUsers = data.leagueUsers;
+   //  }
+   console.log(data);
 
     return(
-        <LeagueDetails standings={standings} detail={detail} />
+        <LeagueDetails standings={leagueUsers} detail={data} />
     )
 
 }

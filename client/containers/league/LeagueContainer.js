@@ -5,35 +5,23 @@ const leagues = [{'id':1,'name': "Hifliers", "rank":"2", "role":"player"},
 {'id':2,'name': "US", "rank":"N/A", "role":"player"},
 {'id':3,'name': "Sastra", "rank":"N/A", "role":"moderator"}]
 
-import { API_ENDPOINT } from '../../config/config';
+import { API_ENDPOINT, USER_ID } from '../../config/config';
+import { getLocalStorage } from '../../utils/storageUtil';
+import axios from 'axios';
+import  getLeagueData  from '../../fetch/LeagueData';
 
-class LeagueContainer extends React.Component{
+export default function LeagueContainer(props) {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            leagues: []
-        }
+    let state = {
+        leagues: []
     }
 
-    componentDidMount(){
-        const url = `${API_ENDPOINT}iplauction/league/all`;
-        fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data.payload.leagueInfos);
-          this.setState({
-              leagues: data.payload.leagueInfos
-          })
-        })
-        .catch(console.log)
-    }
+    let data = [];
+    const url = `${API_ENDPOINT}iplauction/league/getUserLeagues`;
+    const userId = getLocalStorage(USER_ID);
+    data = getLeagueData(url, "61994eeb-5d4e-48bf-9bd1-bd0fbb7e8125");
 
-    render(){
-        return(
-            <League list={leagues} leagues={this.state.leagues} />
-        )
-    }
+    return(
+        <League list={data} leagues={state.leagues}/>
+    )   
 }
-
-export default LeagueContainer;

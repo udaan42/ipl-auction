@@ -22,11 +22,17 @@ export default function CreateLeagueModal(props) {
     }
 
     const apiCall = (data) => {
+      const headers = {
+        'X-UserId': '61994eeb-5d4e-48bf-9bd1-bd0fbb7e8125'
+      }
       const url = `${API_ENDPOINT}iplauction/league/`;
         // POST CALL
-        axios.post(url, data)
+        axios.post(url, data, {
+          headers: headers
+        })
         .then((response) => {
-           console.log(response)
+          window.location.reload();
+          console.log(response)
         })
         .catch((error) => {
            console.log(error);
@@ -39,17 +45,13 @@ export default function CreateLeagueModal(props) {
       if(selectedOption.value == "moderator"){
         data = {
           "leagueName": leagueName,
-          "leagueUser": [
-            {
-                "userId": userId,
-                "userName": "bcvb",
-                "userRole": "admin",
-                "leagueRole": selectedOption.value,
+          "leagueUsers": [
+              {
                 "teamName": selectedTeam.value,
-                "points": 0
+                "leagueRole": selectedOption.value
               }
           ],
-          "isActive" : true 
+          "isActive": true
         }
         apiCall(data);
         props.onExit();
@@ -58,17 +60,13 @@ export default function CreateLeagueModal(props) {
       }else{
         data = {
           "leagueName": leagueName,
-          "leagueUser": [
-            {
-                "userId": userId,
-                "userName": "bcvb",
-                "userRole": "admin",
-                "leagueRole": selectedOption.value,
+          "leagueUsers": [
+              {
                 "teamName": selectedTeam.value,
-                "points": 0
+                "leagueRole": selectedOption.value
               }
           ],
-          "isActive" : true
+          "isActive": true
         }
         apiCall(data);
         props.onExit();  

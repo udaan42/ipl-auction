@@ -79,7 +79,6 @@ class League extends React.Component{
     render(){
         return(
                 <Box>
-
                     {this.state.userLeague? <Grid className={this.props.classes.headerBlock} container-fluid spacing={2}>
                         <Grid item xs>
                             <Typography>

@@ -48,7 +48,7 @@ export default function LeagueItem(props) {
   const history = useHistory();
 
   const handleClick = () => {
-    let url = `/leagues/${props.item.id}`
+    let url = `/leagues/${props.item.leagueId}`
     history.push(url);
   }
 
@@ -56,11 +56,11 @@ export default function LeagueItem(props) {
       <div className={classes.root}>
         <Paper className={classes.leagueItem} elevation={1} onClick={handleClick}>
             <Typography className={classes.leagueName} variant="h6" align="center">
-                {props.item.name}
+                {props.item.leagueName}
             </Typography> 
             <Typography  variant="subtitle1" align="center">
                 <FiberManualRecordIcon className={classes.leaguePoint} />
-                <span className={classes.label}>Your rank -</span> {props.item.rank}
+                <span className={classes.label}>Your points -</span> {props.item.points}
             </Typography> 
         </Paper>
       </div>

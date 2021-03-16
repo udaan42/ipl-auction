@@ -22,12 +22,19 @@ export default function JoinLeagueModal(props) {
         props.onChangeFormType();
     }
 
-    const apiCall = (data) => {
-      const url = `${API_ENDPOINT}iplauction/league/joinLeague/${data.leagueId}`;
+    const apiCall = (data, userId, leagueId) => {
+      const headers = {
+        'X-UserId': '7614773c-aa27-4472-b54d-ef8eb6d54157',
+        'X-LeagueId': leagueId
+      }
+      const url = `${API_ENDPOINT}iplauction/league/joinLeague/`;
         // POST CALL
-        axios.post(url, data)
+        axios.post(url, data, {
+          headers: headers
+        })
         .then((response) => {
-           console.log(response)
+           console.log(response);
+           window.location.reload();
         })
         .catch((error) => {
            console.log(error);
@@ -39,28 +46,20 @@ export default function JoinLeagueModal(props) {
       if(selectedOption.value == "moderator"){
         props.onExit();
         let data = {
-          "leagueId": leagueId,
-          "userId": userId,
-          "userName": "test",
-          "userRole": "player",
           "leagueRole": selectedOption.value,
           "teamName": selectedTeam.value,
           "points": 0
         }
-        apiCall(data);
+        apiCall(data, userId, leagueId);
       }else if(props.form == 2 ){
         props.onNext();
       }else{
         let data = {
-          "leagueId": leagueId,
-          "userId": userId,
-          "userName": "test",
-          "userRole": "player",
           "leagueRole": selectedOption.value,
           "teamName": selectedTeam.value,
           "points": 0
         }
-        apiCall(data);
+        apiCall(data, userId, leagueId);
   
         props.onExit();  
       }

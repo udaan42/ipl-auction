@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, Container, Image, Row, Col, Table} from 'react-bootstrap';
+import { Button, Container, Image, Row, Col, Table} from 'react-bootstrap';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
@@ -30,6 +30,19 @@ const styles = {
     },
     playerInfoView: {
         paddingLeft: 0
+    },
+    playersTeam: {
+        fontSize: 18,
+        fontWeight: 700,
+        // marginBottom: 15
+    },
+    yourTable: {
+        marginTop: 10
+    },
+    purseDetails:{
+        marginTop: 10,
+        fontWeight: 500,
+        fontSize: 18
     }
 };
 
@@ -70,8 +83,9 @@ class PlayerStats extends React.Component{
 
     render(){
         return(
-            <Col md={8} className={this.props.classes.playerInfo}>
-                <Container>
+            <Row>
+                <Col md={8} className={this.props.classes.playerInfo}>
+                    <Container>
                         <Row>
                             <Col xs={6} md={4} className="player-image">
                                 <Image src="https://www.espncricinfo.com/inline/content/image/501527.html?" height="200px" width="200px" rounded  fluid  />
@@ -123,9 +137,11 @@ class PlayerStats extends React.Component{
                                                 <th>Runs</th>
                                                 <th>High Score</th>
                                                 <th>Bat avg.</th>
-                                                <th>100s</th>
+                                                <th>Strike rate</th>
+                                                <th>50s</th>
                                                 <th>Wickets</th>
                                                 <th>Bowl avg.</th>
+                                                <th>Economy</th>
                                                 <th>5 wkts</th>
                                                 <th>Catches</th>
                                                 <th>Stumpings</th>
@@ -137,9 +153,11 @@ class PlayerStats extends React.Component{
                                                 <td>{this.state.players[this.state.index].Runs}</td>
                                                 <td>{this.state.players[this.state.index].HS}</td>
                                                 <td>{this.state.players[this.state.index].BatAv}</td>
+                                                <td></td>
                                                 <td>{this.state.players[this.state.index].Hundreds}</td>
                                                 <td>{this.state.players[this.state.index].Wkts}</td>
                                                 <td>{this.state.players[this.state.index].BowlAv}</td>
+                                                <td></td>
                                                 <td>{this.state.players[this.state.index].FvWkts}</td>
                                                 <td>{this.state.players[this.state.index].Ct}</td>
                                                 <td>{this.state.players[this.state.index].St}</td>
@@ -153,6 +171,58 @@ class PlayerStats extends React.Component{
                         
                     </Container>
                 </Col>
+                <Col md={4}>
+                    <span className={this.props.classes.playersTeam}>Your Team</span>
+                    {/* <span className={this.props.classes.playersTeam}>Purse Remaining - 80 crores</span> */}
+                    <Table striped bordered hover size="sm" className={this.props.classes.yourTable} >
+                        <thead>
+                            <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Price</th>
+                            <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td>1</td>
+                            <td>Dhoni</td>
+                            <td>Keeper</td>
+                            <td>5 crores</td>
+                            <td>Indian</td>
+                            </tr>
+                            <tr>
+                            <td>2</td>
+                            <td>Yuvraj</td>
+                            <td>AR</td>
+                            <td></td>
+                            <td>Overseas</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Bumrah</td>
+                                <td>Bowl</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr><td>4</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>5</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>6</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>7</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>8</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>9</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>10</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>11</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>12</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>13</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>14</td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td>15</td><td></td><td></td><td></td><td></td></tr>
+                        </tbody>
+                    </Table>
+                    <span className={this.props.classes.purseDetails}>Purse Remaining - 80 crores</span>
+                </Col>
+            </Row>    
         )
     }
 }
