@@ -1,14 +1,12 @@
 package com.iplauction.jcrud.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-
 import java.util.Date;
 import java.util.List;
 
 public class LeagueInfoVO {
     private String leagueId;
     private String leagueName;
-    private List<LeagueUserVO> leagueUser;
+    private List<LeagueUserVO> leagueUsers;
     private Date createdDateTime;
     private Date lastModifiedDateTime;
     private Boolean isActive = true;
@@ -29,12 +27,12 @@ public class LeagueInfoVO {
         this.leagueName = leagueName;
     }
 
-    public List<LeagueUserVO> getLeagueUser() {
-        return leagueUser;
+    public List<LeagueUserVO> getLeagueUsers() {
+        return leagueUsers;
     }
 
-    public void setLeagueUser(List<LeagueUserVO> leagueUser) {
-        this.leagueUser = leagueUser;
+    public void setLeagueUsers(List<LeagueUserVO> leagueUsers) {
+        this.leagueUsers = leagueUsers;
     }
 
     public Date getCreatedDateTime() {

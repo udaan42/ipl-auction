@@ -3,6 +3,7 @@ package com.iplauction.jcrud.controller;
 import com.iplauction.jcrud.http.GenericServiceResponse;
 import com.iplauction.jcrud.model.LeagueInfoVO;
 import com.iplauction.jcrud.model.LeagueUserVO;
+import com.iplauction.jcrud.model.PlayerInfoVO;
 import com.iplauction.jcrud.service.LeagueInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 import static com.iplauction.jcrud.http.GenericServiceResponse.Status.FAIL;
@@ -30,11 +32,12 @@ public class LeagueController {
 
     @PostMapping()
     public ResponseEntity<GenericServiceResponse<LeagueInfoVO>> addLeagueInfo(
+            @RequestHeader(name = "X-UserId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "User-Id cannot be empty and should be Alpha-Numeric") final String userId,
             @RequestBody LeagueInfoVO leagueInfoVO) {
 
         try {
             logger.info("addLeagueInfo started ==>");
-            LeagueInfoVO leagueInfoVOResponse = leagueInfoService.addNewLeagueInfo(leagueInfoVO);
+            LeagueInfoVO leagueInfoVOResponse = leagueInfoService.addNewLeagueInfo(leagueInfoVO,userId);
             logger.info("addLeagueInfo completed <==");
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(SUCCESS, "leagueInfo", leagueInfoVOResponse), HttpStatus.OK);
         } catch (Exception e) {
@@ -60,8 +63,8 @@ public class LeagueController {
     }
 
     @GetMapping({"/{leagueInfoId}"})
-    public ResponseEntity<GenericServiceResponse<LeagueInfoVO>> getScanRequestById(
-            @PathVariable(name = "leagueInfoId") String leagueInfoId) {
+    public ResponseEntity<GenericServiceResponse<LeagueInfoVO>> getLeagueInfoById(
+            @PathVariable(name = "leagueInfoId")   @Valid @NotNull String leagueInfoId) {
         try {
             logger.info("getLeagueInfoById {leagueInfoId} ==>", leagueInfoId);
 
@@ -76,18 +79,75 @@ public class LeagueController {
         }
     }
 
-    @PostMapping({"/joinLeague/{leagueInfoId}"})
+    @PostMapping({"/joinLeague"})
     public ResponseEntity<GenericServiceResponse<LeagueInfoVO>> joinLeague(
-            @RequestBody LeagueUserVO leagueUserVO,@PathVariable(name = "leagueInfoId")  @Valid @NotNull String leagueInfoId) {
+            @RequestHeader(name = "X-UserId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "User-Id cannot be empty and should be Alpha-Numeric") final String userId,
+            @RequestHeader(name = "X-LeagueId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "League-Id cannot be empty and should be Alpha-Numeric") final String leagueId,
+            @RequestBody LeagueUserVO leagueUserVO) {
 
         try {
             logger.info("addLeagueInfo started ==>");
-            LeagueInfoVO leagueInfoVOResponse = leagueInfoService.joinLeague(leagueUserVO,leagueInfoId);
+            LeagueInfoVO leagueInfoVOResponse = leagueInfoService.joinLeague(leagueUserVO,leagueId,userId);
             logger.info("addLeagueInfo completed <==");
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(SUCCESS, "leagueInfo", leagueInfoVOResponse), HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error while addLeagueInfo", e);
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping({"/getUserLeagues"})
+    public ResponseEntity<GenericServiceResponse<List<LeagueInfoVO>>> getLeagueInfoByUserId(
+            @RequestHeader(name = "X-UserId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "User-Id cannot be empty and should be Alpha-Numeric") final String userId) {
+        try {
+            logger.info("getLeagueInfoByUserId {leagueInfoId} ==>", userId);
+
+            List<LeagueInfoVO> leagueInfoVOS = leagueInfoService.getLeagueInfoByUserId(userId);
+
+            logger.info("getLeagueInfoByUserId {leagueInfoId} is Complete <==", userId);
+            return new ResponseEntity<GenericServiceResponse< List<LeagueInfoVO> >>(new GenericServiceResponse< List<LeagueInfoVO> >(SUCCESS, "leagueInfos", leagueInfoVOS), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while getting scan requests", e);
+            return new ResponseEntity<GenericServiceResponse< List<LeagueInfoVO> >>(new GenericServiceResponse< List<LeagueInfoVO> >(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping({"/sellPlayerToUser/{playerId}/{soldPrice}"})
+    public ResponseEntity<GenericServiceResponse<LeagueInfoVO>> sellPlayerToUser(
+            @RequestHeader(name = "X-UserId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "User-Id cannot be empty and should be Alpha-Numeric") final String userId,
+            @RequestHeader(name = "X-LeagueId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "League-Id cannot be empty and should be Alpha-Numeric") final String leagueId,
+            @PathVariable(name = "playerId")   @Valid @NotNull String playerId,
+            @PathVariable(name = "soldPrice")   @Valid @NotNull Long soldPrice) {
+        try {
+            logger.info("getLeagueInfoByUserId {leagueInfoId} ==>", userId);
+
+            LeagueInfoVO leagueInfoVOS = leagueInfoService.sellPlayerToUser(leagueId,userId,playerId,soldPrice);
+
+            logger.info("getLeagueInfoByUserId {leagueInfoId} is Complete <==", userId);
+            return new ResponseEntity<GenericServiceResponse< LeagueInfoVO>>(new GenericServiceResponse< LeagueInfoVO >(SUCCESS, "leagueInfo", leagueInfoVOS), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while getting scan requests", e);
+            return new ResponseEntity<GenericServiceResponse< LeagueInfoVO >>(new GenericServiceResponse<LeagueInfoVO>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping({"/getTeamSquad"})
+    public ResponseEntity<GenericServiceResponse< List<PlayerInfoVO>>> getTeamSquad(
+            @RequestHeader(name = "X-UserId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "User-Id cannot be empty and should be Alpha-Numeric") final String userId,
+            @RequestHeader(name = "X-LeagueId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "League-Id cannot be empty and should be Alpha-Numeric") final String leagueId) {
+        try {
+            logger.info("getLeagueInfoByUserId {leagueInfoId} ==>", userId);
+
+            List<PlayerInfoVO> playerInfoVOS = leagueInfoService.getTeamSquad(leagueId,userId);
+
+            logger.info("getLeagueInfoByUserId {leagueInfoId} is Complete <==", userId);
+            return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO>>>(new GenericServiceResponse<  List<PlayerInfoVO> >(SUCCESS, "squadInfo", playerInfoVOS), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while getting scan requests", e);
+            return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO> >>(new GenericServiceResponse< List<PlayerInfoVO>>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

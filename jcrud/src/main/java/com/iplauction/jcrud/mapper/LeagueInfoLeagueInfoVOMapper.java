@@ -34,7 +34,7 @@ public class LeagueInfoLeagueInfoVOMapper implements Mapper<LeagueInfo, LeagueIn
             }
         }
 
-        leagueInfoVO.setLeagueUser(leagueUserVOS);
+        leagueInfoVO.setLeagueUsers(leagueUserVOS);
         leagueInfoVO.setIsActive(source.getIsActive());
         return leagueInfoVO;
     }

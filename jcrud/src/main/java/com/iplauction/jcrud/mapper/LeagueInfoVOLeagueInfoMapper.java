@@ -26,8 +26,8 @@ public class LeagueInfoVOLeagueInfoMapper implements Mapper<LeagueInfoVO,LeagueI
         leagueInfo.setCreatedDateTime(source.getCreatedDateTime());
 
         List<LeagueUser> leagueUsers = new ArrayList<>();
-        if(!CollectionUtils.isEmpty(source.getLeagueUser())){
-            for(LeagueUserVO leagueUserVO : source.getLeagueUser()){
+        if(!CollectionUtils.isEmpty(source.getLeagueUsers())){
+            for(LeagueUserVO leagueUserVO : source.getLeagueUsers()){
                 leagueUsers.add(leagueUserMapper.map(leagueUserVO));
             }
         }
