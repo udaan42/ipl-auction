@@ -77,7 +77,8 @@ public class LeagueInfoService {
                 leagueUserVO.setUserId(userInfoVO.getUserId());
                 leagueUserVO.setUserRole(userInfoVO.getUserRole());
                 leagueUserVO.setUserName(userInfoVO.getUserName());
-                leagueUserVO.setLeagueRole("Admin");
+                leagueUserVO.setLeagueRole(leagueInfoVO.getLeagueUsers().get(0).getLeagueRole());
+                leagueUserVO.setTeamName(leagueInfoVO.getLeagueUsers().get(0).getTeamName());
                 if (leagueInfoVO != null) {
                     List<LeagueUserVO> leagueUserVOS = new ArrayList<>();
                     leagueUserVOS.add(leagueUserVO);
