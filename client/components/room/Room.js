@@ -5,17 +5,11 @@ import { getLocalStorage } from '../../utils/storageUtil';
 import axios from 'axios';
 import PlayerStats from './PlayerStats';
 import io from 'socket.io-client';
+import TeamSummary from './TeamSummary';
 
 class Room extends React.Component {
-  handleClick = () => {
-    // GET CALL
-    // fetch('/api/rooms/1')
-    // .then((response) => response.json())
-    // .then((data) => {
-    //     console.log(data);
-    // })
-    // .catch(console.log)
-
+  
+    handleClick = () => {
     const data = {
       userId: getLocalStorage(USER_ID),
       leagueId: '1',
@@ -46,6 +40,7 @@ class Room extends React.Component {
         <Button onClick={this.handleClick}>Start Auction</Button>
         <div>
           <PlayerStats />
+          <TeamSummary />
         </div>
       </div>
     );

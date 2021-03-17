@@ -32,8 +32,8 @@ const styles = {
         paddingLeft: 0
     },
     playersTeam: {
-        fontSize: 18,
-        fontWeight: 700,
+        fontSize: 16,
+        fontWeight: 600,
         // marginBottom: 15
     },
     yourTable: {
@@ -84,13 +84,13 @@ class PlayerStats extends React.Component{
     render(){
         return(
             <Row>
-                <Col md={8} className={this.props.classes.playerInfo}>
+                <Col md={7} sm={12} className={this.props.classes.playerInfo}>
                     <Container>
                         <Row>
                             <Col xs={6} md={4} className="player-image">
-                                <Image src="https://www.espncricinfo.com/inline/content/image/501527.html?" height="200px" width="200px" rounded  fluid  />
+                                <Image src="https://www.espncricinfo.com/inline/content/image/501527.html?" height="175px" width="200px" rounded  fluid  />
                             </Col>
-                            <Col md={8} className={this.props.classes.playerInfoView}>
+                            <Col md={8} xs={6} className={this.props.classes.playerInfoView}>
                                 <Row className={this.props.classes.playerDetailsRow}>
                                     Name: <span className={this.props.classes.playerData}> {this.state.players[this.state.index].Player} </span>
                                 </Row>
@@ -125,26 +125,27 @@ class PlayerStats extends React.Component{
                                     <Confetti active={ this.state.sold } config={config}/>
                                 </Row> */}
                             </Col>
-                            <Col md={8} className={this.props.classes.playerStatsTable}>
+                            <Col md={12} sm={12} className={this.props.classes.playerStatsTable}>
                                 <Row className={this.props.classes.playerDetailsStatsTitle}>
                                     <span className={this.props.classes.statsTitle}> {this.state.players[this.state.index].stats} Career Statistics </span>
                                 </Row>
                                 <Row className={this.props.classes.playerDetailsRow}>
-                                    <Table striped bordered hover size="sm" className={this.props.classes.playerTable} >
+                                    <div className="table-responsive">
+                                    <Table striped w-auto bordered hover size="sm" className={this.props.classes.playerTable} >
                                         <thead>
                                             <tr>
-                                                <th>Matches</th>
-                                                <th>Runs</th>
-                                                <th>High Score</th>
-                                                <th>Bat avg.</th>
-                                                <th>Strike rate</th>
-                                                <th>50s</th>
-                                                <th>Wickets</th>
-                                                <th>Bowl avg.</th>
-                                                <th>Economy</th>
-                                                <th>5 wkts</th>
-                                                <th>Catches</th>
-                                                <th>Stumpings</th>
+                                                <th scope="col">Matches</th>
+                                                <th scope="col">Runs</th>
+                                                <th scope="col">High Score</th>
+                                                <th scope="col">Bat avg.</th>
+                                                <th scope="col">Strike rate</th>
+                                                <th scope="col">50s</th>
+                                                <th scope="col">Wickets</th>
+                                                <th scope="col">Bowl avg.</th>
+                                                <th scope="col">Economy</th>
+                                                <th scope="col">5 wkts</th>
+                                                <th scope="col">Catches</th>
+                                                <th scope="col">Stumpings</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -163,7 +164,8 @@ class PlayerStats extends React.Component{
                                                 <td>{this.state.players[this.state.index].St}</td>
                                             </tr>
                                         </tbody>
-                                    </Table>    
+                                    </Table> 
+                                    </div>   
                                 </Row>
                             </Col>
                             
@@ -171,8 +173,12 @@ class PlayerStats extends React.Component{
                         
                     </Container>
                 </Col>
-                <Col md={4}>
-                    <span className={this.props.classes.playersTeam}>Your Team</span>
+                <Col md={2} sm={12}>
+                    Live Ticker
+                </Col>
+                <Col md={3} sm={12}>
+                    {/* <span className={this.props.classes.playersTeam}>Your Team</span> */}
+                    <span className={this.props.classes.playersTeam}>Purse Remaining - 80 crores</span>
                     {/* <span className={this.props.classes.playersTeam}>Purse Remaining - 80 crores</span> */}
                     <Table striped bordered hover size="sm" className={this.props.classes.yourTable} >
                         <thead>
@@ -220,7 +226,6 @@ class PlayerStats extends React.Component{
                             <tr><td>15</td><td></td><td></td><td></td><td></td></tr>
                         </tbody>
                     </Table>
-                    <span className={this.props.classes.purseDetails}>Purse Remaining - 80 crores</span>
                 </Col>
             </Row>    
         )

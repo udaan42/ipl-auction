@@ -135,7 +135,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Layout(props) {
   const history = useHistory();
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
 
   const handleToggle = () => setOpen(!open);
   const handleDrawerOpen = () => {
@@ -201,12 +201,12 @@ export default function Layout(props) {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         
-        <Container maxWidth="lg" className={classes.container}>
+        <Container maxWidth="xl" className={classes.container}>
           {children}
         </Container>
       </main>
       <footer className={classes.footer}>
-        <Container maxWidth="sm">
+        <Container maxWidth="lg">
           <Box>
             <Copyright />
           </Box>
