@@ -25,15 +25,23 @@ class Room extends React.Component {
     axios.post(API_URL + 'room/1', data).then(
       (response) => {
         if (response.status === 201) {
-          const socket = io('http://localhost:3000');
-          const room = 1;
-          socket.emit('create auction', room);
+          this.socket = io('http://localhost:3000');
+          this.roomId = 1;
+          this.socket.emit('create auction', this.roomId);
+          this.socket.on('new event from server', (msg) => {
+            alert(msg);
+          });
         }
       },
       (error) => {
         console.log(error);
       }
     );
+  };
+
+  emitHandler = () => {
+    const emitHandlerData = { roomId: this.roomId, msg: 'hello' };
+    this.socket.emit('emit back', emitHandlerData);
   };
 
   render() {
@@ -44,6 +52,7 @@ class Room extends React.Component {
         </Button>
 
         <Button onClick={this.handleClick}>Start Auction</Button>
+        <Button onClick={this.emitHandler}>Emit Auction</Button>
         <div>
           <PlayerStats />
         </div>

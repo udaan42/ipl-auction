@@ -28,7 +28,7 @@ server.listen(app.get('port'), () => {
 
 io.on('connection', (socket) => {
   console.log(socket.id);
-  require('./auction-room-socket.js')(socket);
+  require('./auction-room-socket.js')(io, socket);
 });
 
 // Swagger API documentation
