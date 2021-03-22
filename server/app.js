@@ -20,13 +20,20 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io')(server,  {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
+  }});
 
-server.listen(app.get('port'), () => {
+server.listen(app.get('socketport'), app.get('host'), () => {
   console.log('socket listening');
 });
 
 io.on('connection', (socket) => {
+  
+  console.log("Coneected New socket ----------------------------->");
+  socket.emit("notification", "User connected");
   console.log(socket.id);
   require('./auction-room-socket.js')(io, socket);
 });

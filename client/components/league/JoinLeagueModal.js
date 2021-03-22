@@ -23,6 +23,7 @@ export default function JoinLeagueModal(props) {
     }
 
     const apiCall = (data, userId, leagueId) => {
+      let secondUser = '2ee54e87-9652-4b04-8b1d-70323de443d1';
       const headers = {
         'X-UserId': '7614773c-aa27-4472-b54d-ef8eb6d54157',
         'X-LeagueId': leagueId

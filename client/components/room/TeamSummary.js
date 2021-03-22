@@ -14,45 +14,49 @@ const styles = {
         fontSize: 13,
         border: "solid 1px #dedede",
         borderRadius: 3,
-        marginRight: 15
+        marginRight: 15,
+        fontFamily: '"Segoe UI"'
     }
 }
 
+const getModUI = (props) => {
+
+    return(
+        <Row md={4} lg={4} sm={4} xs={4}>
+            {props.data.map(()=> {
+                return(
+                    <Col className={props.classes.tab}>
+                        <Typography variant="body2"> Player Name</Typography>
+                        <Typography variant="body2"> Team name</Typography>
+                        <Typography variant="body2"> Slots left- 4</Typography>
+                        <Typography variant="body2"> Purse balance - 80 crores</Typography>
+                    </Col>  
+                )})}
+        </Row>
+    )
+}
+
+const getPlayerUI = (props) => {
+    return(
+        <Row md={7} lg={7} sm={7} xs={4}>
+            {props.data.map(()=> {
+                return(
+                    <Col className={props.classes.tab}>
+                        <Typography variant="body2"> Player Name</Typography>
+                        <Typography variant="body2"> Team name</Typography>
+                        <Typography variant="body2"> Slots left- 4</Typography>
+                        <Typography variant="body2"> Purse balance - 80 crores</Typography>
+                    </Col>  
+                )})}
+        </Row>
+    )
+}
+
 const TeamSummary = (props) => {
+    
     return(
         <Container className={props.classes.teamSummary} fluid>
-            <Row md={7} lg={7} sm={7}>
-                <Col className={props.classes.tab}>
-                    1
-                    <Typography variant="body2"> Slots left- 4/15</Typography>
-                    <Typography variant="body2"> Purse balance - 80 crores</Typography>
-                </Col>
-                <Col className={props.classes.tab}>
-                    2
-                    <Typography variant="body2"> Slot left - 4/15</Typography>
-                    <Typography variant="body2"> Purse balance - 80 crores</Typography>
-                </Col>
-                <Col className={props.classes.tab}>3
-                <Typography variant="body2"> Slot left - 4/15</Typography>
-                <Typography variant="body2"> Purse balance - 80 crores</Typography>
-                </Col>
-                <Col className={props.classes.tab}>4
-                <Typography variant="body2"> Slot left - 4/15</Typography>
-                <Typography variant="body2"> Purse balance - 80 crores</Typography>
-                </Col>
-                <Col className={props.classes.tab}>5
-                <Typography variant="body2"> Slot left - 4/15</Typography>
-                <Typography variant="body2"> Purse balance - 80 crores</Typography>
-                </Col>
-                <Col className={props.classes.tab}>6
-                <Typography variant="body2"> Slot left - 4/15</Typography>
-                <Typography variant="body2"> Purse balance - 80 crores</Typography>
-                </Col>
-                <Col className={props.classes.tab}>7
-                <Typography variant="body2"> Slot left - 4/15</Typography>
-                <Typography variant="body2"> Purse balance - 80 crores</Typography>
-                </Col>
-            </Row>
+            {(props.role == "player")? getPlayerUI(props): getModUI(props)} 
         </Container>
     )
 }
