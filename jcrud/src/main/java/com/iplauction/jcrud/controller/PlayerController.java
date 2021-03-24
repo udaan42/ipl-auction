@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static com.iplauction.jcrud.http.GenericServiceResponse.Status.FAIL;
@@ -35,13 +35,32 @@ public class PlayerController {
             @RequestBody PlayerInfoVO playerInfoVO) {
 
         try {
-            logger.info("addUserInfo started ==>");
+            logger.info("addNewPlayer started ==>");
             PlayerInfoVO playerInfoVO1 = playerService.addNewPlayer(playerInfoVO);
-            logger.info("addUserInfo completed <==");
+            logger.info("addNewPlayer completed <==");
             return new ResponseEntity<GenericServiceResponse<PlayerInfoVO>>(new GenericServiceResponse<PlayerInfoVO>(SUCCESS, "playerInfo", playerInfoVO1), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while addUserInfo", e);
+            logger.error("Error while addNewPlayer", e);
             return new ResponseEntity<GenericServiceResponse<PlayerInfoVO>>(new GenericServiceResponse<PlayerInfoVO>(FAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping({"/addPlayerList"})
+    public ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>> addPlayerList(
+            @RequestBody List<PlayerInfoVO> playerInfoVOS) {
+
+        try {
+            logger.info("addPlayerList started ==>");
+            if(!CollectionUtils.isEmpty(playerInfoVOS)) {
+                for(PlayerInfoVO playerInfoVO : playerInfoVOS) {
+                    playerService.addNewPlayer(playerInfoVO);
+                }
+            }
+            logger.info("addPlayerList completed <==");
+            return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(new GenericServiceResponse<List<PlayerInfoVO>>(SUCCESS), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while addPlayerList", e);
+            return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(new GenericServiceResponse<List<PlayerInfoVO>>(FAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -50,6 +69,23 @@ public class PlayerController {
     public ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>> getAllPlayers() {
         try {
             List<PlayerInfoVO> playerInfoVOS = playerService.getAllPlayers();
+            if (!playerInfoVOS.isEmpty()) {
+                return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(
+                        new GenericServiceResponse<List<PlayerInfoVO>>(SUCCESS, "playerInfos", playerInfoVOS), HttpStatus.OK);
+            }
+            return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(new GenericServiceResponse<List<PlayerInfoVO>>(FAIL, "No Player Info Found"),
+                    HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(new GenericServiceResponse<List<PlayerInfoVO>>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping({"getPlayersBag/{bagNumber}"})
+    public ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>> getPlayersByBag(@PathVariable(name = "bagNumber")   @Valid @NotNull String bagNumber) {
+        try {
+            List<PlayerInfoVO> playerInfoVOS = playerService.getPlayersByBag(bagNumber);
             if (!playerInfoVOS.isEmpty()) {
                 return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(
                         new GenericServiceResponse<List<PlayerInfoVO>>(SUCCESS, "playerInfos", playerInfoVOS), HttpStatus.OK);

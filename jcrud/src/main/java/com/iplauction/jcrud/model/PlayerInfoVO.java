@@ -16,7 +16,7 @@ public class PlayerInfoVO {
     private Integer battingInningsPlayed;
     private Integer notOutCount;
     private Integer runsScored;
-    private Integer highestScore;
+    private String highestScore;
     private Double battingAverage;
     private Integer ballsFaced;
     private Double battingStrikeRate;
@@ -36,6 +36,7 @@ public class PlayerInfoVO {
     private String bowlingStrikeRate;
     private Integer noOfFourWickets;
     private Integer noOfFiveWickets;
+    private String bagNumber;
     private Date createdDateTime;
     private Date lastModifiedDateTime;
 
@@ -113,11 +114,11 @@ public class PlayerInfoVO {
         this.runsScored = runsScored;
     }
 
-    public Integer getHighestScore() {
+    public String getHighestScore() {
         return highestScore;
     }
 
-    public void setHighestScore(Integer highestScore) {
+    public void setHighestScore(String highestScore) {
         this.highestScore = highestScore;
     }
 
@@ -311,5 +312,13 @@ public class PlayerInfoVO {
 
     public void setSoldPrice(Long soldPrice) {
         this.soldPrice = soldPrice;
+    }
+
+    public String getBagNumber() {
+        return bagNumber;
+    }
+
+    public void setBagNumber(String bagNumber) {
+        this.bagNumber = bagNumber;
     }
 }

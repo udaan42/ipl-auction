@@ -44,6 +44,7 @@ public class PlayerInfoVOPlayerInfoMapper implements Mapper<PlayerInfoVO, Player
         playerInfo.setBowlingAverage(source.getBowlingAverage());
         playerInfo.setPlayerRace(source.getPlayerRace());
         playerInfo.setSoldPrice(source.getSoldPrice());
+        playerInfo.setBagNumber(source.getBagNumber());
 
         return playerInfo;
     }

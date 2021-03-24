@@ -7,8 +7,10 @@ import com.iplauction.jcrud.model.PlayerInfoVO;
 import com.iplauction.jcrud.model.UserInfo;
 import com.iplauction.jcrud.model.UserInfoVO;
 import com.iplauction.jcrud.repository.PlayerInfoRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,4 +62,25 @@ public class PlayerService {
         return playerInfoVO;
     }
 
+    public List<PlayerInfoVO> getPlayersByBag(String bagNumber) throws Exception {
+
+        List<PlayerInfoVO> playerInfoVOS = new ArrayList<>();
+        List<PlayerInfoVO> playerInfoByBag = new ArrayList<>();
+        Iterable<PlayerInfo> playerInfos = playerInfoRepository.findAll();
+
+        for(PlayerInfo playerInfo : playerInfos){
+            playerInfoVOS.add(playerInfoPlayerInfoVOMapper.map(playerInfo));
+        }
+
+        if(!CollectionUtils.isEmpty(playerInfoVOS)){
+            for(PlayerInfoVO playerInfoVO : playerInfoVOS){
+                if(!StringUtils.isEmpty(playerInfoVO.getBagNumber())){
+                    if(playerInfoVO.getBagNumber().equalsIgnoreCase(bagNumber)){
+                        playerInfoByBag.add(playerInfoVO);
+                    }
+                }
+            }
+        }
+        return playerInfoByBag;
+    }
 }
