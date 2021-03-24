@@ -11,9 +11,6 @@ import java.util.List;
 @EnableScan
 public class PlayerInfoCustomRepositoryImpl implements PlayerInfoCustomRepository {
 
-    static AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().build();
-    static DynamoDBMapper mapper = new DynamoDBMapper(client);
-
     @Override
     public List<PlayerInfo> GetPlayersByBagNumber(String bagNumber) {
         return null;
