@@ -151,5 +151,25 @@ public class LeagueController {
         }
     }
 
+    @PutMapping({"/updateTeamSquad"})
+    public ResponseEntity<GenericServiceResponse< List<PlayerInfoVO>>> updateTeamSquad(
+            @RequestHeader(name = "X-UserId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "User-Id cannot be empty and should be Alpha-Numeric") final String userId,
+            @RequestHeader(name = "X-LeagueId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "League-Id cannot be empty and should be Alpha-Numeric") final String leagueId,
+            @RequestBody List<PlayerInfoVO> playerInfoVOS) {
+        try {
+            logger.info("updateTeamSquad {leagueInfoId} ==>", userId);
+
+            List<PlayerInfoVO> playerInfoVOS1 = leagueInfoService.updateTeamSquad(leagueId,userId,playerInfoVOS);
+
+            logger.info("updateTeamSquad {leagueInfoId} is Complete <==", userId);
+            return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO>>>(new GenericServiceResponse<  List<PlayerInfoVO> >(SUCCESS, "squadInfo", playerInfoVOS1), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while getting scan requests", e);
+            return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO> >>(new GenericServiceResponse< List<PlayerInfoVO>>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 }

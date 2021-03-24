@@ -45,6 +45,9 @@ public class PlayerInfoPlayerInfoVOMapper implements Mapper<PlayerInfo,PlayerInf
         playerInfoVO.setPlayerRace(source.getPlayerRace());
         playerInfoVO.setSoldPrice(source.getSoldPrice());
         playerInfoVO.setBagNumber(source.getBagNumber());
+        playerInfoVO.setPlaying(source.getPlaying());
+        playerInfoVO.setCaptain(source.getCaptain());
+        playerInfoVO.setWicketKeeper(source.getWicketKeeper());
         return playerInfoVO;
     }
 }

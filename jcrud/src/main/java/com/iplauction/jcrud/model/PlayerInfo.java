@@ -1,6 +1,7 @@
 package com.iplauction.jcrud.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
@@ -40,6 +41,9 @@ public class PlayerInfo {
     private Integer noOfFourWickets;
     private Integer noOfFiveWickets;
     private String bagNumber;
+    private Boolean isPlaying;
+    private Boolean isCaptain;
+    private Boolean isWicketKeeper;
     private Date createdDateTime;
     private Date lastModifiedDateTime;
 
@@ -363,5 +367,32 @@ public class PlayerInfo {
 
     public void setBagNumber(String bagNumber) {
         this.bagNumber = bagNumber;
+    }
+
+    @DynamoDBAttribute
+    public Boolean getPlaying() {
+        return isPlaying;
+    }
+
+    public void setPlaying(Boolean playing) {
+        isPlaying = playing;
+    }
+
+    @DynamoDBAttribute
+    public Boolean getCaptain() {
+        return isCaptain;
+    }
+
+    public void setCaptain(Boolean captain) {
+        isCaptain = captain;
+    }
+
+    @DynamoDBAttribute
+    public Boolean getWicketKeeper() {
+        return isWicketKeeper;
+    }
+
+    public void setWicketKeeper(Boolean wicketKeeper) {
+        isWicketKeeper = wicketKeeper;
     }
 }

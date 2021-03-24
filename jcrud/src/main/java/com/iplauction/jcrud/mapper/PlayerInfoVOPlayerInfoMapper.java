@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class PlayerInfoVOPlayerInfoMapper implements Mapper<PlayerInfoVO, PlayerInfo> {
     @Override
     public PlayerInfo map(PlayerInfoVO source) throws Exception {
+
         PlayerInfo playerInfo = new PlayerInfo();
         playerInfo.setPlayerId(source.getPlayerId());
         playerInfo.setAverage(source.getBattingAverage());
@@ -45,6 +46,9 @@ public class PlayerInfoVOPlayerInfoMapper implements Mapper<PlayerInfoVO, Player
         playerInfo.setPlayerRace(source.getPlayerRace());
         playerInfo.setSoldPrice(source.getSoldPrice());
         playerInfo.setBagNumber(source.getBagNumber());
+        playerInfo.setPlaying(source.getPlaying());
+        playerInfo.setCaptain(source.getCaptain());
+        playerInfo.setWicketKeeper(source.getWicketKeeper());
 
         return playerInfo;
     }

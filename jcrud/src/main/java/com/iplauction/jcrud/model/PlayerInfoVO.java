@@ -37,6 +37,9 @@ public class PlayerInfoVO {
     private Integer noOfFourWickets;
     private Integer noOfFiveWickets;
     private String bagNumber;
+    private Boolean isPlaying;
+    private Boolean isCaptain;
+    private Boolean isWicketKeeper;
     private Date createdDateTime;
     private Date lastModifiedDateTime;
 
@@ -320,5 +323,29 @@ public class PlayerInfoVO {
 
     public void setBagNumber(String bagNumber) {
         this.bagNumber = bagNumber;
+    }
+
+    public Boolean getPlaying() {
+        return isPlaying;
+    }
+
+    public void setPlaying(Boolean playing) {
+        isPlaying = playing;
+    }
+
+    public Boolean getCaptain() {
+        return isCaptain;
+    }
+
+    public void setCaptain(Boolean captain) {
+        isCaptain = captain;
+    }
+
+    public Boolean getWicketKeeper() {
+        return isWicketKeeper;
+    }
+
+    public void setWicketKeeper(Boolean wicketKeeper) {
+        isWicketKeeper = wicketKeeper;
     }
 }

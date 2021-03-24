@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,7 @@ public class LeagueInfoService {
 
     @Autowired
     PlayerInfoVOPlayerInfoMapper playerInfoVOPlayerInfoMapper;
+
 
     public List<LeagueInfoVO> getAllLeagueDetails() throws Exception {
 
@@ -135,27 +137,30 @@ public class LeagueInfoService {
         return leagueInfoVOS;
     }
 
-    public LeagueInfoVO sellPlayerToUser(String leagueId, String userId, String playerId,Long soldPrice) throws Exception {
+    public LeagueInfoVO sellPlayerToUser(String leagueId, String userId, String playerId, Long soldPrice) throws Exception {
 
         LeagueInfoVO leagueInfoVO = null;
         LeagueInfo leagueInfo = null;
         Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
-        leagueInfo=  optionalLeagueInfo.get();
-        if(leagueInfo != null){
-            if(!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())){
-                for(LeagueUser leagueUser : leagueInfo.getLeagueUsers()){
-                    if(!StringUtils.isEmpty(userId)){
-                        if(!StringUtils.isEmpty(leagueUser.getUserId())){
-                            if(leagueUser.getUserId().equalsIgnoreCase(userId)){
+        leagueInfo = optionalLeagueInfo.get();
+        if (leagueInfo != null) {
+            if (!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())) {
+                for (LeagueUser leagueUser : leagueInfo.getLeagueUsers()) {
+                    if (!StringUtils.isEmpty(userId)) {
+                        if (!StringUtils.isEmpty(leagueUser.getUserId())) {
+                            if (leagueUser.getUserId().equalsIgnoreCase(userId)) {
                                 PlayerInfoVO playerInfoVO = playerService.getPlayerInfoById(playerId);
                                 playerInfoVO.setSoldPrice(soldPrice);
+                                playerInfoVO.setWicketKeeper(false);
+                                playerInfoVO.setCaptain(false);
+                                playerInfoVO.setPlaying(false);
                                 leagueUser.setSpentAmount(leagueUser.getSpentAmount() + soldPrice);
                                 leagueUser.setRemainingBudget(leagueUser.getRemainingBudget() - soldPrice);
-                                if(playerInfoVO!= null) {
+                                if (playerInfoVO != null) {
                                     if (!CollectionUtils.isEmpty(leagueUser.getPlayersSquad())) {
                                         leagueUser.getPlayersSquad().add(playerInfoVOPlayerInfoMapper.map(playerInfoVO));
                                         leagueInfoRepository.save(leagueInfo);
-                                    }else{
+                                    } else {
                                         List<PlayerInfo> playerInfos = new ArrayList<>();
                                         playerInfos.add(playerInfoVOPlayerInfoMapper.map(playerInfoVO));
                                         leagueUser.setPlayersSquad(playerInfos);
@@ -175,7 +180,7 @@ public class LeagueInfoService {
     public List<PlayerInfoVO> getTeamSquad(String leagueId, String userId) throws Exception {
 
         List<PlayerInfoVO> playerInfoVOS = null;
-        if(!StringUtils.isEmpty(leagueId)) {
+        if (!StringUtils.isEmpty(leagueId)) {
             LeagueInfoVO leagueInfoVO = getLeagueInfoById(leagueId);
             if (leagueInfoVO != null) {
                 if (!CollectionUtils.isEmpty(leagueInfoVO.getLeagueUsers())) {
@@ -183,8 +188,8 @@ public class LeagueInfoService {
                         if (!StringUtils.isEmpty(userId)) {
                             if (!StringUtils.isEmpty(leagueUserVO.getUserId())) {
                                 if (leagueUserVO.getUserId().equalsIgnoreCase(userId)) {
-                                    if(!CollectionUtils.isEmpty(leagueUserVO.getPlayersSquad())){
-                                        playerInfoVOS =  leagueUserVO.getPlayersSquad();
+                                    if (!CollectionUtils.isEmpty(leagueUserVO.getPlayersSquad())) {
+                                        playerInfoVOS = leagueUserVO.getPlayersSquad();
                                         return playerInfoVOS;
                                     }
                                 }
@@ -194,6 +199,45 @@ public class LeagueInfoService {
                 }
             }
         }
-            return null;
+        return null;
+    }
+
+    public List<PlayerInfoVO> updateTeamSquad(String leagueId, String userId, List<PlayerInfoVO> playerInfoVOS) throws Exception {
+
+        List<PlayerInfo> playerInfos = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(playerInfoVOS)) {
+            for (PlayerInfoVO playerInfoVO : playerInfoVOS) {
+                playerInfos.add(playerInfoVOPlayerInfoMapper.map(playerInfoVO));
+            }
+        }
+
+        if (!StringUtils.isEmpty(leagueId)) {
+            Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+            if (optionalLeagueInfo != null) {
+                LeagueInfo leagueInfo = optionalLeagueInfo.get();
+                if (leagueInfo != null) {
+                    if (!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())) {
+                        for (LeagueUser leagueUser : leagueInfo.getLeagueUsers()) {
+                            if (!StringUtils.isEmpty(userId)) {
+                                if (!StringUtils.isEmpty(leagueUser.getUserId())) {
+                                    if (leagueUser.getUserId().equalsIgnoreCase(userId)) {
+                                        if (!CollectionUtils.isEmpty(leagueUser.getPlayersSquad())) {
+                                            leagueUser.setPlayersSquad(playerInfos);
+                                            leagueInfo = leagueInfoRepository.save(leagueInfo);
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        List<PlayerInfoVO> playerInfoVOS1 = getTeamSquad(leagueId,userId);
+
+        return playerInfoVOS1;
+
     }
 }
