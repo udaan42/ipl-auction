@@ -9,5 +9,5 @@ export const JWT_TOKEN = 'token';
 export const USER_ID = 'userId';
 
 export const API_HOST = 'localhost';
-export const API_PORT = 8080;
+export const API_PORT = 5000;
 export const API_ENDPOINT = `http://${API_HOST}:${API_PORT}/`;

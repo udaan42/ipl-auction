@@ -75,7 +75,7 @@ Eg. node client calling service which calls java api
 https://localhost:3000/message
 
 Eg. jcrud springboot endpoint
-https://localhost:8080/greeting
+https://localhost:5000/iplauction/league/all
 
 ### 5. Running the services in docker
 
