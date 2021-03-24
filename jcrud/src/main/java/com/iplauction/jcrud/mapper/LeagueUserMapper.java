@@ -29,6 +29,9 @@ public class LeagueUserMapper implements Mapper<LeagueUserVO, LeagueUser> {
         leagueUser.setPoints(source.getPoints());
         leagueUser.setCreatedDateTime(source.getCreatedDateTime());
         leagueUser.setLastModifiedDateTime(source.getLastModifiedDateTime());
+        leagueUser.setSpentAmount(source.getSpentAmount());
+        leagueUser.setTotalBudget(source.getTotalBudget());
+        leagueUser.setRemainingBudget(source.getRemainingBudget());
 
         List<PlayerInfo> playerInfos = new ArrayList<>();
         if(!CollectionUtils.isEmpty(source.getPlayersSquad())){

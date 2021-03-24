@@ -100,6 +100,9 @@ public class LeagueInfoService {
                 leagueUserVO.setUserId(userInfoVO.getUserId());
                 leagueUserVO.setUserRole(userInfoVO.getUserRole());
                 leagueUserVO.setUserName(userInfoVO.getUserName());
+                leagueUserVO.setTotalBudget((long) 10000);
+                leagueUserVO.setRemainingBudget((long) 10000);
+                leagueUserVO.setSpentAmount((long) 0);
                 if (leagueUserVO != null) {
                     Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueInfoId));
                     if (optionalLeagueInfo != null) {
@@ -146,6 +149,8 @@ public class LeagueInfoService {
                             if(leagueUser.getUserId().equalsIgnoreCase(userId)){
                                 PlayerInfoVO playerInfoVO = playerService.getPlayerInfoById(playerId);
                                 playerInfoVO.setSoldPrice(soldPrice);
+                                leagueUser.setSpentAmount(leagueUser.getSpentAmount() + soldPrice);
+                                leagueUser.setRemainingBudget(leagueUser.getRemainingBudget() - soldPrice);
                                 if(playerInfoVO!= null) {
                                     if (!CollectionUtils.isEmpty(leagueUser.getPlayersSquad())) {
                                         leagueUser.getPlayersSquad().add(playerInfoVOPlayerInfoMapper.map(playerInfoVO));

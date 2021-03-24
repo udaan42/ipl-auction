@@ -12,6 +12,9 @@ public class LeagueUserVO {
     private String teamName;
     private Long points;
     private List<PlayerInfoVO> playersSquad;
+    private Long totalBudget;
+    private Long spentAmount;
+    private Long remainingBudget;
     private Date createdDateTime;
     private Date lastModifiedDateTime;
 
@@ -85,5 +88,29 @@ public class LeagueUserVO {
 
     public void setPlayersSquad(List<PlayerInfoVO> playersSquad) {
         this.playersSquad = playersSquad;
+    }
+
+    public Long getTotalBudget() {
+        return totalBudget;
+    }
+
+    public void setTotalBudget(Long totalBudget) {
+        this.totalBudget = totalBudget;
+    }
+
+    public Long getSpentAmount() {
+        return spentAmount;
+    }
+
+    public void setSpentAmount(Long spentAmount) {
+        this.spentAmount = spentAmount;
+    }
+
+    public Long getRemainingBudget() {
+        return remainingBudget;
+    }
+
+    public void setRemainingBudget(Long remainingBudget) {
+        this.remainingBudget = remainingBudget;
     }
 }
