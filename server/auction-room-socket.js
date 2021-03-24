@@ -1,3 +1,4 @@
+const { get, set } = require("./config/redis");
 
 
 module.exports = function (io, socket) {
@@ -5,7 +6,6 @@ module.exports = function (io, socket) {
   socket.on('create auction', (room) => {
     socket.join(room);
     console.log('moderator created ', room);
-    
   });
 
   socket.on('joinAuction', (data) => {
@@ -13,7 +13,7 @@ module.exports = function (io, socket) {
     console.log(data);
     socket.join(data.room);
     socket.emit('notification', `${data.user} joined the room`);
-    io.in(data.room).emit('notification',`${data.user} joined the room`);
+    io.in(data.room).emit('notification', `${data.user} joined the room`);
 
     // Emit Room details only to the user to who has joined; Maintain the room active status here
   });
@@ -28,6 +28,8 @@ module.exports = function (io, socket) {
   socket.on('start-auction', (data) => {
     console.log("Start Auction ------->");
     console.log(data);
+    insertAuctionDetailsInCache(data);
+    console.log('out of the call back');
     io.in(data.roomId).emit('auction-started', data);
   });
 
@@ -40,7 +42,19 @@ module.exports = function (io, socket) {
   socket.on('submit-bid', (data) => {
     console.log("New Bid Submitted ------->");
     console.log(data);
+    async () => {
+      const currentBidDetials = await get('AuctionRoom#' + data.roomId + 'Player#');
+      if (data.bid > currentBidDetials.bidAmount) {
+        // emit to the user BID accepted and to other then most recent value
+      }
+    };
     io.in(data.roomId).emit('bid-updates', data.bid);
   })
+
+  const insertAuctionDetailsInCache = async (data) => {
+    console.log('before await');
+    await set('AuctionRoom#' + data.roomId, JSON.stringify(data));
+    console.log('post await');
+  };
 
 };
