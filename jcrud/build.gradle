@@ -15,6 +15,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.250'
+	compile group: 'org.graalvm.compiler', name: 'compiler', version: '1.0.0-rc11' 
 
 	// https://mvnrepository.com/artifact/com.github.derjust/spring-data-dynamodb
 	implementation group: 'com.github.derjust', name: 'spring-data-dynamodb', version: '5.1.0'
