@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function getLeagueDetails(url, refresh, options = { body: {}, query: {} }) {
+export default function getLeagueDetails(url, refresh) {
   const [data, setData] = useState({
     data: null,
     reload: false

@@ -66,6 +66,14 @@ class Room extends React.Component {
 
     makeBid = _.debounce((e) => {
         console.log('Debounced Event:', e);
+        let data = {
+            userId: getLocalStorage(USER_ID),
+            roomId: this.props.detail.leagueId,
+            bid: {currentPrice: 2000,
+            bidPrice: 2020,
+            playerId: "abc"}
+        }
+        submitBid(data);
     }, 500)
 
     handleStartButton = () => {
