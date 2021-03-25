@@ -56,7 +56,7 @@ public class PlayerService {
         PlayerInfoVO playerInfoVO = null;
         Optional<PlayerInfo> playerInfo = playerInfoRepository.findById((playerInfoId));
 
-        if(playerInfo!=null){
+        if(playerInfo!=null && playerInfo.isPresent()){
             playerInfoVO = playerInfoPlayerInfoVOMapper.map(playerInfo.get());
         }
         return playerInfoVO;

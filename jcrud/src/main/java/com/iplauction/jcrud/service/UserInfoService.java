@@ -31,7 +31,7 @@ public class UserInfoService {
 
     public UserInfoVO addNewUser(UserInfoVO userInfoVO) throws Exception {
         UserInfoVO userInfoVO1 = null;
-        if(userInfoVO != null){
+        if (userInfoVO != null) {
             UserInfo userInfo = userInfoVOUserInfoMapper.map(userInfoVO);
             userInfo = userInfoRepository.save(userInfo);
             userInfoVO1 = userInfoUserInfoVOMapper.map(userInfo);
@@ -45,7 +45,7 @@ public class UserInfoService {
         List<UserInfoVO> userInfoVOS = new ArrayList<>();
         Iterable<UserInfo> userInfos = userInfoRepository.findAll();
 
-        for(UserInfo userInfo : userInfos){
+        for (UserInfo userInfo : userInfos) {
             userInfoVOS.add(userInfoUserInfoVOMapper.map(userInfo));
         }
         return userInfoVOS;
@@ -56,7 +56,7 @@ public class UserInfoService {
         UserInfoVO userInfoVO = null;
         Optional<UserInfo> userInfo = userInfoRepository.findById((userInfoId));
 
-        if(userInfo!=null){
+        if (userInfo != null && userInfo.isPresent()) {
             userInfoVO = userInfoUserInfoVOMapper.map(userInfo.get());
         }
         return userInfoVO;
@@ -65,19 +65,21 @@ public class UserInfoService {
     public UserInfoVO addLeagueToUser(String userInfoId, String leagueInfoId) throws Exception {
         UserInfoVO userInfoVO = null;
         Optional<UserInfo> optionalUserInfo = userInfoRepository.findById((userInfoId));
-        if(!StringUtils.isEmpty(leagueInfoId)){
-            UserInfo userInfo = optionalUserInfo.get();
-            if(!CollectionUtils.isEmpty(userInfo.getUserLeagues())){
-                userInfo.getUserLeagues().add(leagueInfoId);
-                userInfo = userInfoRepository.save(userInfo);
-                userInfoVO = userInfoUserInfoVOMapper.map(userInfo);
-            }else{
-                List<String> userLeagues = new ArrayList<>();
-                userLeagues.add(leagueInfoId);
-                userInfo.setUserLeagues(userLeagues);
-                userInfo = userInfoRepository.save(userInfo);
-                userInfoVO = userInfoUserInfoVOMapper.map(userInfo);
+        if (!StringUtils.isEmpty(leagueInfoId)) {
+            if (optionalUserInfo != null && optionalUserInfo.isPresent()) {
+                UserInfo userInfo = optionalUserInfo.get();
+                if (!CollectionUtils.isEmpty(userInfo.getUserLeagues())) {
+                    userInfo.getUserLeagues().add(leagueInfoId);
+                    userInfo = userInfoRepository.save(userInfo);
+                    userInfoVO = userInfoUserInfoVOMapper.map(userInfo);
+                } else {
+                    List<String> userLeagues = new ArrayList<>();
+                    userLeagues.add(leagueInfoId);
+                    userInfo.setUserLeagues(userLeagues);
+                    userInfo = userInfoRepository.save(userInfo);
+                    userInfoVO = userInfoUserInfoVOMapper.map(userInfo);
 
+                }
             }
         }
         return userInfoVO;

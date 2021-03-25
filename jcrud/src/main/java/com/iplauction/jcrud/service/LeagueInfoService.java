@@ -60,7 +60,7 @@ public class LeagueInfoService {
         LeagueInfoVO leagueInfoVO = null;
         Optional<LeagueInfo> leagueInfo = leagueInfoRepository.findById((leagueInfoId));
 
-        if (leagueInfo != null) {
+        if (leagueInfo != null && leagueInfo.isPresent()) {
             leagueInfoVO = leagueInfoLeagueInfoVOMapper.map(leagueInfo.get());
         }
         return leagueInfoVO;
@@ -107,7 +107,7 @@ public class LeagueInfoService {
                 leagueUserVO.setSpentAmount((long) 0);
                 if (leagueUserVO != null) {
                     Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueInfoId));
-                    if (optionalLeagueInfo != null) {
+                    if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
                         LeagueInfo leagueInfo = optionalLeagueInfo.get();
                         leagueInfo.getLeagueUsers().add(leagueUserMapper.map(leagueUserVO));
                         leagueInfo = leagueInfoRepository.save(leagueInfo);
@@ -129,7 +129,7 @@ public class LeagueInfoService {
             List<String> userLeagues = userInfoVO.getUserLeagues();
             for (String leagueId : userLeagues) {
                 Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
-                if (optionalLeagueInfo != null) {
+                if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
                     leagueInfoVOS.add(leagueInfoLeagueInfoVOMapper.map(optionalLeagueInfo.get()));
                 }
             }
@@ -142,7 +142,10 @@ public class LeagueInfoService {
         LeagueInfoVO leagueInfoVO = null;
         LeagueInfo leagueInfo = null;
         Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
-        leagueInfo = optionalLeagueInfo.get();
+        if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
+            leagueInfo = optionalLeagueInfo.get();
+        }
+
         if (leagueInfo != null) {
             if (!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())) {
                 for (LeagueUser leagueUser : leagueInfo.getLeagueUsers()) {
@@ -213,7 +216,7 @@ public class LeagueInfoService {
 
         if (!StringUtils.isEmpty(leagueId)) {
             Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
-            if (optionalLeagueInfo != null) {
+            if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
                 LeagueInfo leagueInfo = optionalLeagueInfo.get();
                 if (leagueInfo != null) {
                     if (!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())) {
