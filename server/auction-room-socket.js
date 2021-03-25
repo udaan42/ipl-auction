@@ -25,36 +25,59 @@ module.exports = function (io, socket) {
     //socket.to(data.roomId).emit('new event from server', data.msg);
   });
 
-  socket.on('start-auction', (data) => {
+  socket.on('start-auction', async (data) => {
     console.log("Start Auction ------->");
     console.log(data);
-    insertAuctionDetailsInCache(data);
-    console.log('out of the call back');
+    await insertAuctionDetailsInCache(data);
     io.in(data.roomId).emit('auction-started', data);
   });
 
-  socket.on('next-player', (data) => {
+  socket.on('next-player', async (data) => {
     console.log("Next Player Details ------->");
     console.log(data);
+    await createAuctionRoomPlayerKeyInCache(data.roomId, data.player.Id);
     io.in(data.roomId).emit('current-player', data.player);
   })
 
-  socket.on('submit-bid', (data) => {
+  socket.on('submit-bid', async (data) => {
     console.log("New Bid Submitted ------->");
     console.log(data);
-    async () => {
-      const currentBidDetials = await get('AuctionRoom#' + data.roomId + 'Player#');
-      if (data.bid > currentBidDetials.bidAmount) {
-        // emit to the user BID accepted and to other then most recent value
-      }
-    };
-    io.in(data.roomId).emit('bid-updates', data.bid);
+    const playerBidDetails = await fetchCurrentBidForPlayerFromCache(data.roomId, data.playerId);
+    if (data.nextBid > playerBidDetials.currentBid) {
+      playerBidDetails.currentBid = data.nextBid;
+      playerBidDetails.bidHistory.push({ userId: data.userId, bid: data.nextBid, time: Date.now() });
+      playerBidDetails.playerOwnerUserId = data.userId;
+      await updateAuctionRoomPlayerKeyInCache(data.roomId, data.playerId, playerBidDetails);
+      io.in(data.roomId).emit('bid-updates', playerBidDetails);
+    }
   })
 
-  const insertAuctionDetailsInCache = async (data) => {
-    console.log('before await');
-    await set('AuctionRoom#' + data.roomId, JSON.stringify(data));
-    console.log('post await');
-  };
+  async function insertAuctionDetailsInCache(data) {
+    await set('AR#' + data.roomId, JSON.stringify(data));
+  }
+
+  async function fetchAuctionDetailsFromCache(data) {
+    const result = await get('AR#' + data.roomId);
+    const parsedResult = JSON.parse(result);
+    console.log(parsedResult);
+    return parsedResult;
+  }
+
+  async function createAuctionRoomPlayerKeyInCache(roomId, playerId) {
+    const value = { currentBid: 0, playerOwnerUserId: 0, bidHistory: [] };
+    await set('AR#' + roomId + 'PID#' + playerId, JSON.stringify(value));
+  }
+
+  async function fetchCurrentBidForPlayerFromCache(roomId, playerId) {
+    const result = await get('AR#' + roomId + 'PID#' + playerId);
+    const parsedResult = JSON.parse(result);
+    console.log(parsedResult);
+    return parsedResult;
+  }
+
+  async function updateAuctionRoomPlayerKeyInCache(roomId, playerId, playerBidDetails) {
+    const value = { currentBid: 0, playerOwnerUserId: 0, bidHistory: [] };
+    await set('AR#' + roomId + 'PID#' + playerId, JSON.stringify(playerBidDetails));
+  }
 
 };
