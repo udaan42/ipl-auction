@@ -36,7 +36,10 @@ module.exports = function (io, socket) {
   socket.on('next-player', async (data) => {
     console.log("Next Player Details ------->");
     console.log(data);
-    await createAuctionRoomPlayerKeyInCache(data.roomId, data.player.playerId);
+    const promiseArray = [];
+    promiseArray.push(createAuctionRoomPlayerKeyInCache(data.roomId, data.player.playerId));
+    promiseArray.push(updateAuctionDetailsInCache(data.roomId, data.player));
+    await Promise.all(promiseArray);
     io.in(data.roomId).emit('current-player', data.player);
   })
 
@@ -48,10 +51,7 @@ module.exports = function (io, socket) {
       playerBidDetails.currentBid = data.nextBid;
       playerBidDetails.bidHistory.push({ userId: data.userId, bid: data.nextBid, time: Date.now() });
       playerBidDetails.playerOwnerUserId = data.userId;
-      const promiseArray = [];
-      promiseArray.push(updateAuctionRoomPlayerKeyInCache(data.roomId, data.playerId, playerBidDetails));
-      promiseArray.push(await updateAuctionDetailsInCache(data.roomId, data.playerId));
-      await Promise.all(promiseArray);
+      await updateAuctionRoomPlayerKeyInCache(data.roomId, data.playerId, playerBidDetails);
       io.in(data.roomId).emit('bid-updates', playerBidDetails);
     }
   })
@@ -60,8 +60,8 @@ module.exports = function (io, socket) {
     await set('AR#' + data.roomId, JSON.stringify(data));
   }
 
-  async function updateAuctionDetailsInCache(roomId, playerId) {
-    const newObject = { isActive: true, currentPlayerInBid: playerId };
+  async function updateAuctionDetailsInCache(roomId, player) {
+    const newObject = { roomId: roomId, isActive: true, currentPlayerInBid: player };
     await set('AR#' + roomId, JSON.stringify(newObject));
   }
 
