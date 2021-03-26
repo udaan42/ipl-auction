@@ -20,7 +20,7 @@ import java.util.List;
 import static com.iplauction.jcrud.http.GenericServiceResponse.Status.FAIL;
 import static com.iplauction.jcrud.http.GenericServiceResponse.Status.SUCCESS;
 
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 

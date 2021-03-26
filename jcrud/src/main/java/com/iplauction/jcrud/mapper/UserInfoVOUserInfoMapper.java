@@ -11,6 +11,7 @@ public class UserInfoVOUserInfoMapper implements Mapper<UserInfoVO,UserInfo> {
     public UserInfo map(UserInfoVO source) throws Exception {
         UserInfo userInfo = new UserInfo();
         userInfo.setUserName(source.getUserName());
+        userInfo.setPwd(source.getPwd());
         userInfo.setUserLeagues(source.getUserLeagues());
         userInfo.setUserRole(source.getUserRole());
         return userInfo;
