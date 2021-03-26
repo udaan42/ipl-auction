@@ -116,8 +116,7 @@ class League extends React.Component{
                                 <Grid item md="4" xs="4">
                                     <LeagueItem item={item} />
                                 </Grid>
-                            )
-                                
+                            )    
                         })}
                     </Grid>
                     

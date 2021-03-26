@@ -80,37 +80,55 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const getPrice = (value) => {
+    if(value < 100){
+        return `${value} lakhs`
+    }else if(value >= 100){
+
+       let currency = value / 100;
+       console.log(currency)
+       if(currency == 1){
+           return `1 crore`
+       }else{
+           return `${currency} crores`
+       }
+    }
+}
+
 const PlayerDetails = (props) => {
     const classes = useStyles();
 
     return(
             <Row>
                 <Col xs={6} md={4} className="player-image">
-                    <Image src="https://www.espncricinfo.com/inline/content/image/501527.html?" height="175px" width="200px" rounded  fluid  />
+                    <Image src="https://auction-fantasy-images.s3.amazonaws.com/avatar-placeholder.png" height="175px" width="200px" rounded  fluid  />
                 </Col>
                 <Col md={8} xs={6} className={classes.playerInfoView}>
                     <Row className={classes.playerDetailsRow}>
-                        Name: <span className={classes.playerData}> {props.data.Player} </span>
+                        Name: <span className={classes.playerData}> {props.data.playerName} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
-                        Team: <span className={classes.playerData}> {props.data.team} </span>
+                        Team: <span className={classes.playerData}> {props.data.teamName} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
-                        Role: <span className={classes.playerData}> {props.data.Role} </span>
+                        Role: <span className={classes.playerData}> {props.data.playerRole} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
-                        Category: <span className={classes.playerData}> {props.data.type} </span>
+                        Category: <span className={classes.playerData}> {props.data.playerRace} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
-                        Base Price: <span className={classes.playerData}> {props.data.Price} </span>
+                        Base Price: <span className={classes.playerData}> {getPrice(props.data.basePrice)} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
                         Current Price: <span className={classes.playerData}> 4 crores </span>
                     </Row>
+                    <Row className={classes.playerDetailsRow}>
+                        Bid Team: <span className={classes.playerData}> Mumbai Indians </span>
+                    </Row>
                 </Col>
                 <Col md={12} sm={12} className={classes.playerStatsTable}>
                     <Row className={classes.playerDetailsStatsTitle}>
-                        <span className={classes.statsTitle}> {props.data.stats} Career Statistics </span>
+                        <span className={classes.statsTitle}> {props.data.statType} Career Statistics </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
                         <div className="table-responsive">
@@ -133,18 +151,18 @@ const PlayerDetails = (props) => {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{props.data.Mat}</td>
-                                    <td>{props.data.Runs}</td>
-                                    <td>{props.data.HS}</td>
-                                    <td>{props.data.BatAv}</td>
-                                    <td></td>
-                                    <td>{props.data.Hundreds}</td>
-                                    <td>{props.data.Wkts}</td>
-                                    <td>{props.data.BowlAv}</td>
-                                    <td></td>
-                                    <td>{props.data.FvWkts}</td>
-                                    <td>{props.data.Ct}</td>
-                                    <td>{props.data.St}</td>
+                                    <td>{props.data.matchesPlayed}</td>
+                                    <td>{props.data.runsScored}</td>
+                                    <td>{props.data.highestScore}</td>
+                                    <td>{props.data.battingAverage}</td>
+                                    <td>{props.data.battingStrikeRate}</td>
+                                    <td>{props.data.noOfFifties}</td>
+                                    <td>{props.data.noOfWickets}</td>
+                                    <td>{props.data.bowlingAverage}</td>
+                                    <td>{props.data.bowlingEconomy}</td>
+                                    <td>{props.data.noOfFiveWickets}</td>
+                                    <td>{props.data.noOfCatches}</td>
+                                    <td>{props.data.noOfStumpings}</td>
                                 </tr>
                             </tbody>
                         </Table> 

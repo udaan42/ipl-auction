@@ -5,7 +5,7 @@ import {isAuthenticated} from '../utils/jwtUtil';
 export const verifyToken = () => {
     return dispatch => {
         if (isAuthenticated()) {
-            dispatch(push('/dashboard'));
+            dispatch(push('/leagues'));
         }
     };
 };

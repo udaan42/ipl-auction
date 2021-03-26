@@ -1,30 +1,32 @@
 import { useState, useEffect } from "react";
 
-export default function getPlayerBagDetails(url, refresh, options = { body: {}, query: {} }) {
-  const [data, setData] = useState({
-    data: null,
-    reload: false
+export default function getPlayerBagDetails(url, bagNumber) {
+  const [players, setPlayers] = useState({
+    players: [],
+    reload: false,
+    bagNumber: 0
   });
 
   useEffect(() => {
-    fetch(url)
+    const endpoint = `${url}/${bagNumber}`;
+    fetch(endpoint)
       .then(async response => {
         const data = await response.json()
-        setData({
-          data: data.payload.leagueInfo,
+        setPlayers({
+          players: data.payload.playerInfos,
           error: !response.ok,
-          reload: false,
+          bagNumber: bagNumber,
         })
       })
       .catch(error => {
         //fetch throws an error only on network failure or if anything prevented the request from completing
-        setData({
+        setPlayers({
           response: { status: "network_failure" },
           error: true,
           reload: false,
         })
       })
-  }, [url, refresh]);
+  }, [url, bagNumber]);
 
-  return data;
+  return players;
 }

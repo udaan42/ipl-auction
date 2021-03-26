@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { useHistory, useParams } from 'react-router-dom';
 import { API_ENDPOINT } from '../../config/config';
 import  getLeagueDetails  from '../../fetch/LeagueDetails';
+import getPlayerBagDetails from '../../fetch/PlayerBags';
 
 const data1 = [{
     "Player": "SR Tendulkar (INDIA)",
@@ -207,18 +208,24 @@ const data2 = [{
     "stats": "IPL"
 }]
 
+const bagNumbers = [1,2,3,4,5,6,7,8,9,10];
+
 
 const RoomsContainer = (props) => {
 
     const [refresh, setRefresh] = useState(false);
-    const [players, setPlayers] = useState(data1);
+    const [index, setIndex] = useState(0);
+
 
     const { id } = useParams();
     const url = `${API_ENDPOINT}iplauction/league/${id}`;
     const { data, reload } = getLeagueDetails(url, refresh);
+
+    const playerBagsURL =  `${API_ENDPOINT}iplauction/player/getPlayersBag`;
+    const { players, bagNumber } = getPlayerBagDetails(playerBagsURL, bagNumbers[index]);
     
     const getNextBag = () => {
-        setPlayers(data2);
+        setIndex(index + 1);
     }
 
     const sellPlayer = (data) => {
@@ -244,7 +251,7 @@ const RoomsContainer = (props) => {
     let currentBag = _.shuffle(players);
     return(
         <>
-            <Room sellPlayer={sellPlayer} playerSet={currentBag} detail={data} getNextBag={getNextBag} />
+            <Room sellPlayer={sellPlayer} playerSet={players} detail={data} bag={bagNumber} getNextBag={getNextBag} />
         </>
     )
 

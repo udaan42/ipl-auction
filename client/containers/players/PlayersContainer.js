@@ -1,16 +1,16 @@
 import React from 'react';
+import Players from '../../components/players/Players';
 
-class PlayersContainer extends React.Component{
+import { API_ENDPOINT, USER_ID } from '../../config/config';
+import  getPlayersDetails  from '../../fetch/Players';
 
-    constructor(props) {
-        super(props);
-    }
+export default function PlayersContainer(props) {
 
-    render(){
-        return(
-            <div>Players page</div>
-        )
-    }
+    let data = [];
+    const url = `${API_ENDPOINT}iplauction/player/all`;
+    data = getPlayersDetails(url);
+
+    return(
+        <Players list={data}/>
+    )   
 }
-
-export default PlayersContainer;

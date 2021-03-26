@@ -8,13 +8,14 @@ module.exports = function (io, socket) {
     console.log('moderator created ', room);
   });
 
-  socket.on('joinAuction', (data) => {
+  socket.on('joinAuction', async (data) => {
     console.log("--------------------->> User joined room");
     console.log(data);
-    socket.join(data.room);
+    socket.join(data.roomId);
     socket.emit('notification', `${data.user} joined the room`);
-    io.in(data.room).emit('notification', `${data.user} joined the room`);
-
+    io.in(data.roomId).emit('notification', `${data.user} joined the room`);
+    const roomStatus = await fetchAuctionDetailsFromCache(data);
+    io.in(data.roomId).emit('room-status', roomStatus);
     // Emit Room details only to the user to who has joined; Maintain the room active status here
   });
 
@@ -35,7 +36,7 @@ module.exports = function (io, socket) {
   socket.on('next-player', async (data) => {
     console.log("Next Player Details ------->");
     console.log(data);
-    await createAuctionRoomPlayerKeyInCache(data.roomId, data.player.Id);
+    await createAuctionRoomPlayerKeyInCache(data.roomId, data.player.playerId);
     io.in(data.roomId).emit('current-player', data.player);
   })
 

@@ -176,11 +176,11 @@ export default function Layout(props) {
           </ListItemIcon>
           <ListItemText primary="Leagues" />
         </ListItem>
-        <ListItem button onClick={ () => {updateRoute("/rooms")}}>
+        <ListItem button onClick={ () => {updateRoute("/my-teams")}}>
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
-          <ListItemText primary="Auction Room" />
+          <ListItemText primary="My Team" />
         </ListItem>
         <ListItem button onClick={ () => {updateRoute("/rules")}}>
           <ListItemIcon>

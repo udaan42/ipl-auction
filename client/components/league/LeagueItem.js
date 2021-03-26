@@ -48,8 +48,14 @@ export default function LeagueItem(props) {
   const history = useHistory();
 
   const handleClick = () => {
-    let url = `/leagues/${props.item.leagueId}`
-    history.push(url);
+    if(props.item.isActive){
+      let url = `/rooms/${props.item.leagueId}`
+      history.push(url);
+    }else{
+      let url = `/leagues/${props.item.leagueId}`
+      history.push(url);
+    }
+    
   }
 
   return (

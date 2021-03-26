@@ -29,6 +29,13 @@ export const getAuctionStatus = (cb) => {
     });
 }
 
+export const getRoomDetails = (cb) => {
+    socket.on('room-status', data => {
+        console.log("Received room details")
+        return cb(null, data);
+    });
+}
+
 export const setNextPlayer = (data) => {
     socket.emit('next-player', data)
 }

@@ -7,7 +7,7 @@ import PlayerStats from './PlayerStats';
 import TeamSummary from './TeamSummary';
 import ModeratorZone from './ModeratorZone';
 import _ from 'lodash';
-import { joinAuctionRoom, messageListen, messageTestListen, startAuction, getCurrentPlayerData, getAuctionStatus, setNextPlayer, submitBid, getBidUpdates } from '../../socket/socket';
+import { joinAuctionRoom, messageListen, messageTestListen, startAuction, getCurrentPlayerData, getAuctionStatus, setNextPlayer, submitBid, getBidUpdates, getRoomDetails } from '../../socket/socket';
 
 class Room extends React.Component {
 
@@ -48,6 +48,12 @@ class Room extends React.Component {
             })
         });
 
+        getRoomDetails((err, data) => {
+            this.setState({
+                isActive: data.isActive
+            })
+        })
+
         getBidUpdates((err, data) => {
             console.log(data);
         })
@@ -58,7 +64,7 @@ class Room extends React.Component {
         if(this.props.detail){
             const data = {
                 userId: getLocalStorage(USER_ID),
-                room: this.props.detail.leagueId,
+                roomId: this.props.detail.leagueId,
             };
             joinAuctionRoom(data);
         }
@@ -89,10 +95,10 @@ class Room extends React.Component {
     getUserRole = () => {
         let userId = getLocalStorage(USER_ID);
         if(userId == '2'){
-            userId = "7614773c-aa27-4472-b54d-ef8eb6d54157";
+            userId = "e8c844ed-02c6-4962-aed3-b317c9ee1222";
         }else{
             // Mod ID
-            userId = "61994eeb-5d4e-48bf-9bd1-bd0fbb7e8125";
+            userId = "df9caece-92a8-4eee-b237-7fc2f1e39e87";
         }
             
         let user = {}
