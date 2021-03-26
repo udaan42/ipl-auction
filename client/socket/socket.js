@@ -10,6 +10,16 @@ export const startAuction = (data) => {
     socket.emit('start-auction', data);
 }
 
+export const sellPlayer = (data) => {
+    socket.emit('sell-player', data);
+}
+
+export const playerSold = (cb) => {
+    socket.on('player-sold', data => {
+      return cb(null, data);
+    });
+}
+
 export const messageListen = (cb) => {
   socket.on('notification', data => {
     return cb(null, data);

@@ -21,6 +21,27 @@ const useStyles = makeStyles((theme) => ({
 const PlayerTable = (props) => {
 
     const classes = useStyles();
+    const ids = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+
+    const getTableRows = () => {
+        ids.map((i, index)=> {
+                if(props.data[i]){
+                    return(
+                        <tr>
+                            <td>{i+1}</td>
+                            <td>{props.data[i].playerName} {props.data[i].playerRace == 'F' ? <FlightIcon className={classes.overseasIcon} />: ""}</td>
+                            <td>{props.data[i].playerRole}</td>
+                            <td>{props.data[i].soldPrice}</td>
+                        </tr>
+                    )
+                }else{
+                    return(
+                        <tr><td>{i+1}</td><td></td><td></td><td></td></tr>
+                    )
+                }
+              
+        })  
+    }
 
     return(
         <>
@@ -35,7 +56,8 @@ const PlayerTable = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    {getTableRows()}
+                    {/* <tr>
                     <td>1</td>
                     <td>Dhoni</td>
                     <td>Keeper</td>
@@ -64,7 +86,7 @@ const PlayerTable = (props) => {
                     <tr><td>12</td><td></td><td></td><td></td></tr>
                     <tr><td>13</td><td></td><td></td><td></td></tr>
                     <tr><td>14</td><td></td><td></td><td></td></tr>
-                    <tr><td>15</td><td></td><td></td><td></td></tr>
+                    <tr><td>15</td><td></td><td></td><td></td></tr> */}
                 </tbody>
             </Table>
         </>

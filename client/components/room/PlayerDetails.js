@@ -95,7 +95,23 @@ const getPrice = (value) => {
     }
 }
 
+
+
 const PlayerDetails = (props) => {
+
+    const getCurrentPrice = () => {
+        if(props.bidDetails){
+            return getPrice(props.bidDetails.currentBid);
+        }
+    }
+
+    const getBiddingTeam = () => {
+        if(props.bidDetails){
+            let bidTeam = _.find(props.teams, ['userId', props.bidDetails.playerOwnerUserId]);
+            return bidTeam.teamName;
+        }
+    }
+
     const classes = useStyles();
 
     return(
@@ -120,10 +136,10 @@ const PlayerDetails = (props) => {
                         Base Price: <span className={classes.playerData}> {getPrice(props.data.basePrice)} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
-                        Current Price: <span className={classes.playerData}> 4 crores </span>
+                        Current Price: <span className={classes.playerData}> {getCurrentPrice()} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
-                        Bid Team: <span className={classes.playerData}> Mumbai Indians </span>
+                        Bid Team: <span className={classes.playerData}> {getBiddingTeam()} </span>
                     </Row>
                 </Col>
                 <Col md={12} sm={12} className={classes.playerStatsTable}>

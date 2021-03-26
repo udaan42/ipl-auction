@@ -7,7 +7,8 @@ import PlayerStats from './PlayerStats';
 import TeamSummary from './TeamSummary';
 import ModeratorZone from './ModeratorZone';
 import _ from 'lodash';
-import { joinAuctionRoom, messageListen, messageTestListen, startAuction, getCurrentPlayerData, getAuctionStatus, setNextPlayer, submitBid, getBidUpdates, getRoomDetails } from '../../socket/socket';
+import { joinAuctionRoom, messageListen, messageTestListen, startAuction, getCurrentPlayerData, 
+    getAuctionStatus, setNextPlayer, submitBid, getBidUpdates, getRoomDetails, sellPlayer, playerSold } from '../../socket/socket';
 
 class Room extends React.Component {
 
@@ -19,7 +20,9 @@ class Room extends React.Component {
             currentPlayer: null,
             auctionSummary: null,
             currentIndex: 0,
-            bidDetails: null
+            bidDetails: null,
+            sold: false,
+            soldData: null
         }
     }
 
@@ -38,7 +41,9 @@ class Room extends React.Component {
 
         getCurrentPlayerData((err, data) => {
             this.setState({
-                currentPlayer: data
+                currentPlayer: data,
+                sold: false,
+                soldData: null
             })
         });
 
@@ -55,7 +60,18 @@ class Room extends React.Component {
         })
 
         getBidUpdates((err, data) => {
-            console.log(data);
+            this.setState({
+                bidDetails: data
+            })
+        })
+
+        playerSold((err, data) => {
+            this.setState({
+                bidDetails: null,
+                sold: true,
+                soldData: data
+            })
+            this.props.sellPlayer(data);
         })
 
     }
@@ -70,17 +86,17 @@ class Room extends React.Component {
         }
     };
 
-    makeBid = _.debounce((e) => {
-        console.log('Debounced Event:', e);
+    bidBtnClick = val => {
         let data = {
-            userId: getLocalStorage(USER_ID),
+            userId: "da6d833c-8416-48b3-8219-d8105c4e0831",
             roomId: this.props.detail.leagueId,
-            bid: {currentPrice: 2000,
-            bidPrice: 2020,
-            playerId: "abc"}
+            nextBid: val.nextBid,
+            playerId: val.playerId
         }
         submitBid(data);
-    }, 500)
+    }
+
+    makeBid = _.debounce(this.bidBtnClick, 500)
 
     handleStartButton = () => {
 
@@ -145,23 +161,34 @@ class Room extends React.Component {
         })
     }
 
+    soldBtnClicked = (val) => {
+
+        let data = {
+            roomId: this.props.detail.leagueId,
+            nextBid: val.nextBid,
+            playerId: val.playerId
+        }
+        sellPlayer(data);
+
+        // this.props.sellPlayer();
+    }
 
 
     getAuctionUI = () => {
         const playersRemaining = this.props.playerSet.length - this.state.currentIndex;
+        const bidHistory = (this.state.bidDetails) ? this.state.bidDetails.bidHistory : [];
         if(this.state.role=="moderator"){
             return(
                 <div>
                     <ModeratorZone submitPlayer={this.getPlayer} playersRemaining={playersRemaining} nextBag={this.getNextBag}/>
-                    <PlayerStats sellPlayer={this.props.sellPlayer} data={this.state.currentPlayer} bidHistory={[1,2]}  role={this.state.role} />
+                    <PlayerStats myTable={this.props.loggedUser} sold={this.state.sold} soldData={this.state.soldData} sellPlayer={this.soldBtnClicked} teams={this.props.teams} data={this.state.currentPlayer} bidHistory={bidHistory} bidDetails={this.state.bidDetails} role={this.state.role} />
                     <TeamSummary data={this.props.detail.leagueUsers} role={this.state.role} />
-                </div>
-                
+                </div> 
             )
         }else{
             return(
                 <div>
-                    <PlayerStats data={this.state.currentPlayer} submitBid={this.makeBid} bidHistory={[1,2]}  role={this.state.role} />
+                    <PlayerStats myTable={this.props.loggedUser} sold={this.state.sold} soldData={this.state.soldData} data={this.state.currentPlayer} teams={this.props.teams} submitBid={this.makeBid} bidHistory={bidHistory} bidDetails={this.state.bidDetails} role={this.state.role} />
                     <TeamSummary data={this.props.detail.leagueUsers} role={this.state.role} />
                 </div>
             )
