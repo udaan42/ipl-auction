@@ -48,13 +48,21 @@ module.exports = function (io, socket) {
       playerBidDetails.currentBid = data.nextBid;
       playerBidDetails.bidHistory.push({ userId: data.userId, bid: data.nextBid, time: Date.now() });
       playerBidDetails.playerOwnerUserId = data.userId;
-      await updateAuctionRoomPlayerKeyInCache(data.roomId, data.playerId, playerBidDetails);
+      const promiseArray = [];
+      promiseArray.push(updateAuctionRoomPlayerKeyInCache(data.roomId, data.playerId, playerBidDetails));
+      promiseArray.push(await updateAuctionDetailsInCache(data.roomId, data.playerId));
+      await Promise.all(promiseArray);
       io.in(data.roomId).emit('bid-updates', playerBidDetails);
     }
   })
 
   async function insertAuctionDetailsInCache(data) {
     await set('AR#' + data.roomId, JSON.stringify(data));
+  }
+
+  async function updateAuctionDetailsInCache(roomId, playerId) {
+    const newObject = { isActive: true, currentPlayerInBid: playerId };
+    await set('AR#' + roomId, JSON.stringify(newObject));
   }
 
   async function fetchAuctionDetailsFromCache(data) {
