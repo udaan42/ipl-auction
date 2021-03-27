@@ -21,6 +21,7 @@ public class JcrudApplication {
 	}
 
 
+	/*
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurerAdapter() {
@@ -30,6 +31,8 @@ public class JcrudApplication {
 			}
 		};
 	}
+	*/
+
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
