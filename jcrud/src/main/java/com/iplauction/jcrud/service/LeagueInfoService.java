@@ -159,8 +159,14 @@ public class LeagueInfoService {
                                 playerInfoVO.setWicketKeeper(false);
                                 playerInfoVO.setCaptain(false);
                                 playerInfoVO.setPlaying(false);
-                                leagueUser.setSpentAmount(leagueUser.getSpentAmount() + soldPrice);
-                                leagueUser.setRemainingBudget(leagueUser.getRemainingBudget() - soldPrice);
+                                if(leagueUser.getSpentAmount() != null) {
+                                    leagueUser.setSpentAmount(leagueUser.getSpentAmount() + soldPrice);
+                                }else{
+                                    leagueUser.setSpentAmount(soldPrice);
+                                }
+                                if(leagueUser.getRemainingBudget() != null) {
+                                    leagueUser.setRemainingBudget(leagueUser.getRemainingBudget() - soldPrice);
+                                }
                                 if (playerInfoVO != null) {
                                     if (!CollectionUtils.isEmpty(leagueUser.getPlayersSquad())) {
                                         leagueUser.getPlayersSquad().add(playerInfoVOPlayerInfoMapper.map(playerInfoVO));
