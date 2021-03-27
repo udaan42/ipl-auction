@@ -127,10 +127,12 @@ public class LeagueInfoService {
         UserInfoVO userInfoVO = userInfoService.getUserInfoById(userId);
         if (userInfoVO != null) {
             List<String> userLeagues = userInfoVO.getUserLeagues();
-            for (String leagueId : userLeagues) {
-                Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
-                if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
-                    leagueInfoVOS.add(leagueInfoLeagueInfoVOMapper.map(optionalLeagueInfo.get()));
+            if(!CollectionUtils.isEmpty(userLeagues)) {
+                for (String leagueId : userLeagues) {
+                    Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+                    if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
+                        leagueInfoVOS.add(leagueInfoLeagueInfoVOMapper.map(optionalLeagueInfo.get()));
+                    }
                 }
             }
         }
