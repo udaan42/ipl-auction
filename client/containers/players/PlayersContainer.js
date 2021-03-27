@@ -7,7 +7,7 @@ import  getPlayersDetails  from '../../fetch/Players';
 export default function PlayersContainer(props) {
 
     let data = [];
-    const url = `${API_ENDPOINT}iplauction/player/all`;
+    const url = `${API_ENDPOINT}/iplauction/player/all`;
     data = getPlayersDetails(url);
 
     return(

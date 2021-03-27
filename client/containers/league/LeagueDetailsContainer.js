@@ -9,7 +9,7 @@ const LeagueDetailsContainer = (props) => {
 
     const { id } = useParams();
     let leagueUsers = [];
-    const url = `${API_ENDPOINT}iplauction/league/${id}`;;
+    const url = `${API_ENDPOINT}/iplauction/league/${id}`;;
     const { data } = getLeagueDetails(url);
 
     return(

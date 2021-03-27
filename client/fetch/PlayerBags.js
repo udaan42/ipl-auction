@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { API_URL, JWT_TOKEN, USER_ID } from '../config/config';
+import { getLocalStorage } from '../utils/storageUtil';
 
 export default function getPlayerBagDetails(url, bagNumber) {
   const [players, setPlayers] = useState({
@@ -8,8 +10,17 @@ export default function getPlayerBagDetails(url, bagNumber) {
   });
 
   useEffect(() => {
+    const bearer_token = getLocalStorage(JWT_TOKEN);
+    const bearer = 'Bearer ' + bearer_token;
     const endpoint = `${url}/${bagNumber}`;
-    fetch(endpoint)
+    fetch(endpoint, {
+      method: 'GET',
+      mode: 'no-cors',
+      withCredentials: true,
+      credentials: 'include',
+      headers: {
+          'Authorization': bearer
+      } })
       .then(async response => {
         const data = await response.json()
         setPlayers({
