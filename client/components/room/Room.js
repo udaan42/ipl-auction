@@ -55,7 +55,8 @@ class Room extends React.Component {
 
         getRoomDetails((err, data) => {
             this.setState({
-                isActive: data.isActive
+                isActive: data.isActive,
+                currentPlayer: data.currentPlayerInBid
             })
         })
 

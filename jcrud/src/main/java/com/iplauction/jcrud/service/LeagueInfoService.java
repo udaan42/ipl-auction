@@ -243,4 +243,39 @@ public class LeagueInfoService {
         return playerInfoVOS1;
 
     }
+
+    public List<PlayerInfoVO> getUnsoldPlayers(String leagueId) throws Exception {
+
+        List<String> soldPlayers = new ArrayList<>();
+        List<PlayerInfoVO> unSoldPlayers = new ArrayList<>();
+        if (!StringUtils.isEmpty(leagueId)) {
+            Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+            if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
+                LeagueInfo leagueInfo = optionalLeagueInfo.get();
+                if(leagueInfo != null){
+                    if(!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())){
+                        for(LeagueUser leagueUser : leagueInfo.getLeagueUsers()){
+                            if(!CollectionUtils.isEmpty(leagueUser.getPlayersSquad())){
+                                for(PlayerInfo playerInfo : leagueUser.getPlayersSquad()){
+                                    if(!StringUtils.isEmpty(playerInfo.getPlayerId())){
+                                        soldPlayers.add(playerInfo.getPlayerId());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        List<PlayerInfoVO> allPlayers = playerService.getAllPlayers();
+        if(!CollectionUtils.isEmpty(allPlayers)){
+            for(PlayerInfoVO playerInfoVO : allPlayers){
+                if(!soldPlayers.contains(playerInfoVO.getPlayerId())){
+                    unSoldPlayers.add(playerInfoVO);
+                }
+            }
+        }
+        return unSoldPlayers;
+    }
 }

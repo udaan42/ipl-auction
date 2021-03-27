@@ -69,7 +69,7 @@ const LoginForm = (props) => {
                 )}
               <CardContent>  
                 <form method="post" onSubmit={handleSubmit}>
-                  <Field type="text" name="email" component={renderText} label="Username" />
+                  <Field type="text" name="username" component={renderText} label="Username" />
                   <br />
                   <Field type="password" name="password" component={renderText} label="Password" />
                   <br />

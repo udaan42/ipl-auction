@@ -62,6 +62,18 @@ public class UserInfoService {
         return userInfoVO;
     }
 
+    public UserInfo getUserInfoByUserName(String userName) throws Exception {
+
+        Iterable<UserInfo> userInfos = userInfoRepository.findAll();
+
+        for (UserInfo userInfo : userInfos) {
+            if(userInfo.getUserName().equalsIgnoreCase(userName)){
+                return userInfo;
+            }
+        }
+        return null;
+    }
+
     public UserInfoVO addLeagueToUser(String userInfoId, String leagueInfoId) throws Exception {
         UserInfoVO userInfoVO = null;
         Optional<UserInfo> optionalUserInfo = userInfoRepository.findById((userInfoId));

@@ -170,6 +170,23 @@ public class LeagueController {
         }
     }
 
+    @GetMapping({"/getUnsoldPlayers"})
+    public ResponseEntity<GenericServiceResponse< List<PlayerInfoVO>>> getUnsoldPlayers(
+            @RequestHeader(name = "X-LeagueId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "League-Id cannot be empty and should be Alpha-Numeric") final String leagueId) {
+        try {
+            logger.info("getUnsoldPlayers {leagueInfoId} ==>", leagueId);
+
+            List<PlayerInfoVO> playerInfoVOS = leagueInfoService.getUnsoldPlayers(leagueId);
+
+            logger.info("getUnsoldPlayers {leagueInfoId} is Complete <==", leagueId);
+            return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO>>>(new GenericServiceResponse<  List<PlayerInfoVO> >(SUCCESS, "unSoldPlayers", playerInfoVOS), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while getting scan requests", e);
+            return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO> >>(new GenericServiceResponse< List<PlayerInfoVO>>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
 }

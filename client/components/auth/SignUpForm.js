@@ -70,7 +70,7 @@ const SignUpForm = (props) => {
                 <br />
                 <Field type="text" name="last_name" component={renderText} label="Last Name" />
                 <br />
-                <Field type="text" name="email" component={renderText} label="Email" />
+                <Field type="text" name="username" component={renderText} label="UserName" />
                 <br />
                 <Field type="password" name="password" component={renderText} label="Password" />
                 <br />
