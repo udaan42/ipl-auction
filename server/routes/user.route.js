@@ -3,6 +3,8 @@ import * as userCtrl from '../controllers/user.controller';
 import isAuthenticated from '../middlewares/authenticate';
 import validate from '../config/joi.validate';
 import schema from '../utils/validator';
+import { API_ENDPOINT } from '../../client/config/config';
+import axios from 'axios';
 
 const router = express.Router();
 
@@ -87,40 +89,51 @@ const router = express.Router();
 
 router.route('/')
 
-/**
- * @swagger
- * /users:
- *   post:
- *     tags:
- *       - user
- *     summary: "Create a new user"
- *     security:
- *        - Bearer: []
- *     operationId: storeUser
- *     consumes:
- *       - application/json
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         description: Created user object
- *         required: true
- *         schema:
- *           $ref: "#/definitions/User"
- *     responses:
- *       200:
- *         description: OK
- *         schema:
- *           $ref: "#/definitions/User"
- *       403:
- *          description: User not found
- *          schema:
- *             $ref: '#/definitions/Error'
- */
+    /**
+     * @swagger
+     * /users:
+     *   post:
+     *     tags:
+     *       - user
+     *     summary: "Create a new user"
+     *     security:
+     *        - Bearer: []
+     *     operationId: storeUser
+     *     consumes:
+     *       - application/json
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: body
+     *         in: body
+     *         description: Created user object
+     *         required: true
+     *         schema:
+     *           $ref: "#/definitions/User"
+     *     responses:
+     *       200:
+     *         description: OK
+     *         schema:
+     *           $ref: "#/definitions/User"
+     *       403:
+     *          description: User not found
+     *          schema:
+     *             $ref: '#/definitions/Error'
+     */
 
     .post(validate(schema.storeUser), (req, res) => {
-        userCtrl.store(req, res);
+        axios.post(API_ENDPOINT + '/iplauction/register', {
+            userName: req.body.username,
+            pwd: req.body.password
+        })
+            .then((response) => {
+                console.log(response.data);
+                res.json(response.data);
+            }, (error) => {
+                console.log('error from api call');
+                console.log(error);
+            });
+        //userCtrl.store(req, res);
     })
 
     /**
@@ -143,43 +156,43 @@ router.route('/')
      *            type: object
      */
 
-    .get( (req, res) => {
+    .get((req, res) => {
         userCtrl.findAll(req, res);
     });
 
 
 router.route('/:id')
 
-/**
- * @swagger
- * /users/{id}:
- *   get:
- *     tags:
- *       - user
- *     summary: Find the user by ID
- *     operationId: findById
- *     consumes:
- *       - application/json
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: id
- *         in: path
- *         description: id of user that needs to be fetched
- *         required: true
- *         type: integer
- *     responses:
- *       200:
- *         description: OK
- *         schema:
- *           $ref: "#/definitions/User"
- *       404:
- *          description: User not found
- *          schema:
- *             $ref: '#/definitions/Error'
- */
+    /**
+     * @swagger
+     * /users/{id}:
+     *   get:
+     *     tags:
+     *       - user
+     *     summary: Find the user by ID
+     *     operationId: findById
+     *     consumes:
+     *       - application/json
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         description: id of user that needs to be fetched
+     *         required: true
+     *         type: integer
+     *     responses:
+     *       200:
+     *         description: OK
+     *         schema:
+     *           $ref: "#/definitions/User"
+     *       404:
+     *          description: User not found
+     *          schema:
+     *             $ref: '#/definitions/Error'
+     */
 
-    .get( (req, res) => {
+    .get((req, res) => {
         userCtrl.findById(req, res);
     })
 
