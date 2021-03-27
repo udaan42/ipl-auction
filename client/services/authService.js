@@ -4,15 +4,17 @@ import { push } from 'connected-react-router';
 import { loginSuccess, loginFailure, logoutSuccess } from '../actions/authAction';
 import { API_URL, JWT_TOKEN, USER_ID } from '../config/config';
 import { setLocalStorage, clearLocalStorage } from '../utils/storageUtil';
+import jwt_decode from "jwt-decode";
 
-export const login = ({ email, password }) => {
+export const login = ({ username, password }) => {
   return (dispatch) => {
     axios
-      .post(API_URL + 'auth/login', { email, password })
+      .post(API_URL + 'auth/login', { username, password })
       .then((response) => {
-        dispatch(loginSuccess(response.data.token));
-        setLocalStorage(JWT_TOKEN, response.data.token);
-        setLocalStorage(USER_ID, response.data.id);
+        dispatch(loginSuccess(response.data.payload.token));
+        setLocalStorage(JWT_TOKEN, response.data.payload.token);
+        const decoded = jwt_decode(response.data.payload.token);
+        setLocalStorage(USER_ID, decoded.userId);
         dispatch(push('/leagues'));
       })
       .catch((error) => {

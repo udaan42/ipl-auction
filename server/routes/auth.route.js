@@ -81,7 +81,7 @@ const router = express.Router();
 router.route('/login')
     .post((req, res) => {
         axios.post(API_ENDPOINT + '/iplauction/authenticate', {
-            username: req.body.email,
+            username: req.body.username,
             password: req.body.password
         })
             .then((response) => {

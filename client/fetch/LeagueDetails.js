@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { API_URL, JWT_TOKEN, USER_ID } from '../config/config';
+import { getLocalStorage } from '../utils/storageUtil';
 
 export default function getLeagueDetails(url, refresh) {
   const [data, setData] = useState({
@@ -7,7 +9,17 @@ export default function getLeagueDetails(url, refresh) {
   });
 
   useEffect(() => {
-    fetch(url)
+    const bearer_token = getLocalStorage(JWT_TOKEN);
+    const bearer = 'Bearer ' + bearer_token;
+    fetch(url, {
+      method: 'GET',
+      mode: 'no-cors',
+      withCredentials: true,
+      credentials: 'include',
+      headers: {
+          'Authorization': bearer,
+          'Content-Type': 'application/json'
+      } })
       .then(async response => {
         const data = await response.json()
         setData({
