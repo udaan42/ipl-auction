@@ -8,13 +8,14 @@ export default function getLeagueData(url, userId) {
   async function getData() {
     const bearer_token = getLocalStorage(JWT_TOKEN);
     const bearer = 'Bearer ' + bearer_token;
+    const userId = getLocalStorage(USER_ID);
     const response = await fetch(url, {
       method: 'GET',
-      mode: 'no-cors',
       withCredentials: true,
       credentials: 'include',
       headers: {
-          'Authorization': bearer
+          'Authorization': bearer,
+          'X-UserId': userId
       } });
     const data = await response.json();
     setData(data.payload.leagueInfos);
