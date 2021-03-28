@@ -6,6 +6,7 @@ import axios from 'axios';
 import PlayerStats from './PlayerStats';
 import TeamSummary from './TeamSummary';
 import ModeratorZone from './ModeratorZone';
+import PlayerPopupModal from './PlayerPopupModal';
 import _ from 'lodash';
 import { joinAuctionRoom, messageListen, messageTestListen, startAuction, getCurrentPlayerData, 
     getAuctionStatus, setNextPlayer, submitBid, getBidUpdates, getRoomDetails, sellPlayer, playerSold } from '../../socket/socket';
@@ -15,14 +16,16 @@ class Room extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            role: "moderator",
+            role: "player",
             isActive: false,
             currentPlayer: null,
             auctionSummary: null,
             currentIndex: 0,
             bidDetails: null,
             sold: false,
-            soldData: null
+            soldData: null,
+            playersPopUp: false,
+            popData: []
         }
     }
 
@@ -168,6 +171,13 @@ class Room extends React.Component {
         // this.props.sellPlayer();
     }
 
+    handlePopUp = (data) => {
+        this.setState({
+            playersPopUp: true,
+            popData: data
+        })
+    }
+
 
     getAuctionUI = () => {
         const playersRemaining = this.props.playerSet.length - this.state.currentIndex;
@@ -177,17 +187,23 @@ class Room extends React.Component {
                 <div>
                     <ModeratorZone submitPlayer={this.getPlayer} playersRemaining={playersRemaining} nextBag={this.getNextBag}/>
                     <PlayerStats myTable={this.props.loggedUser} sold={this.state.sold} soldData={this.state.soldData} sellPlayer={this.soldBtnClicked} teams={this.props.teams} data={this.state.currentPlayer} bidHistory={bidHistory} bidDetails={this.state.bidDetails} role={this.state.role} />
-                    <TeamSummary data={this.props.detail.leagueUsers} role={this.state.role} />
+                    <TeamSummary onOpenPopup={this.handlePopUp} data={this.props.detail.leagueUsers} role={this.state.role} />
                 </div> 
             )
         }else{
             return(
                 <div>
                     <PlayerStats myTable={this.props.loggedUser} sold={this.state.sold} soldData={this.state.soldData} data={this.state.currentPlayer} teams={this.props.teams} submitBid={this.makeBid} bidHistory={bidHistory} bidDetails={this.state.bidDetails} role={this.state.role} />
-                    <TeamSummary data={this.props.detail.leagueUsers} role={this.state.role} />
+                    <TeamSummary onOpenPopup={this.handlePopUp} data={this.props.detail.leagueUsers} role={this.state.role} />
                 </div>
             )
         }
+    }
+
+    closePlayerPopup = () => {
+        this.setState({
+            playersPopUp: false
+        })
     }
 
   render() {
@@ -199,6 +215,7 @@ class Room extends React.Component {
         {(!this.state.isActive) ? this.getActionButtons(): ""}
         {!this.state.isActive ? <Button onClick={this.enterAuctionRoom}>Enter Auction</Button> : ""}
         {(this.state.isActive) ? this.getAuctionUI(): <div> Waiting for Moderator to start the auction</div>}
+        <PlayerPopupModal data={this.state.popData} show={this.state.playersPopUp} onExit={this.closePlayerPopup}/>
       </div>
     );
   }

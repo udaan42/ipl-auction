@@ -15,6 +15,7 @@ const RoomsContainer = (props) => {
 
     const [refresh, setRefresh] = useState(false);
     const [index, setIndex] = useState(0);
+    const [unsold, setUnsold] = useState(false);
 
     
     const { id } = useParams();
@@ -25,10 +26,17 @@ const RoomsContainer = (props) => {
     const { players, bagNumber } = getPlayerBagDetails(playerBagsURL, bagNumbers[index]);
     
     const getNextBag = () => {
-        setIndex(index + 1);
+        if(index < bagNumbers.length - 1){
+            setIndex(index + 1);
+        }
+        if(index == bagNumbers.length - 1){
+            setUnsold(true);
+        }
+
     }
 
     const sellPlayer = (data) => {
+        console.log(data);
 
         if(data.playerOwnerUserId != 0){
             const bearer_token = getLocalStorage(JWT_TOKEN);
@@ -50,8 +58,6 @@ const RoomsContainer = (props) => {
             .catch((error) => {
                 console.log(error);
             });
-        }else{
-            setRefresh(!refresh);
         }
         
     }

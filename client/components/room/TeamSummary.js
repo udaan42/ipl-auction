@@ -19,35 +19,60 @@ const styles = {
     }
 }
 
+const getPurseRemaining = (players) => {
+    let total = 0;
+    players.forEach(element => {
+        total = total + element.soldPrice;
+    });
+
+
+    return (10000 - total) / 100;
+}
+
 const getModUI = (props) => {
+
+    const handleClick = (data) => {
+        props.onOpenPopup(data);
+    }
 
     return(
         <Row md={4} lg={4} sm={4} xs={4}>
-            {props.data.map(()=> {
-                return(
-                    <Col className={props.classes.tab}>
-                        <Typography variant="body2"> Player Name</Typography>
-                        <Typography variant="body2"> Team name</Typography>
-                        <Typography variant="body2"> Slots left- 4</Typography>
-                        <Typography variant="body2"> Purse balance - 80 crores</Typography>
-                    </Col>  
-                )})}
+            {props.data.map((item, index)=> {
+                if(item.leagueRole == "player"){
+                    return(
+                        <Col key={index} className={props.classes.tab} onClick={()=> {handleClick(item.playersSquad)}}>
+                            <Typography variant="body2"> {item.userName}</Typography>
+                            <Typography variant="body2"> {item.teamName}</Typography>
+                            <Typography variant="body2"> Slots left- {15 - item.playersSquad.length}</Typography>
+                            <Typography variant="body2"> Purse balance - {getPurseRemaining(item.playersSquad)} crores</Typography>
+                        </Col>  
+                    )
+                }})}
         </Row>
     )
 }
 
+
 const getPlayerUI = (props) => {
+
+    const handleClick = (data) => {
+        props.onOpenPopup(data);
+    }
+
     return(
         <Row md={7} lg={7} sm={7} xs={4}>
-            {props.data.map(()=> {
-                return(
-                    <Col className={props.classes.tab}>
-                        <Typography variant="body2"> Player Name</Typography>
-                        <Typography variant="body2"> Team name</Typography>
-                        <Typography variant="body2"> Slots left- 4</Typography>
-                        <Typography variant="body2"> Purse balance - 80 crores</Typography>
-                    </Col>  
-                )})}
+            {props.data.map((item, index)=> {
+                if(item.leagueRole == "player"){
+                    return(
+                        <Col key={index} className={props.classes.tab} onClick={()=> {handleClick(item.playersSquad)}}>
+                            <Typography variant="body2"> {item.userName}</Typography>
+                            <Typography variant="body2"> {item.teamName}</Typography>
+                            <Typography variant="body2"> Slots left- {15 - item.playersSquad.length}</Typography>
+                            <Typography variant="body2"> Purse balance - {getPurseRemaining(item.playersSquad)} crores</Typography>
+                        </Col>  
+                    )
+                }
+            })}
         </Row>
     )
 }
