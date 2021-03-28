@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,10 @@ public class LoginController {
 
     @Autowired
     private UserInfoService userInfoService;
+
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 
     @PostMapping("/authenticate")
@@ -69,9 +74,14 @@ public class LoginController {
 
         try {
 
-            UserInfoVO userInfoVOResponse = userInfoService.addNewUser(userInfoVO);
+            if(userInfoService.getUserInfoByUserName(userInfoVO.getUserName()) == null){
+                userInfoVO.setPwd(passwordEncoder.encode(userInfoVO.getPwd()));
+                UserInfoVO userInfoVOResponse = userInfoService.addNewUser(userInfoVO);
+                return new ResponseEntity<GenericServiceResponse<UserInfoVO>>(new GenericServiceResponse<UserInfoVO>(SUCCESS, "userInfo", userInfoVOResponse), HttpStatus.OK);
+            }
 
-            return new ResponseEntity<GenericServiceResponse<UserInfoVO>>(new GenericServiceResponse<UserInfoVO>(SUCCESS, "userInfo", userInfoVOResponse), HttpStatus.OK);
+            return new ResponseEntity<GenericServiceResponse<UserInfoVO>>(new GenericServiceResponse<UserInfoVO>(FAIL, "Username already exists"), HttpStatus.BAD_REQUEST);
+
         } catch (Exception e) {
 
             return new ResponseEntity<GenericServiceResponse<UserInfoVO>>(new GenericServiceResponse<UserInfoVO>(FAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);

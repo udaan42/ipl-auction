@@ -286,4 +286,140 @@ public class LeagueInfoService {
         }
         return unSoldPlayers;
     }
+
+    public LeagueInfo getLeagueByLeagueName(String leagueName){
+        Iterable<LeagueInfo> leagueInfos = leagueInfoRepository.findAll();
+
+        for (LeagueInfo leagueInfo : leagueInfos) {
+            if(leagueInfo.getLeagueName().equalsIgnoreCase(leagueName)){
+                return leagueInfo;
+            }
+        }
+        return null;
+    }
+
+    public boolean validateLeagueModeratorCount(String leagueId) {
+
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+
+        int i=0;
+        if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
+            LeagueInfo leagueInfo = optionalLeagueInfo.get();
+            if(!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())){
+                for(LeagueUser leagueUser : leagueInfo.getLeagueUsers()){
+                    if(!StringUtils.isEmpty(leagueUser.getLeagueRole())){
+                        if(leagueUser.getLeagueRole().equalsIgnoreCase("moderator")){
+                            i++;
+                        }
+                    }
+                }
+            }
+        }
+        if(i<2){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean validateLeaguePlayerCount(String leagueId) {
+
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+
+        int i=0;
+        if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
+            LeagueInfo leagueInfo = optionalLeagueInfo.get();
+            if(!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())){
+                for(LeagueUser leagueUser : leagueInfo.getLeagueUsers()){
+                    if(!StringUtils.isEmpty(leagueUser.getLeagueRole())){
+                        if(leagueUser.getLeagueRole().equalsIgnoreCase("player")){
+                            i++;
+                        }
+                    }
+                }
+            }
+        }
+        if(i<8){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean validateLeagueMemberCount(String leagueId) {
+
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+
+        if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
+            LeagueInfo leagueInfo = optionalLeagueInfo.get();
+            if(!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())){
+              if(leagueInfo.getLeagueUsers().size() <10){
+                  return true;
+              }
+            }
+        }
+        return false;
+    }
+
+    public boolean validateIfUserAlreadyExists(String leagueId,String userId) {
+
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+
+        if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
+            LeagueInfo leagueInfo = optionalLeagueInfo.get();
+            if(!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())){
+                for(LeagueUser leagueUser : leagueInfo.getLeagueUsers()){
+                    if(!StringUtils.isEmpty(leagueUser.getUserId())){
+                        if(leagueUser.getUserId().equalsIgnoreCase(userId)){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+
+
+    }
+
+    public boolean isModerator(String leagueId, String userId) {
+
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+
+        if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
+            LeagueInfo leagueInfo = optionalLeagueInfo.get();
+            if(!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())){
+                for(LeagueUser leagueUser : leagueInfo.getLeagueUsers()){
+                    if(!StringUtils.isEmpty(leagueUser.getUserId())){
+                        if(leagueUser.getUserId().equalsIgnoreCase(userId)){
+                            if(leagueUser.getLeagueRole().equalsIgnoreCase("moderator")){
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+
+    }
+
+    public boolean isPlayerAlreadySold(String leagueId, String playerId) {
+
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+
+        if (optionalLeagueInfo != null && optionalLeagueInfo.isPresent()) {
+            LeagueInfo leagueInfo = optionalLeagueInfo.get();
+            if(!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())){
+                for(LeagueUser leagueUser : leagueInfo.getLeagueUsers()){
+                    if(!CollectionUtils.isEmpty(leagueUser.getPlayersSquad())){
+                        for(PlayerInfo playerInfo : leagueUser.getPlayersSquad()){
+                            if(playerInfo.getPlayerId().equalsIgnoreCase(playerId)){
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

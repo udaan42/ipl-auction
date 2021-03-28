@@ -37,6 +37,9 @@ public class LeagueController {
 
         try {
             logger.info("addLeagueInfo started ==>");
+            if(leagueInfoService.getLeagueByLeagueName(leagueInfoVO.getLeagueName()) != null){
+                return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL, "League already exists with the same name"), HttpStatus.BAD_REQUEST);
+            }
             LeagueInfoVO leagueInfoVOResponse = leagueInfoService.addNewLeagueInfo(leagueInfoVO,userId);
             logger.info("addLeagueInfo completed <==");
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(SUCCESS, "leagueInfo", leagueInfoVOResponse), HttpStatus.OK);
@@ -87,6 +90,20 @@ public class LeagueController {
 
         try {
             logger.info("addLeagueInfo started ==>");
+            if(!leagueInfoService.validateLeagueMemberCount(leagueId)){
+                return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL,"Cannot Join League : League already reached the max limit of 10"), HttpStatus.NOT_ACCEPTABLE);
+            }
+
+            if(!leagueInfoService.validateLeagueModeratorCount(leagueId)){
+                return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL, "Cannot Join League as Moderator : League already reached the max limit of 2 Moderator"), HttpStatus.NOT_ACCEPTABLE);
+            }
+            if(!leagueInfoService.validateLeaguePlayerCount(leagueId)){
+                return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL,"Cannot Join League as Player : League already reached the max limit of 8 Players"), HttpStatus.NOT_ACCEPTABLE);
+            }
+            if(!leagueInfoService.validateIfUserAlreadyExists(leagueId,userId)){
+                return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL,"Cannot Join League : User already exists in the League"), HttpStatus.NOT_ACCEPTABLE);
+            }
+
             LeagueInfoVO leagueInfoVOResponse = leagueInfoService.joinLeague(leagueUserVO,leagueId,userId);
             logger.info("addLeagueInfo completed <==");
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(SUCCESS, "leagueInfo", leagueInfoVOResponse), HttpStatus.OK);
@@ -121,6 +138,13 @@ public class LeagueController {
             @PathVariable(name = "soldPrice")   @Valid @NotNull Long soldPrice) {
         try {
             logger.info("getLeagueInfoByUserId {leagueInfoId} ==>", userId);
+
+            if(leagueInfoService.isModerator(leagueId,userId)){
+                return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL,"Cannot Sell Player to Moderator"), HttpStatus.NOT_ACCEPTABLE);
+            }
+           if(leagueInfoService.isPlayerAlreadySold(leagueId,playerId)){
+               return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL,"Cannot Sell Player who has been sold already"), HttpStatus.NOT_ACCEPTABLE);
+            }
 
             LeagueInfoVO leagueInfoVOS = leagueInfoService.sellPlayerToUser(leagueId,userId,playerId,soldPrice);
 
