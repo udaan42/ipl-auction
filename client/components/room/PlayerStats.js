@@ -11,6 +11,8 @@ import PlayerTable from './PlayerTable';
 import PlayerDetails from './PlayerDetails';
 import classnames from 'classnames';
 import clsx from 'clsx';
+import { API_ENDPOINT, USER_ID, JWT_TOKEN } from '../../config/config';
+import { getLocalStorage } from '../../utils/storageUtil';
 
 const styles = {
     playerDetailsRow: {
@@ -165,8 +167,10 @@ class PlayerStats extends React.Component{
             let nextBid = null;
             if(nextProps.bidDetails){
                 if(nextProps.bidDetails.currentBid < 100){
-                    nextBid = nextProps.bidDetails.currentBid + 10;
+                    nextBid = nextProps.bidDetails.currentBid + 5;
                 }else if(nextProps.bidDetails.currentBid >= 100 && nextProps.bidDetails.currentBid < 200){
+                    nextBid = nextProps.bidDetails.currentBid + 10;
+                }else if(nextProps.bidDetails.currentBid >= 200 && nextProps.bidDetails.currentBid < 500){
                     nextBid = nextProps.bidDetails.currentBid + 20;
                 }else if(nextProps.bidDetails.currentBid >= 200 && nextProps.bidDetails.currentBid < 500){
                     nextBid = nextProps.bidDetails.currentBid + 25;
@@ -181,10 +185,12 @@ class PlayerStats extends React.Component{
         }
 
         if (prevState.data !== nextProps.data) {
-            return {
-              data: nextProps.data,
-              nextBid: nextProps.data.basePrice
-            };
+            if(nextProps.data){
+                return {
+                    data: nextProps.data,
+                    nextBid: nextProps.data.basePrice
+                  }
+            }
         }
     
         // Return null to indicate no change to state.
@@ -214,10 +220,12 @@ class PlayerStats extends React.Component{
         let nextBid = null;
         if(bidDetails){
             if(bidDetails.currentBid < 100){
-                nextBid = bidDetails.currentBid + 10;
+                nextBid = bidDetails.currentBid + 5;
             }else if(bidDetails.currentBid >= 100 && bidDetails.currentBid < 200){
-                nextBid = bidDetails.currentBid + 20;
+                nextBid = bidDetails.currentBid + 10;
             }else if(bidDetails.currentBid >= 200 && bidDetails.currentBid < 500){
+                nextBid = bidDetails.currentBid + 20;
+            }else if(bidDetails.currentBid >= 500 && bidDetails.currentBid < 800){
                 nextBid = bidDetails.currentBid + 25;
             }else{
                 nextBid = bidDetails.currentBid + 50;
@@ -273,8 +281,15 @@ class PlayerStats extends React.Component{
         }
     }
 
+
     render(){
 
+        let disabled = false;
+        
+        if(this.props.bidDetails){
+            disabled = getLocalStorage(USER_ID) == this.props.bidDetails.playerOwnerUserId;
+        }
+        
         const playerTableData = this.props.myTable ? this.props.myTable.playersSquad : [] 
 
         if(this.props.role == "player"){
@@ -286,13 +301,13 @@ class PlayerStats extends React.Component{
                             {this.getSoldDetails()}
                             <Row>
                                 <div className={this.props.classes.nextBidDetails}><span className={this.props.classes.nextBidLabel}> Next Bid - </span> <span className={this.props.classes.nextBid}>{this.getPrice(this.state.nextBid)}</span></div>
-                                <Button variant="success" onClick={this.submitBtn} className={this.props.classes.bidBtnRaise}> Raise <PanToolIcon className={this.props.classes.raise}/></Button>
+                                <Button variant="success" disabled={disabled} onClick={this.submitBtn} className={this.props.classes.bidBtnRaise}> Raise <PanToolIcon className={this.props.classes.raise}/></Button>
                                 <Button variant="danger" className={this.props.classes.bidBtnFold}> Fold <ThumbDownAltIcon className={this.props.classes.thumbsdown}/></Button>
                             </Row>
                         </Container>: ""}
                     </Col>
                     <Col md={2} sm={12}>
-                        <LiveTicker bidHistory={this.props.bidHistory} />
+                        <LiveTicker bidHistory={this.props.bidHistory} teams={this.props.teams} />
                     </Col>
                     <Col md={3} sm={12}>
                         <PlayerTable data= {playerTableData} />
@@ -309,12 +324,12 @@ class PlayerStats extends React.Component{
                             <Row>
                                 <div className={this.props.classes.nextBidDetails}><span className={this.props.classes.nextBidLabel}> Next Bid - </span> <span className={this.props.classes.nextBid}>{this.getPrice(this.state.nextBid)}</span></div>
                                 <Button variant="success" onClick={this.soldBtn} className={this.props.classes.bidBtnRaise}> Sold <LocalMallIcon className={this.props.classes.raise}/></Button>
-                                <Button variant="danger" className={this.props.classes.bidBtnFold}> Unsold <WarningIcon className={this.props.classes.thumbsdown}/></Button>
+                                {/* <Button variant="danger" className={this.props.classes.bidBtnFold}> Unsold <WarningIcon className={this.props.classes.thumbsdown}/></Button> */}
                             </Row>
                         </Container>: ""}
                     </Col>
                     <Col md={3} sm={12}>
-                        <LiveTicker bidHistory={this.props.bidHistory} />
+                        <LiveTicker bidHistory={this.props.bidHistory} teams={this.props.teams} />
                     </Col>
                 </Row> 
             )

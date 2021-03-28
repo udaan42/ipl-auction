@@ -13,12 +13,10 @@ export default function getLeagueDetails(url, refresh) {
     const bearer = 'Bearer ' + bearer_token;
     fetch(url, {
       method: 'GET',
-      mode: 'no-cors',
       withCredentials: true,
       credentials: 'include',
       headers: {
-          'Authorization': bearer,
-          'Content-Type': 'application/json'
+          'Authorization': bearer
       } })
       .then(async response => {
         const data = await response.json()

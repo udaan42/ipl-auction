@@ -1,4 +1,4 @@
-const { get, set } = require("./config/redis");
+const { get, set, exists } = require("./config/redis");
 
 
 module.exports = function (io, socket) {
@@ -12,10 +12,16 @@ module.exports = function (io, socket) {
     console.log("--------------------->> User joined room");
     console.log(data);
     socket.join(data.roomId);
-    socket.emit('notification', `${data.user} joined the room`);
     io.in(data.roomId).emit('notification', `${data.user} joined the room`);
     const roomStatus = await fetchAuctionDetailsFromCache(data);
     io.in(data.roomId).emit('room-status', roomStatus);
+    if(roomStatus.currentPlayerInBid){
+      const playerBidDetails = await fetchCurrentBidForPlayerFromCache(data.roomId, roomStatus.currentPlayerInBid.playerId);
+      if(playerBidDetails.currentBid > 0){
+        io.in(data.roomId).emit('bid-updates', playerBidDetails);
+      }
+    }
+    
     // Emit Room details only to the user to who has joined; Maintain the room active status here
   });
 
@@ -36,11 +42,20 @@ module.exports = function (io, socket) {
   socket.on('next-player', async (data) => {
     console.log("Next Player Details ------->");
     console.log(data);
-    const promiseArray = [];
-    promiseArray.push(createAuctionRoomPlayerKeyInCache(data.roomId, data.player.playerId));
-    promiseArray.push(updateAuctionDetailsInCache(data.roomId, data.player));
-    await Promise.all(promiseArray);
-    io.in(data.roomId).emit('current-player', data.player);
+    const checkPlayer = await checkIfCurrentPlayerExistsFromCache(data.roomId, data.player.playerId);
+    if(checkPlayer == 1){
+      const playerBidDetails = await fetchCurrentBidForPlayerFromCache(data.roomId, data.player.playerId);
+      io.in(data.roomId).emit('bid-updates', playerBidDetails);
+      await updateAuctionDetailsInCache(data.roomId, data.player);
+      io.in(data.roomId).emit('current-player', data.player);
+    }else{
+      const promiseArray = [];
+      promiseArray.push(createAuctionRoomPlayerKeyInCache(data.roomId, data.player.playerId));
+      promiseArray.push(updateAuctionDetailsInCache(data.roomId, data.player));
+      await Promise.all(promiseArray);
+      io.in(data.roomId).emit('current-player', data.player);
+    }
+    
   });
 
   socket.on('submit-bid', async (data) => {
@@ -100,6 +115,12 @@ module.exports = function (io, socket) {
     const parsedResult = JSON.parse(result);
     console.log(parsedResult);
     return parsedResult;
+  }
+
+  async function checkIfCurrentPlayerExistsFromCache(roomId, playerId) {
+    const result = await exists('AR#' + roomId + 'PID#' + playerId);
+    console.log(result)
+    return result;
   }
 
   async function updateAuctionRoomPlayerKeyInCache(roomId, playerId, playerBidDetails) {

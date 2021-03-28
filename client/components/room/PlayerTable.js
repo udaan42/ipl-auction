@@ -23,15 +23,30 @@ const PlayerTable = (props) => {
     const classes = useStyles();
     const ids = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
 
+    const getPrice = (value) => {
+        if(value < 100){
+            return `${value} lakhs`
+        }else if(value >= 100){
+    
+           let currency = value / 100;
+           console.log(currency)
+           if(currency == 1){
+               return `1 crore`
+           }else{
+               return `${currency} crores`
+           }
+        }
+    }
+
     const getTableRows = () => {
-        ids.map((i, index)=> {
+        return ids.map((i, index)=> {
                 if(props.data[i]){
                     return(
                         <tr>
                             <td>{i+1}</td>
                             <td>{props.data[i].playerName} {props.data[i].playerRace == 'F' ? <FlightIcon className={classes.overseasIcon} />: ""}</td>
                             <td>{props.data[i].playerRole}</td>
-                            <td>{props.data[i].soldPrice}</td>
+                            <td>{getPrice(props.data[i].soldPrice)}</td>
                         </tr>
                     )
                 }else{
@@ -43,9 +58,21 @@ const PlayerTable = (props) => {
         })  
     }
 
+    const getPurseBalance = () => {
+        let total = 0;
+        props.data.forEach(element => {
+            total = total + element.soldPrice;
+        });
+
+
+        return (10000 - total) / 100;
+    }
+
+    const balance = getPurseBalance();
+
     return(
         <>
-            <span className={classes.playersTeam}>Purse Remaining - 80 crores</span>
+            <span className={classes.playersTeam}>Purse Remaining - {balance} crores</span>
             <Table striped bordered hover size="sm" className={classes.yourTable} >
                 <thead>
                     <tr>

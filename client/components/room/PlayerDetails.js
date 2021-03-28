@@ -100,7 +100,7 @@ const getPrice = (value) => {
 const PlayerDetails = (props) => {
 
     const getCurrentPrice = () => {
-        if(props.bidDetails){
+        if(props.bidDetails && props.bidDetails.currentBid > 0){
             return getPrice(props.bidDetails.currentBid);
         }
     }
@@ -108,7 +108,10 @@ const PlayerDetails = (props) => {
     const getBiddingTeam = () => {
         if(props.bidDetails){
             let bidTeam = _.find(props.teams, ['userId', props.bidDetails.playerOwnerUserId]);
-            return bidTeam.teamName;
+            if(bidTeam){
+                return bidTeam.teamName;
+            }
+            
         }
     }
 

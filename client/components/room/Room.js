@@ -89,7 +89,7 @@ class Room extends React.Component {
 
     bidBtnClick = val => {
         let data = {
-            userId: "da6d833c-8416-48b3-8219-d8105c4e0831",
+            userId: getLocalStorage(USER_ID),
             roomId: this.props.detail.leagueId,
             nextBid: val.nextBid,
             playerId: val.playerId
@@ -111,12 +111,6 @@ class Room extends React.Component {
 
     getUserRole = () => {
         let userId = getLocalStorage(USER_ID);
-        if(userId == '2'){
-            userId = "e8c844ed-02c6-4962-aed3-b317c9ee1222";
-        }else{
-            // Mod ID
-            userId = "df9caece-92a8-4eee-b237-7fc2f1e39e87";
-        }
             
         let user = {}
         if(!_.isEmpty(this.props.detail)){

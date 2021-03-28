@@ -10,12 +10,11 @@ export default function getPlayerBagDetails(url, bagNumber) {
   });
 
   useEffect(() => {
+    const endpoint = `${url}/${bagNumber}`;
     const bearer_token = getLocalStorage(JWT_TOKEN);
     const bearer = 'Bearer ' + bearer_token;
-    const endpoint = `${url}/${bagNumber}`;
     fetch(endpoint, {
       method: 'GET',
-      mode: 'no-cors',
       withCredentials: true,
       credentials: 'include',
       headers: {

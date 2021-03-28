@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Room from '../../components/room/Room';
 import _ from 'lodash';
 import { useHistory, useParams } from 'react-router-dom';
-import { API_ENDPOINT, USER_ID } from '../../config/config';
+import { API_ENDPOINT, USER_ID, JWT_TOKEN } from '../../config/config';
 import { getLocalStorage } from '../../utils/storageUtil';
 import  getLeagueDetails  from '../../fetch/LeagueDetails';
 import getPlayerBagDetails from '../../fetch/PlayerBags';
@@ -18,10 +18,10 @@ const RoomsContainer = (props) => {
 
     
     const { id } = useParams();
-    const url = `${API_ENDPOINT}iplauction/league/${id}`;
+    const url = `${API_ENDPOINT}/iplauction/league/${id}`;
     const { data, reload } = getLeagueDetails(url, refresh);
 
-    const playerBagsURL =  `${API_ENDPOINT}iplauction/player/getPlayersBag`;
+    const playerBagsURL =  `${API_ENDPOINT}/iplauction/player/getPlayersBag`;
     const { players, bagNumber } = getPlayerBagDetails(playerBagsURL, bagNumbers[index]);
     
     const getNextBag = () => {
@@ -31,11 +31,14 @@ const RoomsContainer = (props) => {
     const sellPlayer = (data) => {
 
         if(data.playerOwnerUserId != 0){
-            const url = `${API_ENDPOINT}iplauction/league/sellPlayerToUser/${data.playerId}/${data.currentBid}`;
+            const bearer_token = getLocalStorage(JWT_TOKEN);
+            const bearer = 'Bearer ' + bearer_token;
+            const url = `${API_ENDPOINT}/iplauction/league/sellPlayerToUser/${data.playerId}/${data.currentBid}`;
 
             const headers = {
                 'X-UserId': data.playerOwnerUserId,
-                'X-LeagueId': id
+                'X-LeagueId': id,
+                'Authorization': bearer
             }
             // POST CALL
             axios.post(url, {}, {
@@ -71,7 +74,6 @@ const RoomsContainer = (props) => {
         let loggedUser = null
         if(data){
             let userId = getLocalStorage(USER_ID);
-            userId = "da6d833c-8416-48b3-8219-d8105c4e0831";
             loggedUser = _.find(data.leagueUsers, ['userId', userId]);
             return loggedUser
         }
@@ -85,7 +87,7 @@ const RoomsContainer = (props) => {
     let currentBag = _.shuffle(players);
     return(
         <>
-            <Room sellPlayer={sellPlayer} playerSet={players} detail={data} bag={bagNumber} loggedUser={playerDetail} teams={teams} getNextBag={getNextBag} />
+            <Room sellPlayer={sellPlayer} playerSet={currentBag} detail={data} bag={bagNumber} loggedUser={playerDetail} teams={teams} getNextBag={getNextBag} />
         </>
     )
 

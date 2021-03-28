@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       margin: theme.spacing(1),
       width: theme.spacing(50),
-      height: theme.spacing(15),
+      height: theme.spacing(20),
     },
   },
 
@@ -29,17 +30,25 @@ const useStyles = makeStyles((theme) => ({
       }
   },
   leaguePoint: {
-      fontSize: "small",
+      fontSize: 10,
       marginRight: 5
   },
   leagueName: {
-      marginTop: 15
+      marginTop: 5
   },
   leaguePosition: {
     
   },
   label: {
-      fontWeight: 400
+      fontWeight: 400,
+      fontSize: 14
+  },
+  leagueId: {
+    fontSize: 14,
+    fontStyle: "italic"
+  },
+  copyLink: {
+    fontSize: 14
   }
 }));
 
@@ -55,7 +64,12 @@ export default function LeagueItem(props) {
       let url = `/leagues/${props.item.leagueId}`
       history.push(url);
     }
-    
+  }
+
+  const copyCode = (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(props.item.leagueId);
+    console.log(e);
   }
 
   return (
@@ -64,10 +78,18 @@ export default function LeagueItem(props) {
             <Typography className={classes.leagueName} variant="h6" align="center">
                 {props.item.leagueName}
             </Typography> 
-            <Typography  variant="subtitle1" align="center">
+            <Typography  variant="subtitle1" >
+                <span className={classes.leagueId}>League code - {props.item.leagueId}</span>
+            </Typography> 
+            <Typography  variant="subtitle1" >
                 <FiberManualRecordIcon className={classes.leaguePoint} />
                 <span className={classes.label}>Your points -</span> {props.item.points}
             </Typography> 
+            <Typography className={classes.copyLink}>
+              <Link href="#" onClick={copyCode}>
+                Copy League Code
+              </Link>
+            </Typography>
         </Paper>
       </div>
   );

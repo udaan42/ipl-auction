@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Button, Modal} from 'react-bootstrap';
 import JoinLeagueForm from './JoinLeagueForm';
-import { API_ENDPOINT, USER_ID } from '../../config/config';
+import { JWT_TOKEN, API_ENDPOINT, USER_ID } from '../../config/config';
 import { getLocalStorage } from '../../utils/storageUtil';
 import axios from 'axios';
 
@@ -23,12 +23,14 @@ export default function JoinLeagueModal(props) {
     }
 
     const apiCall = (data, userId, leagueId) => {
-      let secondUser = '2ee54e87-9652-4b04-8b1d-70323de443d1';
+      const bearer_token = getLocalStorage(JWT_TOKEN);
+      const bearer = 'Bearer ' + bearer_token;
       const headers = {
-        'X-UserId': '7614773c-aa27-4472-b54d-ef8eb6d54157',
-        'X-LeagueId': leagueId
+        'X-UserId': userId,
+        'X-LeagueId': leagueId,
+        'Authorization': bearer
       }
-      const url = `${API_ENDPOINT}iplauction/league/joinLeague/`;
+      const url = `${API_ENDPOINT}/iplauction/league/joinLeague/`;
         // POST CALL
         axios.post(url, data, {
           headers: headers

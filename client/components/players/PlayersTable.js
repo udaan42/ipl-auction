@@ -17,9 +17,7 @@ function getPriceValue(value){
     if(value < 100){
         return `${value} lakhs`
     }else if(value >= 100){
-
        let currency = value / 100;
-       console.log(currency)
        if(currency == 1){
            return `1 crore`
        }else{

@@ -44,6 +44,26 @@ let LiveTicker = (props) => {
       scrollToBottom()
     }, [props]);
 
+    const getBiddingTeam = (userId) => {
+        let bidTeam = _.find(props.teams, ['userId', userId]);
+        return bidTeam.teamName;
+    }
+
+    const getPrice = (value) => {
+        if(value < 100){
+            return `${value} lakhs`
+        }else if(value >= 100){
+    
+           let currency = value / 100;
+           console.log(currency)
+           if(currency == 1){
+               return `1 crore`
+           }else{
+               return `${currency} crores`
+           }
+        }
+    }
+
     return(
             <>
                 <Typography className={classes.title}  variant="subtitle1" align="center">
@@ -52,7 +72,7 @@ let LiveTicker = (props) => {
                 <div className={classes.box}>
                     {props.bidHistory.map((item)=> {
                         return(
-                            <Paper className={classes.entry} elevation={1}> Sachin Tendulkar entered auction</Paper>
+                            <Paper className={classes.entry} elevation={1}> {getBiddingTeam(item.userId)} bid {getPrice(item.bid)}</Paper>
                         )
                     })}
                     <div ref={messagesEndRef} />
