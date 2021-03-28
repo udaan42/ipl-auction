@@ -57,6 +57,7 @@ const RoomsContainer = (props) => {
             })
             .catch((error) => {
                 console.log(error);
+                setRefresh(!refresh);
             });
         }
         
