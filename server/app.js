@@ -19,25 +19,6 @@ if (process.env.NODE_ENV === 'development') {
   app.use(webpackHotMiddleware(compiler));
 }
 
-var server = require('http').Server(app);
-var io = require('socket.io')(server,  {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
-  }});
-
-server.listen(app.get('socketport'), app.get('host'), () => {
-  console.log('socket listening');
-});
-
-io.on('connection', (socket) => {
-  
-  console.log("Coneected New socket ----------------------------->");
-  socket.emit("notification", "User connected");
-  console.log(socket.id);
-  require('./auction-room-socket.js')(io, socket);
-});
-
 // Swagger API documentation
 app.get('/swagger.json', (req, res) => {
   res.json(swagger);
@@ -62,8 +43,24 @@ app.use(errorHandler.genericErrorHandler);
 app.use(errorHandler.notFound);
 app.use(errorHandler.methodNotAllowed);
 
-app.listen(app.get('port'), app.get('host'), () => {
-  console.log(`Server running at http://${app.get('host')}:${app.get('port')}`);
+var server = require('http').Server(app);
+var io = require('socket.io')(server,  {
+  cors: {
+    // origin: "http://auction-fantasy.us-east-2.elasticbeanstalk.com",
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
+  }});
+
+server.listen(app.get('socketport'), app.get('host'), () => {
+  console.log('socket listening');
+});
+
+io.on('connection', (socket) => {
+  
+  console.log("Coneected New socket ----------------------------->");
+  socket.emit("notification", "User connected");
+  console.log(socket.id);
+  require('./auction-room-socket.js')(io, socket);
 });
 
 export default app;
