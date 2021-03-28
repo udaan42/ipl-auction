@@ -86,7 +86,6 @@ const getPrice = (value) => {
     }else if(value >= 100){
 
        let currency = value / 100;
-       console.log(currency)
        if(currency == 1){
            return `1 crore`
        }else{

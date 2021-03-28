@@ -247,7 +247,6 @@ class PlayerStats extends React.Component{
             }else if(value >= 100){
         
                let currency = value / 100;
-               console.log(currency)
                if(currency == 1){
                    return `1 crore`
                }else{
@@ -281,14 +280,103 @@ class PlayerStats extends React.Component{
         }
     }
 
-
-    render(){
-
+    checkDisabledBtn = () => {
         let disabled = false;
         
         if(this.props.bidDetails){
-            disabled = getLocalStorage(USER_ID) == this.props.bidDetails.playerOwnerUserId;
+            return getLocalStorage(USER_ID) == this.props.bidDetails.playerOwnerUserId;
         }
+        if(this.props.myTable){
+            return this.props.myTable.playersSquad.length == 15
+        }
+
+        return disabled;
+
+    }
+
+    checkSquadBalance = () => {
+        let balance = {
+            "bat": 0,
+            "bowl": 0,
+            "ar": 0,
+            "wk": 0
+        }
+
+        let check = false;
+
+        if(this.props.myTable){
+            this.props.myTable.playersSquad.map((player)=> {
+                if(player.playerRole == "Bowler"){
+                    balance.bowl++;
+                }else if(player.playerRole == "Batsman"){
+                    balance.bat++;
+                }else if(player.playerRole == "All Rounder"){
+                    balance.ar++;
+                }else if(player.playerRole == "Wicket Keeper"){
+                    balance.wk++
+                }
+            })
+        }
+
+        let currentPlayerRole = null
+
+        if(this.props.data){
+            currentPlayerRole = this.props.data.playerRole;
+        }
+        
+        if(currentPlayerRole){
+            if(currentPlayerRole == "Batsman"){
+                if(balance.bat > 3){
+                    check = true
+                }
+            }else if(currentPlayerRole == "Bowler"){
+                if(balance.bowl > 4){
+                    check = true
+                }
+            }else if(currentPlayerRole == "All Rounder"){
+                if(balance.ar > 3){
+                    check = true
+                }
+            }else if(currentPlayerRole == "Wicket Keeper"){
+                if(balance.wk > 1){
+                    check = true;
+                }
+            }
+        }
+        
+        return check;
+        
+    }
+
+    checkForeignPlayerQuota = () => {
+        let indian = 0;
+        let overseas = 0;
+        let check = false;
+        if(this.props.myTable){
+            this.props.myTable.playersSquad.map((player)=> {
+                if(player.playerRace == "I"){
+                    indian++;
+                }else if(player.playerRace == "F"){
+                    overseas++;
+                }
+            })
+        }
+
+        if(this.props.data){
+            if(this.props.data.playerRace == "I" && indian >= 10){
+                check = true;
+            }else if(this.props.data.playerRace == "F" && overseas >= 6){
+                check = true;
+            }
+        }
+        
+        return check;
+    }
+
+
+    render(){
+
+        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota();
         
         const playerTableData = this.props.myTable ? this.props.myTable.playersSquad : [] 
 

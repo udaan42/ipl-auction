@@ -17,8 +17,15 @@ module.exports = function (io, socket) {
     io.in(data.roomId).emit('room-status', roomStatus);
     if(roomStatus.currentPlayerInBid){
       const playerBidDetails = await fetchCurrentBidForPlayerFromCache(data.roomId, roomStatus.currentPlayerInBid.playerId);
-      if(playerBidDetails.currentBid > 0){
-        io.in(data.roomId).emit('bid-updates', playerBidDetails);
+      console.log("PLayer BID DETAILS ----->", playerBidDetails);
+      if(playerBidDetails.sold){
+        let playerId = roomStatus.currentPlayerInBid.playerId;
+        let soldData = {...playerBidDetails, playerId};
+        io.in(data.roomId).emit('player-sold', soldData);
+      }else{
+        if(playerBidDetails.currentBid > 0){
+          io.in(data.roomId).emit('bid-updates', playerBidDetails);
+        }
       }
     }
     
@@ -35,6 +42,7 @@ module.exports = function (io, socket) {
   socket.on('start-auction', async (data) => {
     console.log("Start Auction ------->");
     console.log(data);
+    data = {...data, }
     await insertAuctionDetailsInCache(data);
     io.in(data.roomId).emit('auction-started', data);
   });
@@ -45,7 +53,13 @@ module.exports = function (io, socket) {
     const checkPlayer = await checkIfCurrentPlayerExistsFromCache(data.roomId, data.player.playerId);
     if(checkPlayer == 1){
       const playerBidDetails = await fetchCurrentBidForPlayerFromCache(data.roomId, data.player.playerId);
-      io.in(data.roomId).emit('bid-updates', playerBidDetails);
+      if(playerBidDetails.sold){
+        let playerId = data.player.playerId;
+        let soldData = {...playerBidDetails, playerId, sold: true};
+        io.in(data.roomId).emit('player-sold', soldData);
+      }else{
+        io.in(data.roomId).emit('bid-updates', playerBidDetails);
+      }
       await updateAuctionDetailsInCache(data.roomId, data.player);
       io.in(data.roomId).emit('current-player', data.player);
     }else{
@@ -66,6 +80,7 @@ module.exports = function (io, socket) {
       playerBidDetails.currentBid = data.nextBid;
       playerBidDetails.bidHistory.push({ userId: data.userId, bid: data.nextBid, time: Date.now() });
       playerBidDetails.playerOwnerUserId = data.userId;
+      playerBidDetails.sold = false;
       await updateAuctionRoomPlayerKeyInCache(data.roomId, data.playerId, playerBidDetails);
       io.in(data.roomId).emit('bid-updates', playerBidDetails);
     }
@@ -84,13 +99,16 @@ module.exports = function (io, socket) {
     let playerId = data.playerId;
     const playerBidDetails = await fetchCurrentBidForPlayerFromCache(data.roomId, data.playerId);
     let soldData = {...playerBidDetails, playerId};
+    playerBidDetails.sold = true;
+    await updateAuctionRoomPlayerKeyInCache(data.roomId, data.playerId, playerBidDetails);
     io.in(data.roomId).emit('player-sold', soldData);
     //in case you want to emit to everyone in room except sender
     //socket.to(data.roomId).emit('new event from server', data.msg);
   });
 
   async function insertAuctionDetailsInCache(data) {
-    await set('AR#' + data.roomId, JSON.stringify(data));
+    const newObject = { roomId: data.roomId, isActive: true, currentPlayerInBid: null };
+    await set('AR#' + data.roomId, JSON.stringify(newObject));
   }
 
   async function updateAuctionDetailsInCache(roomId, player) {
@@ -106,7 +124,7 @@ module.exports = function (io, socket) {
   }
 
   async function createAuctionRoomPlayerKeyInCache(roomId, playerId) {
-    const value = { currentBid: 0, playerOwnerUserId: 0, bidHistory: [] };
+    const value = { currentBid: 0, playerOwnerUserId: 0, sold: false, bidHistory: [] };
     await set('AR#' + roomId + 'PID#' + playerId, JSON.stringify(value));
   }
 
