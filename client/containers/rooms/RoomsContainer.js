@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Room from '../../components/room/Room';
 import _ from 'lodash';
 import { useHistory, useParams } from 'react-router-dom';
-import { API_ENDPOINT, USER_ID, JWT_TOKEN } from '../../config/config';
-import { getLocalStorage } from '../../utils/storageUtil';
+import { API_ENDPOINT, USER_ID, JWT_TOKEN, BAG } from '../../config/config';
+import { getLocalStorage, setLocalStorage } from '../../utils/storageUtil';
 import  getLeagueDetails  from '../../fetch/LeagueDetails';
 import getPlayerBagDetails from '../../fetch/PlayerBags';
 import axios from 'axios';
@@ -17,6 +17,8 @@ const RoomsContainer = (props) => {
     const [index, setIndex] = useState(0);
     const [unsold, setUnsold] = useState(false);
 
+    let bagCacheIndex = getLocalStorage(BAG);
+    
     
     const { id } = useParams();
     const url = `${API_ENDPOINT}/iplauction/league/${id}`;

@@ -373,10 +373,23 @@ class PlayerStats extends React.Component{
         return check;
     }
 
+    getModButton = () => {
+        if(this.props.bidDetails){
+            return(
+                <Button variant="success" onClick={this.soldBtn} className={this.props.classes.bidBtnRaise}> Sold <LocalMallIcon className={this.props.classes.raise}/></Button>
+            )
+        }else{
+            return(
+                <Button variant="danger" onClick={this.soldBtn} className={this.props.classes.bidBtnFold}> Unsold <WarningIcon className={this.props.classes.thumbsdown}/></Button>
+            )
+        }
+
+    }
+
 
     render(){
 
-        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota();
+        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota() || this.props.sold;
         
         const playerTableData = this.props.myTable ? this.props.myTable.playersSquad : [] 
 
@@ -395,7 +408,7 @@ class PlayerStats extends React.Component{
                         </Container>: ""}
                     </Col>
                     <Col md={2} sm={12}>
-                        <LiveTicker bidHistory={this.props.bidHistory} teams={this.props.teams} />
+                        {this.props.bidHistory.length > 0 ? <LiveTicker bidHistory={this.props.bidHistory} teams={this.props.teams} /> : ""}
                     </Col>
                     <Col md={3} sm={12}>
                         <PlayerTable data= {playerTableData} />
@@ -411,13 +424,14 @@ class PlayerStats extends React.Component{
                             {this.getSoldDetails()}
                             <Row>
                                 <div className={this.props.classes.nextBidDetails}><span className={this.props.classes.nextBidLabel}> Next Bid - </span> <span className={this.props.classes.nextBid}>{this.getPrice(this.state.nextBid)}</span></div>
-                                <Button variant="success" onClick={this.soldBtn} className={this.props.classes.bidBtnRaise}> Sold <LocalMallIcon className={this.props.classes.raise}/></Button>
-                                {/* <Button variant="danger" className={this.props.classes.bidBtnFold}> Unsold <WarningIcon className={this.props.classes.thumbsdown}/></Button> */}
+                            
+                                {this.getModButton()}
+                                
                             </Row>
                         </Container>: ""}
                     </Col>
                     <Col md={3} sm={12}>
-                        <LiveTicker bidHistory={this.props.bidHistory} teams={this.props.teams} />
+                        {this.props.bidHistory.length > 0 ? <LiveTicker bidHistory={this.props.bidHistory} teams={this.props.teams} /> : ""}
                     </Col>
                 </Row> 
             )

@@ -7,6 +7,7 @@ export const HOST = '/';
 export const API_URL = '/api/';
 export const JWT_TOKEN = 'token';
 export const USER_ID = 'userId';
+export const BAG = 'bag';
 
 export const API_HOST = 'localhost';
 export const API_PORT = 8080;

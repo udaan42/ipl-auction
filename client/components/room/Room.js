@@ -215,7 +215,7 @@ class Room extends React.Component {
         if(this.state.role=="moderator"){
             return(
                 <div>
-                    <ModeratorZone submitPlayer={this.getPlayer} playersRemaining={playersRemaining} nextBag={this.getNextBag}/>
+                    <ModeratorZone sold={this.state.sold} submitPlayer={this.getPlayer} playersRemaining={playersRemaining} nextBag={this.getNextBag}/>
                     <PlayerStats myTable={this.props.loggedUser} sold={this.state.sold} soldData={this.state.soldData} sellPlayer={this.soldBtnClicked} teams={this.props.teams} data={this.state.currentPlayer} bidHistory={bidHistory} bidDetails={this.state.bidDetails} role={this.state.role} />
                     <TeamSummary onOpenPopup={this.handlePopUp} data={this.props.detail.leagueUsers} role={this.state.role} />
                 </div> 
