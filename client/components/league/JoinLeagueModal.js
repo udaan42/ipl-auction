@@ -44,29 +44,31 @@ export default function JoinLeagueModal(props) {
         });
     }
 
-    const nextClick = (leagueId, selectedOption, selectedTeam) => {
-      const userId = getLocalStorage(USER_ID);
-      if(selectedOption.value == "moderator"){
-        props.onExit();
-        let data = {
-          "leagueRole": selectedOption.value,
-          "teamName": selectedTeam.value,
-          "points": 0
-        }
-        apiCall(data, userId, leagueId);
-      }else if(props.form == 2 ){
+    const nextClick = (leagueId, selectedOption, selectedTeam, teamName) => {
+      if(props.form == 1 && props.show){
         props.onNext();
       }else{
-        let data = {
-          "leagueRole": selectedOption.value,
-          "teamName": selectedTeam.value,
-          "points": 0
+        const userId = getLocalStorage(USER_ID);
+        if(selectedOption.value == "moderator"){
+          props.onExit();
+          let data = {
+            "leagueRole": selectedOption.value,
+            "teamName": teamName,
+            "points": 0
+          }
+          apiCall(data, userId, leagueId);
+        }else if(props.form == 2 ){
+          props.onNext();
+        }else{
+          let data = {
+            "leagueRole": selectedOption.value,
+            "teamName": teamName,
+            "points": 0
+          }
+          apiCall(data, userId, leagueId);
+          props.onExit();  
         }
-        apiCall(data, userId, leagueId);
-  
-        props.onExit();  
-      }
-      
+      }  
     }
   
     return (

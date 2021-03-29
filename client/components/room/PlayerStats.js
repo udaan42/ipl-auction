@@ -264,19 +264,28 @@ class PlayerStats extends React.Component{
 
     getSoldDetails = () => {
         if(this.props.sold){
-            if(this.props.soldData.playerOwnerUserId != 0){
-                return(
-                    <div className={this.props.classes.soldStampData}>
-                        <span className={clsx(this.props.classes.stamp, this.props.classes.isApproved)}>Sold to {this.getTeamName(this.props.soldData.playerOwnerUserId)} for {this.getPrice(this.props.soldData.currentBid)}</span>
-                    </div>
-                )
-            }else{
-                return (
-                    <div className={this.props.classes.unsoldStampData}>
-                        <span className={clsx(this.props.classes.stamp, this.props.classes.isUnsold)}>UNSOLD</span>
-                    </div>
-                )
+            if(this.props.soldData){
+                if(this.props.soldData.playerOwnerUserId != 0){
+                    return(
+                        <div className={this.props.classes.soldStampData}>
+                            <span className={clsx(this.props.classes.stamp, this.props.classes.isApproved)}>Sold to {this.getTeamName(this.props.soldData.playerOwnerUserId)} for {this.getPrice(this.props.soldData.currentBid)}</span>
+                        </div>
+                    )
+                }else{
+                    return (
+                        <div className={this.props.classes.unsoldStampData}>
+                            <span className={clsx(this.props.classes.stamp, this.props.classes.isUnsold)}>UNSOLD</span>
+                        </div>
+                    )
+                }
             }
+            // else{
+            //     return (
+            //         <div className={this.props.classes.unsoldStampData}>
+            //             <span className={clsx(this.props.classes.stamp, this.props.classes.isUnsold)}>UNSOLD</span>
+            //         </div>
+            //     )
+            // }
         }
     }
 

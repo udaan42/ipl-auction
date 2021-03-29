@@ -71,11 +71,12 @@ const JoinLeagueForm = (props) => {
   const [selectedOption, setRole] = useState({});
   const [selectedTeam, setTeam] = useState({});
   const [leagueName, setLeagueName] = useState();
+  const [teamName, setTeamName] = useState();
     
   const validateForm = (values) => {
       const errors = {};
     
-      const requiredFields = ['name'];
+      const requiredFields = ['name', 'teamName'];
       requiredFields.forEach((field) => {
         if (!values[field]) {
           errors[field] = '(The ' + field + ' field is required.)';
@@ -86,6 +87,7 @@ const JoinLeagueForm = (props) => {
       });
 
       setLeagueName(values.name);
+      setTeamName(values.teamName);
     
       return errors;
   }
@@ -105,8 +107,11 @@ const JoinLeagueForm = (props) => {
   }
 
   const handleClick = () => {
+    console.log("Hanlde CLick")
     if(props.form > 1) {
-      props.buttonClick(leagueName, selectedOption, selectedTeam);
+      props.buttonClick(leagueName, selectedOption, selectedTeam, teamName);
+    }else{
+      props.onSubmit();
     }
   }
 
@@ -124,7 +129,7 @@ const JoinLeagueForm = (props) => {
                   )}
                 <CardContent>  
                   <form method="post" onSubmit={handleSubmit}>
-                    { (props.form == 1) ? <Field type="text" name="name" component={renderText} label="League Name" />: ""}
+                    { (props.form == 1) ? <Field type="text" name="name" component={renderText} label="League Id" />: ""}
                       <br />
                       { (props.form == 2) ? <><Typography className={classes.label} variant="subtitle1"> Please select your role. A League needs atleast 1 moderator to start the auction</Typography> <Select
                         value={selectedOption}
@@ -132,14 +137,16 @@ const JoinLeagueForm = (props) => {
                         onChange={handleChange}
                         options={options}
                       /> </>: ""}
-                      { (props.form == 3) ? <><Typography className={classes.label} variant="subtitle1"> Please select your team name. </Typography><Select
+                      { (props.form == 3) ? <><Typography className={classes.label} variant="subtitle1"> Please select your team name. </Typography>
+                      <Field type="text" name="teamName" component={renderText} label="Team Name" />
+                      <Select
                         className={classes.dropdownSelect}
                         value={selectedTeam}
                         onChange={handleTeamChange}
                         options={teamOptions}
                       /> </>: "" }
                     <div className={classes.btnDiv}>
-                      { (props.form == 1) ? (<><Button className={classes.btn} type="submit" variant="contained" color="primary">
+                      { (props.form == 1) ? (<><Button onClick={handleClick} className={classes.btn} type="submit" variant="contained" color="primary">
                           Join League
                         </Button>
                       <p className={classes.footer}>

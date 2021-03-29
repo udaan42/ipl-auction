@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { API_URL, JWT_TOKEN, USER_ID } from '../../config/config';
-import { getLocalStorage } from '../../utils/storageUtil';
+import { getLocalStorage, setLocalStorage } from '../../utils/storageUtil';
 import axios from 'axios';
 import PlayerStats from './PlayerStats';
 import TeamSummary from './TeamSummary';
@@ -22,7 +22,7 @@ class Room extends React.Component {
             auctionSummary: null,
             currentIndex: 0,
             bidDetails: null,
-            sold: false,
+            sold: true,
             soldData: null,
             playersPopUp: false,
             popData: [],
@@ -69,9 +69,15 @@ class Room extends React.Component {
         })
 
         getBidUpdates((err, data) => {
-            this.setState({
-                bidDetails: data
-            })
+            if(data.currentBid == 0){
+                this.setState({
+                    sold: false
+                })
+            }else{
+                this.setState({
+                    bidDetails: data
+                })
+            }
         })
 
         playerSold((err, data) => {
@@ -97,8 +103,12 @@ class Room extends React.Component {
                 joinAuctionRoom(data);
             }
 
+            let idKey = `currentIndex#${nextProps.detail.leagueId}`;
+            let index = getLocalStorage(idKey);
+
             return {
-                roomDetail: nextProps.detail
+                roomDetail: nextProps.detail,
+                currentIndex: index
             };
         }
 
@@ -170,7 +180,10 @@ class Room extends React.Component {
                 roomId: this.props.detail.leagueId,
                 player: this.props.playerSet[this.state.currentIndex]
             }
+            console.log(data)
             setNextPlayer(data);
+            let idKey = `currentIndex#${this.props.detail.leagueId}`;
+            setLocalStorage(idKey, this.state.currentIndex + 1);
             this.setState({
                 currentIndex: this.state.currentIndex + 1
             })
@@ -184,6 +197,8 @@ class Room extends React.Component {
             player: null
         }
         setNextPlayer(data);
+        let idKey = `currentIndex#${this.props.detail.leagueId}`;
+        setLocalStorage(idKey, 0);
         this.setState({
             currentIndex: 0
         })

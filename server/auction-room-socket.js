@@ -23,9 +23,7 @@ module.exports = function (io, socket) {
         let soldData = {...playerBidDetails, playerId};
         io.in(data.roomId).emit('player-sold', soldData);
       }else{
-        if(playerBidDetails.currentBid > 0){
-          io.in(data.roomId).emit('bid-updates', playerBidDetails);
-        }
+        io.in(data.roomId).emit('bid-updates', playerBidDetails);
       }
     }
     
@@ -79,7 +77,7 @@ module.exports = function (io, socket) {
       playerBidDetails.currentBid = data.nextBid;
       playerBidDetails.bidHistory.push({ userId: data.userId, bid: data.nextBid, time: Date.now() });
       playerBidDetails.playerOwnerUserId = data.userId;
-      playerBidDetails.sold = false;
+      playerBidDetails.sold = null;
       await updateAuctionRoomPlayerKeyInCache(data.roomId, data.playerId, playerBidDetails);
       io.in(data.roomId).emit('bid-updates', playerBidDetails);
     }
@@ -94,11 +92,11 @@ module.exports = function (io, socket) {
   });
 
   socket.on('sell-player', async (data) => {
-    console.log(data.playerId, " sold to ", data.userId);
+    console.log(data.playerId, " sold to ", data);
     let playerId = data.playerId;
-    const playerBidDetails = await fetchCurrentBidForPlayerFromCache(data.roomId, data.playerId);
-    let soldData = {...playerBidDetails, playerId};
+    let playerBidDetails = await fetchCurrentBidForPlayerFromCache(data.roomId, data.playerId);
     playerBidDetails.sold = true;
+    let soldData = {...playerBidDetails, playerId};
     await updateAuctionRoomPlayerKeyInCache(data.roomId, data.playerId, playerBidDetails);
     io.in(data.roomId).emit('player-sold', soldData);
     //in case you want to emit to everyone in room except sender
@@ -124,7 +122,7 @@ module.exports = function (io, socket) {
   }
 
   async function createAuctionRoomPlayerKeyInCache(roomId, playerId) {
-    const value = { currentBid: 0, playerOwnerUserId: 0, sold: false, bidHistory: [] };
+    const value = { currentBid: 0, playerOwnerUserId: 0, sold: null, bidHistory: [] };
     await set('AR#' + roomId + 'PID#' + playerId, JSON.stringify(value));
   }
 

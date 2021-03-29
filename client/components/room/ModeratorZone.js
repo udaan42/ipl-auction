@@ -26,7 +26,7 @@ const ModeratorZone = (props) => {
         <Row className={classes.modRow}>
             
                 <Col> <span className={classes.bagLabel}> Current Bag - </span> <span className={classes.bagValue}> Marquee players </span> </Col>
-                <Col> {(props.playersRemaining == 0)? <Button onClick={props.nextBag}> Next Bag</Button>: <Button disabled={!props.sold} onClick={props.submitPlayer}> Next Player</Button>} </Col>
+                <Col> {(props.playersRemaining == 0)? <Button disabled={!props.sold} onClick={props.nextBag}> Next Bag</Button>: <Button disabled={!props.sold} onClick={props.submitPlayer}> Next Player</Button>} </Col>
                 <Col> <span className={classes.bagLabel}> Players remaining in this bag - </span> <span className={classes.bagValue}>{props.playersRemaining} </span></Col>                
             
         </Row>

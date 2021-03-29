@@ -22,6 +22,7 @@ export default function CreateLeagueModal(props) {
     }
 
     const apiCall = (data) => {
+      console.log(data)
       const bearer_token = getLocalStorage(JWT_TOKEN);
       const bearer = 'Bearer ' + bearer_token;
       const userId = getLocalStorage(USER_ID);
@@ -43,37 +44,41 @@ export default function CreateLeagueModal(props) {
         });
     }
 
-    const nextClick = (leagueName, selectedOption, selectedTeam) => {
-      let data = {};
-      const userId = getLocalStorage(USER_ID);
-      if(selectedOption.value == "moderator"){
-        data = {
-          "leagueName": leagueName,
-          "leagueUsers": [
-              {
-                "teamName": selectedTeam.value,
-                "leagueRole": selectedOption.value
-              }
-          ],
-          "isActive": true
-        }
-        apiCall(data);
-        props.onExit();
-      }else if(props.form == 2 ){
+    const nextClick = (leagueName, selectedOption, selectedTeam, teamName) => {
+      if(props.form == 1 && props.show){
         props.onNext();
       }else{
-        data = {
-          "leagueName": leagueName,
-          "leagueUsers": [
-              {
-                "teamName": selectedTeam.value,
-                "leagueRole": selectedOption.value
-              }
-          ],
-          "isActive": true
+        let data = {};
+        const userId = getLocalStorage(USER_ID);
+        if(selectedOption.value == "moderator"){
+          data = {
+            "leagueName": leagueName,
+            "leagueUsers": [
+                {
+                  "teamName": teamName,
+                  "leagueRole": selectedOption.value
+                }
+            ],
+            "isActive": true
+          }
+          apiCall(data);
+          props.onExit();
+        }else if(props.form == 2 ){
+          props.onNext();
+        }else{
+          data = {
+            "leagueName": leagueName,
+            "leagueUsers": [
+                {
+                  "teamName": teamName,
+                  "leagueRole": selectedOption.value
+                }
+            ],
+            "isActive": true
+          }
+          apiCall(data);
+          props.onExit();  
         }
-        apiCall(data);
-        props.onExit();  
       } 
     }
   

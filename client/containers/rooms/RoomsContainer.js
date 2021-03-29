@@ -16,11 +16,21 @@ const RoomsContainer = (props) => {
     const [refresh, setRefresh] = useState(false);
     const [index, setIndex] = useState(0);
     const [unsold, setUnsold] = useState(false);
-
-    let bagCacheIndex = getLocalStorage(BAG);
-    
     
     const { id } = useParams();
+    const key = `${BAG}#${id}`;
+    const bagName = `bagName#${id}`;
+
+    let bagCacheIndex = getLocalStorage(key);
+
+    if(bagCacheIndex){
+        if(bagCacheIndex != index){
+            setIndex(bagCacheIndex);
+        }  
+    }
+
+    setLocalStorage(bagName, bagNumbers[index]);
+    
     const url = `${API_ENDPOINT}/iplauction/league/${id}`;
     const { data, reload } = getLeagueDetails(url, refresh);
 
@@ -29,6 +39,7 @@ const RoomsContainer = (props) => {
     
     const getNextBag = () => {
         if(index < bagNumbers.length - 1){
+            setLocalStorage(key, index + 1);
             setIndex(index + 1);
         }
         if(index == bagNumbers.length - 1){
@@ -93,10 +104,9 @@ const RoomsContainer = (props) => {
 
     const playerDetail = getLoggedUserDetail();
 
-    let currentBag = _.shuffle(players);
     return(
         <>
-            <Room sellPlayer={sellPlayer} playerSet={currentBag} detail={data} bag={bagNumber} loggedUser={playerDetail} teams={teams} getNextBag={getNextBag} />
+            <Room sellPlayer={sellPlayer} playerSet={players} detail={data} bag={bagNumber} loggedUser={playerDetail} teams={teams} getNextBag={getNextBag} />
         </>
     )
 

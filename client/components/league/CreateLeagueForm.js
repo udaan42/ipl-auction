@@ -72,12 +72,13 @@ const CreateLeagueForm = (props) => {
     const [selectedOption, setRole] = useState({});
     const [selectedTeam, setTeam] = useState({});
     const [leagueName, setLeagueName] = useState();
+    const [teamName, setTeamName] = useState();
 
     const validateForm = (values) => {
       const errors = {};
       console.log(values);
     
-      const requiredFields = ['name'];
+      const requiredFields = ['name', 'teamName'];
       requiredFields.forEach((field) => {
         if (!values[field]) {
           errors[field] = '(The ' + field + ' field is required.)';
@@ -85,6 +86,10 @@ const CreateLeagueForm = (props) => {
       });
 
       setLeagueName(values.name);
+      if(values.teamName){
+        setTeamName(values.teamName);
+      }
+      
   
       return errors;
   };
@@ -105,7 +110,9 @@ const CreateLeagueForm = (props) => {
 
     const handleClick = () => {
       if(props.form > 1) {
-        props.buttonClick(leagueName, selectedOption, selectedTeam);
+        props.buttonClick(leagueName, selectedOption, selectedTeam, teamName);
+      }else{
+        props.onSubmit();
       }
     }
 
@@ -134,7 +141,9 @@ const CreateLeagueForm = (props) => {
                       onChange={handleChange}
                       options={options}
                     /> </>: ""}
-                    { (props.form == 3) ? <><Typography className={classes.label} variant="subtitle1"> Please select your team name. </Typography><Select
+                    { (props.form == 3) ? <><Typography className={classes.label} variant="subtitle1"> Please select your team name. </Typography>
+                    <Field type="text" name="teamName" component={renderText} label="Team Name" />
+                    <Select
                       className={classes.dropdownSelect}
                       value={selectedTeam}
                       onChange={handleTeamChange}
