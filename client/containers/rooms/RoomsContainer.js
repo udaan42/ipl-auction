@@ -28,8 +28,7 @@ const RoomsContainer = (props) => {
             setIndex(bagCacheIndex);
         }  
     }
-
-    setLocalStorage(bagName, bagNumbers[index]);
+    
     
     const url = `${API_ENDPOINT}/iplauction/league/${id}`;
     const { data, reload } = getLeagueDetails(url, refresh);
@@ -49,7 +48,6 @@ const RoomsContainer = (props) => {
     }
 
     const sellPlayer = (data) => {
-        console.log(data);
 
         if(data.playerOwnerUserId != 0){
             const bearer_token = getLocalStorage(JWT_TOKEN);
@@ -69,8 +67,8 @@ const RoomsContainer = (props) => {
                 setRefresh(!refresh);
             })
             .catch((error) => {
-                console.log(error);
                 setRefresh(!refresh);
+                console.log(error);
             });
         }
         

@@ -36,15 +36,17 @@ const getModUI = (props) => {
     }
 
     return(
-        <Row md={4} lg={4} sm={4} xs={4}>
+        <Row>
             {props.data.map((item, index)=> {
                 if(item.leagueRole == "player"){
                     return(
-                        <Col key={index} className={props.classes.tab} onClick={()=> {handleClick(item.playersSquad)}}>
-                            <Typography variant="body2"> {item.userName}</Typography>
-                            <Typography variant="body2"> {item.teamName}</Typography>
-                            <Typography variant="body2"> Slots left- {15 - item.playersSquad.length}</Typography>
-                            <Typography variant="body2"> Purse balance - {getPurseRemaining(item.playersSquad)} crores</Typography>
+                        <Col md={3} sm={3} xs={3} key={index}  onClick={()=> {handleClick(item.playersSquad)}}>
+                            <div className={props.classes.tab}>
+                                <Typography variant="body2"> {item.userName}</Typography>
+                                <Typography variant="body2"> {item.teamName}</Typography>
+                                <Typography variant="body2"> Slots left- {15 - item.playersSquad.length}</Typography>
+                                <Typography variant="body2"> Purse balance - {getPurseRemaining(item.playersSquad)} crores</Typography>
+                            </div>
                         </Col>  
                     )
                 }})}
@@ -60,15 +62,17 @@ const getPlayerUI = (props) => {
     }
 
     return(
-        <Row md={7} lg={7} sm={7} xs={4}>
+        <Row>
             {props.data.map((item, index)=> {
                 if(item.leagueRole == "player"){
                     return(
-                        <Col key={index} className={props.classes.tab} onClick={()=> {handleClick(item.playersSquad)}}>
-                            <Typography variant="body2"> {item.userName}</Typography>
-                            <Typography variant="body2"> {item.teamName}</Typography>
-                            <Typography variant="body2"> Slots left- {15 - item.playersSquad.length}</Typography>
-                            <Typography variant="body2"> Purse balance - {getPurseRemaining(item.playersSquad)} crores</Typography>
+                        <Col md={3} sm={3} xs={3} key={index}  onClick={()=> {handleClick(item.playersSquad)}}>
+                            <div className={props.classes.tab}>
+                                <Typography variant="body2"> {item.userName}</Typography>
+                                <Typography variant="body2"> {item.teamName}</Typography>
+                                <Typography variant="body2"> Slots left- {15 - item.playersSquad.length}</Typography>
+                                <Typography variant="body2"> Purse balance - {getPurseRemaining(item.playersSquad)} crores</Typography>
+                            </div>                          
                         </Col>  
                     )
                 }

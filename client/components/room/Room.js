@@ -180,7 +180,6 @@ class Room extends React.Component {
                 roomId: this.props.detail.leagueId,
                 player: this.props.playerSet[this.state.currentIndex]
             }
-            console.log(data)
             setNextPlayer(data);
             let idKey = `currentIndex#${this.props.detail.leagueId}`;
             setLocalStorage(idKey, this.state.currentIndex + 1);

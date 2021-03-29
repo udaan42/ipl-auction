@@ -12,6 +12,7 @@ export const startAuction = (data) => {
 };
 
 export const sellPlayer = (data) => {
+  console.log("Received SELL DATA", data)
   socket.emit('sell-player', data);
 };
 
