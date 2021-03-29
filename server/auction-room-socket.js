@@ -42,7 +42,6 @@ module.exports = function (io, socket) {
   socket.on('start-auction', async (data) => {
     console.log("Start Auction ------->");
     console.log(data);
-    data = {...data, }
     await insertAuctionDetailsInCache(data);
     io.in(data.roomId).emit('auction-started', data);
   });
@@ -107,6 +106,7 @@ module.exports = function (io, socket) {
   });
 
   async function insertAuctionDetailsInCache(data) {
+    console.log(data);
     const newObject = { roomId: data.roomId, isActive: true, currentPlayerInBid: null };
     await set('AR#' + data.roomId, JSON.stringify(newObject));
   }

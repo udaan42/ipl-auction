@@ -13,6 +13,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import _ from 'lodash';
+import { useHistory } from "react-router-dom";
+import { Col, Button, Row } from 'react-bootstrap';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,11 +69,16 @@ const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
     backgroundColor: '#fff5f5'
+  },
+  roomButton: {
+    margin: 20,
+    marginLeft: "44%"
   }
 }));
 
 export default function LeagueDetails(props) {
     const classes = useStyles();
+    const history = useHistory();
     const [expanded, setExpanded] = React.useState(false);
   
     const handleChange = (panel) => (event, isExpanded) => {
@@ -82,17 +89,39 @@ export default function LeagueDetails(props) {
     if(!_.isEmpty(props.detail)){
       standings = props.detail.leagueUsers;
     }
+
+    const handleClick = (id) => { console.log(id)};
+
+    const handleEnterRoom = (id) => {
+      console.log(props.detail.leagueId)
+      let url = `/rooms/${id}`
+      history.push(url);
+    }
+
+    const displayButton = () => {
+      if(props.detail){
+        if(props.detail.isActive){
+          return (
+            <Row className={classes.roomButton}>
+                <Button variant="secondary" onClick={()=>{handleEnterRoom(props.detail.leagueId)}}> Enter Auction Room</Button>
+            </Row>
+          )
+        }
+      }
+    }
   
     return (
       <div className={classes.root}>
         <Typography variant="h4" className={classes.title}> {(props.detail) ? props.detail.leagueName: ""}</Typography>
         <Typography variant="h6" className={classes.title}> League ID - {(props.detail) ? (<span className={classes.leagueID}>{props.detail.leagueId}</span>): ""}</Typography>
+        {displayButton()}
+        <Col md={8}>
         <Accordion>
             <AccordionSummary
                 aria-controls="title-content"
                 id="league-title"
             >
-                <Typography className={classes.headingRank}>Rank</Typography>
+                <Typography className={classes.headingRank}>Position</Typography>
                 <Typography className={classes.headingName}>Name</Typography>
                 <Typography className={classes.secondaryHeadingTeam}>Team</Typography>
                 <Typography className={classes.secondaryHeadingScore}>Score</Typography>
@@ -101,18 +130,19 @@ export default function LeagueDetails(props) {
         {standings.map((item)=>{
             if(item.leagueRole == "player"){
               return(
-                <Accordion expanded={expanded === item.teamName} onChange={handleChange(item.teamName)}>
+                <Accordion >
                     <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
+                        // expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1bh-content"
                         id={item.userName}
+                        onClick={()=> {handleClick(item.userName)}}
                     >
-                        <Typography className={classes.heading}>{item.rank}</Typography>
+                        <Typography className={classes.heading}>-</Typography>
                         <Typography className={classes.heading}>{item.userName}</Typography>
                         <Typography className={classes.secondaryHeading}>{item.teamName}</Typography>
                         <Typography className={classes.secondaryHeading}>{item.points}</Typography>
                     </AccordionSummary>
-                    <AccordionDetails>
+                    {/* <AccordionDetails>
                         <TableContainer component={Paper}>
                             <Table className={classes.table} size="small" aria-label="a dense table">
                                 <TableHead>
@@ -135,12 +165,14 @@ export default function LeagueDetails(props) {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </AccordionDetails>
+                    </AccordionDetails> */}
                 </Accordion>
+               
               )
             }
             
         })}
+        </Col>
       </div>
     );
 }

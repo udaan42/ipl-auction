@@ -46,7 +46,9 @@ let LiveTicker = (props) => {
 
     const getBiddingTeam = (userId) => {
         let bidTeam = _.find(props.teams, ['userId', userId]);
-        return bidTeam.teamName;
+        if(bidTeam){
+            return bidTeam.teamName;
+        }
     }
 
     const getPrice = (value) => {

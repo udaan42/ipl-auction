@@ -58,7 +58,6 @@ server.listen(app.get('socketport'), app.get('host'), () => {
 io.on('connection', (socket) => {
   
   console.log("Coneected New socket ----------------------------->");
-  socket.emit("notification", "User connected");
   console.log(socket.id);
   require('./auction-room-socket.js')(io, socket);
 });

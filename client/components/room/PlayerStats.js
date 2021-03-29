@@ -172,7 +172,7 @@ class PlayerStats extends React.Component{
                     nextBid = nextProps.bidDetails.currentBid + 10;
                 }else if(nextProps.bidDetails.currentBid >= 200 && nextProps.bidDetails.currentBid < 500){
                     nextBid = nextProps.bidDetails.currentBid + 20;
-                }else if(nextProps.bidDetails.currentBid >= 200 && nextProps.bidDetails.currentBid < 500){
+                }else if(nextProps.bidDetails.currentBid >= 500 && nextProps.bidDetails.currentBid < 800){
                     nextBid = nextProps.bidDetails.currentBid + 25;
                 }else{
                     nextBid = nextProps.bidDetails.currentBid + 50;

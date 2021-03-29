@@ -5,6 +5,8 @@ import { Typography } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import Link from '@material-ui/core/Link';
+import { Col } from 'react-bootstrap';
+const copy = require('clipboard-copy')
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,22 +59,17 @@ export default function LeagueItem(props) {
   const history = useHistory();
 
   const handleClick = () => {
-    if(props.item.isActive){
-      let url = `/rooms/${props.item.leagueId}`
-      history.push(url);
-    }else{
       let url = `/leagues/${props.item.leagueId}`
       history.push(url);
-    }
   }
 
   const copyCode = (e) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(props.item.leagueId);
-    console.log(e);
+    copy(props.item.leagueId);
   }
 
   return (
+    <Col>
       <div className={classes.root}>
         <Paper className={classes.leagueItem} elevation={1} onClick={handleClick}>
             <Typography className={classes.leagueName} variant="h6" align="center">
@@ -92,5 +89,6 @@ export default function LeagueItem(props) {
             </Typography>
         </Paper>
       </div>
+    </Col>
   );
 }

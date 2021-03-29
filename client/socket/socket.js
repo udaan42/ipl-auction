@@ -1,8 +1,9 @@
 import openSocket from 'socket.io-client';
 
-const socket = openSocket('http://auction-fantasy.us-east-2.elasticbeanstalk.com');
+const socket = openSocket();
 
 export const joinAuctionRoom = (data) => {
+    console.log(data);
   socket.emit('joinAuction', data);
 };
 
@@ -20,7 +21,7 @@ export const playerSold = (cb) => {
   });
 };
 
-export const messageListen = (cb) => {
+export const onJoinRoom = (cb) => {
   socket.on('notification', (data) => {
     return cb(null, data);
   });

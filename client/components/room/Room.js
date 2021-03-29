@@ -8,7 +8,7 @@ import TeamSummary from './TeamSummary';
 import ModeratorZone from './ModeratorZone';
 import PlayerPopupModal from './PlayerPopupModal';
 import _ from 'lodash';
-import { joinAuctionRoom, messageListen, messageTestListen, startAuction, getCurrentPlayerData, 
+import { joinAuctionRoom, onJoinRoom, messageTestListen, startAuction, getCurrentPlayerData, 
     getAuctionStatus, setNextPlayer, submitBid, getBidUpdates, getRoomDetails, sellPlayer, playerSold } from '../../socket/socket';
 
 class Room extends React.Component {
@@ -25,7 +25,9 @@ class Room extends React.Component {
             sold: false,
             soldData: null,
             playersPopUp: false,
-            popData: []
+            popData: [],
+            roomDetail: null,
+            joinedRoom: false
         }
     }
 
@@ -33,9 +35,12 @@ class Room extends React.Component {
         this.getUserRole();
         this.enterAuctionRoom();
 
-        messageListen((err, data) => {
-            console.log("Message from the Backend: ");
+        onJoinRoom((err, data) => {
             console.log(data);
+            console.log("Message from the Backend: ");
+            this.setState({
+                joinedRoom: true
+            })
         });
         messageTestListen((err, data) => {
             console.log("Interval");
@@ -79,9 +84,32 @@ class Room extends React.Component {
         })
 
     }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (prevState.roomDetail !== nextProps.detail) {
+
+            const data = {
+                userId: getLocalStorage(USER_ID),
+                roomId: nextProps.detail.leagueId,
+            };
+
+            if(!prevState.joinedRoom){
+                joinAuctionRoom(data);
+            }
+
+            return {
+                roomDetail: nextProps.detail
+            };
+        }
+
+        // Return null to indicate no change to state.
+        return null;
+    }
   
     enterAuctionRoom = () => {
+        
         if(this.props.detail){
+            console.log("ENter auction room")
             const data = {
                 userId: getLocalStorage(USER_ID),
                 roomId: this.props.detail.leagueId,
@@ -128,9 +156,11 @@ class Room extends React.Component {
 
     getActionButtons = () => {
         if(this.state.role == "moderator"){
-            return (
-                <Button onClick={this.handleStartButton}>Start Auction</Button>
-            )
+            if(!this.state.isActive){
+                return (
+                    <Button onClick={this.handleStartButton}>Start Auction</Button>
+                )
+            }
         }
     }
 
@@ -213,7 +243,7 @@ class Room extends React.Component {
       <div>
         <h4> Auction Room - {(this.props.detail)?this.props.detail.leagueName: ""}</h4>
         {(!this.state.isActive) ? this.getActionButtons(): ""}
-        {!this.state.isActive ? <Button onClick={this.enterAuctionRoom}>Enter Auction</Button> : ""}
+        {/* {!this.state.isActive ? <Button onClick={this.enterAuctionRoom}>Enter Auction</Button> : ""} */}
         {(this.state.isActive) ? this.getAuctionUI(): <div> Waiting for Moderator to start the auction</div>}
         <PlayerPopupModal data={this.state.popData} show={this.state.playersPopUp} onExit={this.closePlayerPopup}/>
       </div>
