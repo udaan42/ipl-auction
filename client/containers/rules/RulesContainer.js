@@ -1,4 +1,5 @@
 import React from 'react';
+import Rules from '../../components/rules/Rules';
 
 class RulesContainer extends React.Component{
 
@@ -8,7 +9,7 @@ class RulesContainer extends React.Component{
 
     render(){
         return(
-            <div>Rules page</div>
+            <Rules/>
         )
     }
 }
