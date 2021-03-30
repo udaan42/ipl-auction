@@ -36,7 +36,7 @@ public class PlayerInfoVO {
     private String bowlingStrikeRate;
     private Integer noOfFourWickets;
     private Integer noOfFiveWickets;
-    private String bagNumber;
+    private Integer bagNumber;
     private Boolean isPlaying;
     private Boolean isCaptain;
     private Boolean isWicketKeeper;
@@ -319,11 +319,11 @@ public class PlayerInfoVO {
         this.soldPrice = soldPrice;
     }
 
-    public String getBagNumber() {
+    public Integer getBagNumber() {
         return bagNumber;
     }
 
-    public void setBagNumber(String bagNumber) {
+    public void setBagNumber(Integer bagNumber) {
         this.bagNumber = bagNumber;
     }
 

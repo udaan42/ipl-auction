@@ -74,8 +74,8 @@ public class PlayerService {
 
         if(!CollectionUtils.isEmpty(playerInfoVOS)){
             for(PlayerInfoVO playerInfoVO : playerInfoVOS){
-                if(!StringUtils.isEmpty(playerInfoVO.getBagNumber())){
-                    if(playerInfoVO.getBagNumber().equalsIgnoreCase(bagNumber)){
+                if(playerInfoVO.getBagNumber() != null){
+                    if(playerInfoVO.getBagNumber() == Integer.parseInt(bagNumber)){
                         playerInfoByBag.add(playerInfoVO);
                     }
                 }
