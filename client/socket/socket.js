@@ -3,8 +3,8 @@ import openSocket from 'socket.io-client';
 const socket = openSocket();
 
 export const joinAuctionRoom = (data) => {
-    console.log(data);
-  socket.emit('joinAuction', data);
+  console.log(data);
+  socket.emit('join-auction', data);
 };
 
 export const startAuction = (data) => {
@@ -12,7 +12,7 @@ export const startAuction = (data) => {
 };
 
 export const sellPlayer = (data) => {
-  console.log("Received SELL DATA", data)
+  console.log('Received SELL DATA', data);
   socket.emit('sell-player', data);
 };
 
@@ -24,6 +24,7 @@ export const playerSold = (cb) => {
 
 export const onJoinRoom = (cb) => {
   socket.on('notification', (data) => {
+    console.log(data);
     return cb(null, data);
   });
 };

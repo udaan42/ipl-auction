@@ -44,20 +44,20 @@ app.use(errorHandler.notFound);
 app.use(errorHandler.methodNotAllowed);
 
 var server = require('http').Server(app);
-var io = require('socket.io')(server,  {
+var io = require('socket.io')(server, {
   cors: {
     // origin: "http://auction-fantasy.us-east-2.elasticbeanstalk.com",
     origin: "http://localhost:3000",
     methods: ["GET", "POST"]
-  }});
+  }
+});
 
 server.listen(app.get('socketport'), app.get('host'), () => {
   console.log('socket listening');
 });
 
 io.on('connection', (socket) => {
-  
-  console.log("Coneected New socket ----------------------------->");
+  console.log("Connected New socket ----------------------------->");
   console.log(socket.id);
   require('./auction-room-socket.js')(io, socket);
 });
