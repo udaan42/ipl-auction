@@ -33,6 +33,7 @@ public class LeagueInfoVOLeagueInfoMapper implements Mapper<LeagueInfoVO,LeagueI
         }
         leagueInfo.setLeagueUsers(leagueUsers);
         leagueInfo.setIsActive(source.getIsActive());
+        leagueInfo.setLeagueStatus(source.getLeagueStatus());
 
         return leagueInfo;
     }

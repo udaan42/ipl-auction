@@ -10,6 +10,7 @@ public class LeagueInfoVO {
     private Date createdDateTime;
     private Date lastModifiedDateTime;
     private Boolean isActive = true;
+    private String leagueStatus;
 
     public String getLeagueId() {
         return leagueId;
@@ -56,5 +57,13 @@ public class LeagueInfoVO {
     }
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public String getLeagueStatus() {
+        return leagueStatus;
+    }
+
+    public void setLeagueStatus(String leagueStatus) {
+        this.leagueStatus = leagueStatus;
     }
 }

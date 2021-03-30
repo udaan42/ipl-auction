@@ -7,6 +7,7 @@ import com.iplauction.jcrud.mapper.LeagueUserMapper;
 import com.iplauction.jcrud.mapper.PlayerInfoVOPlayerInfoMapper;
 import com.iplauction.jcrud.model.*;
 import com.iplauction.jcrud.repository.LeagueInfoRepository;
+import com.iplauction.jcrud.utility.LeagueStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,7 @@ public class LeagueInfoService {
 
     public LeagueInfoVO addNewLeagueInfo(LeagueInfoVO leagueInfoVO, String userId) throws Exception {
         LeagueInfoVO leagueInfoVO1 = null;
+        leagueInfoVO.setLeagueStatus(LeagueStatus.NOT_STARTED.toString());
 
         if (!StringUtils.isEmpty(userId)) {
             UserInfoVO userInfoVO = userInfoService.getUserInfoById(userId);
@@ -421,5 +423,23 @@ public class LeagueInfoService {
             }
         }
         return false;
+    }
+
+    public LeagueInfoVO updateLeagueStatus(String leagueInfoId, String leagueStatus) throws Exception {
+
+        Optional<LeagueInfo> leagueInfo = leagueInfoRepository.findById((leagueInfoId));
+        LeagueInfo leagueInfo1 = leagueInfo.get();
+        LeagueInfoVO leagueInfoVO = null;
+
+        if (leagueInfo != null && leagueInfo.isPresent()) {
+
+            if(!StringUtils.isEmpty(leagueInfo1.getLeagueStatus())){
+                leagueInfo1.setLeagueStatus(leagueStatus);
+                leagueInfo1 = leagueInfoRepository.save(leagueInfo1);
+                leagueInfoVO = leagueInfoLeagueInfoVOMapper.map(leagueInfo1);
+            }
+
+        }
+       return leagueInfoVO;
     }
 }

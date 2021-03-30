@@ -211,6 +211,22 @@ public class LeagueController {
         }
     }
 
+    @PutMapping({"/updateLeagueStatus/{leagueInfoId}/{leagueStatus}"})
+    public ResponseEntity<GenericServiceResponse<LeagueInfoVO>> updateLeagueStatus(
+            @PathVariable(name = "leagueInfoId")   @Valid @NotNull String leagueInfoId,
+            @PathVariable(name = "leagueStatus")   @Valid @NotNull String leagueStatus) {
+        try {
+            logger.info("getLeagueInfoById {leagueInfoId} ==>", leagueInfoId);
 
+            LeagueInfoVO leagueInfoVO = leagueInfoService.updateLeagueStatus(leagueInfoId,leagueStatus);
+
+            logger.info("getLeagueInfoById {leagueInfoId} is Complete <==", leagueInfoId);
+            return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(SUCCESS, "leagueInfo", leagueInfoVO), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while getting scan requests", e);
+            return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

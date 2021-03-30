@@ -16,6 +16,7 @@ public class LeagueInfo {
     private Date createdDateTime;
     private Date lastModifiedDateTime;
     private Boolean isActive = true;
+    private String leagueStatus;
 
     @Id
     @DynamoDBHashKey
@@ -70,5 +71,14 @@ public class LeagueInfo {
 
     public void setLeagueUsers(List<LeagueUser> leagueUsers) {
         this.leagueUsers = leagueUsers;
+    }
+
+    @DynamoDBAttribute
+    public String getLeagueStatus() {
+        return leagueStatus;
+    }
+
+    public void setLeagueStatus(String leagueStatus) {
+        this.leagueStatus = leagueStatus;
     }
 }
