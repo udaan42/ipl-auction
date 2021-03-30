@@ -46,6 +46,7 @@ public class PlayerInfo {
     private Boolean isWicketKeeper;
     private Date createdDateTime;
     private Date lastModifiedDateTime;
+    private String bagCode;
 
 
 
@@ -394,5 +395,14 @@ public class PlayerInfo {
 
     public void setWicketKeeper(Boolean wicketKeeper) {
         isWicketKeeper = wicketKeeper;
+    }
+
+    @DynamoDBAttribute
+    public String getBagCode() {
+        return bagCode;
+    }
+
+    public void setBagCode(String bagCode) {
+        this.bagCode = bagCode;
     }
 }

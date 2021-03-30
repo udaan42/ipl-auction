@@ -42,6 +42,7 @@ public class PlayerInfoVO {
     private Boolean isWicketKeeper;
     private Date createdDateTime;
     private Date lastModifiedDateTime;
+    private String bagCode;
 
 
     public String getPlayerId() {
@@ -347,5 +348,13 @@ public class PlayerInfoVO {
 
     public void setWicketKeeper(Boolean wicketKeeper) {
         isWicketKeeper = wicketKeeper;
+    }
+
+    public String getBagCode() {
+        return bagCode;
+    }
+
+    public void setBagCode(String bagCode) {
+        this.bagCode = bagCode;
     }
 }
