@@ -50,7 +50,7 @@ public class PlayerInfoVOPlayerInfoMapper implements Mapper<PlayerInfoVO, Player
         playerInfo.setCaptain(source.getCaptain());
         playerInfo.setWicketKeeper(source.getWicketKeeper());
         playerInfo.setBagCode(source.getBagCode());
-
+        playerInfo.setPlayerImageUrl(source.getPlayerImageUrl());
         return playerInfo;
     }
 }

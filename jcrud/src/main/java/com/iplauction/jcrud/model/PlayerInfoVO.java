@@ -43,6 +43,7 @@ public class PlayerInfoVO {
     private Date createdDateTime;
     private Date lastModifiedDateTime;
     private String bagCode;
+    private String playerImageUrl;
 
 
     public String getPlayerId() {
@@ -356,5 +357,13 @@ public class PlayerInfoVO {
 
     public void setBagCode(String bagCode) {
         this.bagCode = bagCode;
+    }
+
+    public String getPlayerImageUrl() {
+        return playerImageUrl;
+    }
+
+    public void setPlayerImageUrl(String playerImageUrl) {
+        this.playerImageUrl = playerImageUrl;
     }
 }

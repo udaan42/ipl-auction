@@ -47,6 +47,7 @@ public class PlayerInfo {
     private Date createdDateTime;
     private Date lastModifiedDateTime;
     private String bagCode;
+    private String playerImageUrl;
 
 
 
@@ -404,5 +405,14 @@ public class PlayerInfo {
 
     public void setBagCode(String bagCode) {
         this.bagCode = bagCode;
+    }
+
+    @DynamoDBAttribute
+    public String getPlayerImageUrl() {
+        return playerImageUrl;
+    }
+
+    public void setPlayerImageUrl(String playerImageUrl) {
+        this.playerImageUrl = playerImageUrl;
     }
 }
