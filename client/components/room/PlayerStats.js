@@ -14,6 +14,12 @@ import clsx from 'clsx';
 import { API_ENDPOINT, USER_ID, JWT_TOKEN } from '../../config/config';
 import { getLocalStorage } from '../../utils/storageUtil';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 const styles = {
     playerDetailsRow: {
         marginBottom: 13,
@@ -146,6 +152,22 @@ const styles = {
         bottom: "auto",
         left: "50%",
         right: "auto"
+    },
+    onlineUsers: {
+        paddingTop: 15,
+        fontSize: 14,
+        border: "solid 1px #555",
+        borderRadius: 5
+    },
+    onlineUsersTitle: {
+        textAlign: "center",
+        marginBottom: 15,
+        display: "block",
+        borderBottom: "solid 1px #555",
+        paddingBottom: 10
+    },
+    onlineUsersItem:{
+        marginBottom: 5
     }
 
 };
@@ -158,7 +180,8 @@ class PlayerStats extends React.Component{
         this.state = {
             nextBid: null,
             bidDetails: null,
-            data: null
+            data: null,
+            open: false
         }
     }
 
@@ -406,6 +429,32 @@ class PlayerStats extends React.Component{
 
     }
 
+    handleOpen = () => {
+        this.setState({
+            open: true
+        })
+    }
+
+    handleClose = () => {
+        this.setState({
+            open: false
+        })
+    }
+
+    confirmFold = () => {
+        this.props.foldBtn();
+        this.setState({
+            open: false
+        })
+    }
+
+    getBiddingTeam = (userId) => {
+        let bidTeam = _.find(this.props.teams, ['userId', userId]);
+        if(bidTeam){
+            return bidTeam.userName;
+        }
+    }
+
 
     render(){
 
@@ -424,8 +473,30 @@ class PlayerStats extends React.Component{
                             <Row>
                                 <div className={this.props.classes.nextBidDetails}><span className={this.props.classes.nextBidLabel}> Next Bid - </span> <span className={this.props.classes.nextBid}>{this.getPrice(this.state.nextBid)}</span></div>
                                 <Button variant="success" disabled={disabled} onClick={this.submitBtn} className={this.props.classes.bidBtnRaise}> Raise <PanToolIcon className={this.props.classes.raise}/></Button>
-                                <Button variant="danger" disabled={foldDisabled} onClick={()=>{this.props.foldBtn()}} className={this.props.classes.bidBtnFold}> Fold <ThumbDownAltIcon className={this.props.classes.thumbsdown}/></Button>
+                                <Button variant="danger" disabled={foldDisabled} onClick={this.handleOpen} className={this.props.classes.bidBtnFold}> Fold <ThumbDownAltIcon className={this.props.classes.thumbsdown}/></Button>
                             </Row>
+                            <Dialog
+                                open={this.state.open}
+                                keepMounted
+                                onClose={this.handleClose}
+                                aria-labelledby="alert-dialog-slide-title"
+                                aria-describedby="alert-dialog-slide-description"
+                            >
+                                <DialogTitle id="alert-dialog-slide-title">{"Are you sure want to fold?"}</DialogTitle>
+                                <DialogContent>
+                                <DialogContentText id="alert-dialog-slide-description">
+                                    Once you fold then you cant bid for this player again this round. Are you sure ?
+                                </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                <Button onClick={this.handleClose} variant="secondary">
+                                    Cancel
+                                </Button>
+                                <Button onClick={this.confirmFold} variant="danger">
+                                    Yes
+                                </Button>
+                                </DialogActions>
+                            </Dialog>
                         </Container>: ""}
                     </Col>
                     <Col md={2} sm={12}>
@@ -453,6 +524,18 @@ class PlayerStats extends React.Component{
                     </Col>
                     <Col md={3} sm={12}>
                         {this.props.bidHistory.length > 0 ? <LiveTicker bidHistory={this.props.bidHistory} teams={this.props.teams} /> : ""}
+                    </Col>
+                    <Col md={2}>
+                        <div className={this.props.classes.onlineUsers}>
+                            <span className={this.props.classes.onlineUsersTitle}> Users Online</span>
+                            <ul>
+                                {this.props.onlineUsers.map((user)=> {
+                                    return(<li className={this.props.classes.onlineUsersItem}>
+                                        {this.getBiddingTeam(user)}
+                                    </li>)
+                                })}
+                            </ul>
+                        </div>
                     </Col>
                 </Row> 
             )

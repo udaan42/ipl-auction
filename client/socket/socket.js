@@ -81,5 +81,5 @@ export const getFoldUpdates = (cb) => {
 
 // Remember to disconnect the socket once you unmount
 export const disconnect = () => {
-  socket.disconnect();
+  socket.emit('leave-auction', "");
 };

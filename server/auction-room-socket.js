@@ -113,7 +113,7 @@ module.exports = function (io, socket) {
       //socket.to(data.roomId).emit('new event from server', data.msg);
     });
 
-    socket.on('disconnect', async () => {
+    socket.on('leave-auction', async () => {
       console.log('disconnecting');
       let auctionRoomLiveUsers = await fetchAuctionLiveUsersFromCache(socket.roomId);
       auctionRoomLiveUsers = auctionRoomLiveUsers.filter(userId => userId !== socket.userId);

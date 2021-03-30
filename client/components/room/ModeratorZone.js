@@ -1,7 +1,16 @@
 import React from 'react'
 import { Button, Row, Col, Container } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const useStyles = makeStyles((theme) => ({
     bagLabel: {
@@ -28,6 +37,16 @@ const useStyles = makeStyles((theme) => ({
 
 const ModeratorZone = (props) => {
 
+    const [open, setOpen] = React.useState(false);
+
+    const endButtonClicked = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     const classes = useStyles();
 
     return(
@@ -40,8 +59,32 @@ const ModeratorZone = (props) => {
                 <Col md={2}> {(props.playersRemaining == 0)? <Button className={classes.nextBtn} disabled={!props.sold} onClick={props.nextBag}> Next Bag</Button>: <Button className={classes.nextBtn} disabled={!props.sold} onClick={props.submitPlayer}> Next Player</Button>} </Col>
                 <Col></Col>              
                 <Col md={2}>
-                    <Button className={classes.endButton} variant="warning"> End Auction</Button>
+                    <Button className={classes.endButton} onClick={endButtonClicked} variant="warning"> End Auction</Button>
                 </Col>
+
+                <Dialog
+                    open={open}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle id="alert-dialog-slide-title">{"Are you sure want to end the auction?"}</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Once you end the auction, you wont be able to enter the auction room for this league again. Are you sure ?
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleClose} variant="secondary">
+                        Disagree
+                    </Button>
+                    <Button onClick={handleClose} variant="danger">
+                        Agree
+                    </Button>
+                    </DialogActions>
+                </Dialog>
         </Row>
     )
 }

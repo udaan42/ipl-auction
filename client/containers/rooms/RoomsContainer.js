@@ -80,7 +80,8 @@ const RoomsContainer = (props) => {
             data.leagueUsers.map((user)=> {
                 let temp = {
                     userId: user.userId,
-                    teamName: user.teamName
+                    teamName: user.teamName,
+                    userName: user.userName
                 }
                 teams.push(temp);
             })

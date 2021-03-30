@@ -44,6 +44,7 @@ class Room extends React.Component {
       joinedRoom: false,
       fold: false,
       foldedArray: [],
+      onlineUsers: []
     };
   }
 
@@ -52,11 +53,12 @@ class Room extends React.Component {
     this.enterAuctionRoom();
 
     onJoinRoom((err, data) => {
-      console.log(data);
-      console.log('Message from the Backend: ');
-      this.setState({
-        joinedRoom: true,
-      });
+        let users = new Set(data);
+
+        this.setState({
+            joinedRoom: true,
+            onlineUsers: [...users]
+        });
     });
     messageTestListen((err, data) => {
       console.log('Interval');
@@ -163,6 +165,10 @@ class Room extends React.Component {
 
 }
 
+
+    componentWillUnmount(){
+        disconnect();
+    }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.roomDetail !== nextProps.detail) {
@@ -322,6 +328,7 @@ class Room extends React.Component {
             bidHistory={bidHistory}
             bidDetails={this.state.bidDetails}
             role={this.state.role}
+            onlineUsers={this.state.onlineUsers}
           />
           <TeamSummary
             foldedArray={this.state.foldedArray}
