@@ -8,6 +8,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 
+import { API_ENDPOINT, USER_ID, JWT_TOKEN, BAG } from '../../config/config';
+import { getLocalStorage, setLocalStorage } from '../../utils/storageUtil';
+import axios from 'axios';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -38,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 const ModeratorZone = (props) => {
 
     const [open, setOpen] = React.useState(false);
+    const leagueId = props.leagueId;
 
     const endButtonClicked = () => {
         setOpen(true);
@@ -49,11 +54,35 @@ const ModeratorZone = (props) => {
 
     const classes = useStyles();
 
+    const agreeEndAuction = () => {
+
+        const bearer_token = getLocalStorage(JWT_TOKEN);
+        const bearer = 'Bearer ' + bearer_token;
+        const url = `${API_ENDPOINT}/iplauction/league/updateLeagueStatus/${leagueId}/ENDED`;
+
+        const headers = {
+            'Authorization': bearer
+        }
+        // POST CALL
+        axios.put(url, {}, {
+            headers: headers
+        })
+        .then((response) => {
+            
+            console.log(response);
+            setOpen(false);
+            props.onEndAuction();
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
     return(
         <Row className={classes.modRow}>
             
                 <Col md={3}> 
-                    <div className={classes.bagLabel}> <span>Current Bag - </span><span className={classes.bagValue}> Marquee players </span> </div> 
+                    <div className={classes.bagLabel}> <span>Current Bag - </span><span className={classes.bagValue}> {props.currentBag} </span> </div> 
                     <div className={classes.bagLabel}> <span> Players remaining in this bag - </span> <span className={classes.bagValue}>{props.playersRemaining}</span> </div>
                 </Col>
                 <Col md={2}> {(props.playersRemaining == 0)? <Button className={classes.nextBtn} disabled={!props.sold} onClick={props.nextBag}> Next Bag</Button>: <Button className={classes.nextBtn} disabled={!props.sold} onClick={props.submitPlayer}> Next Player</Button>} </Col>
@@ -80,7 +109,7 @@ const ModeratorZone = (props) => {
                     <Button onClick={handleClose} variant="secondary">
                         Disagree
                     </Button>
-                    <Button onClick={handleClose} variant="danger">
+                    <Button onClick={agreeEndAuction} variant="danger">
                         Agree
                     </Button>
                     </DialogActions>

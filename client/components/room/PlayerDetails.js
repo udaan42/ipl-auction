@@ -118,10 +118,10 @@ const PlayerDetails = (props) => {
 
     return(
             <Row>
-                <Col xs={6} md={4} className="player-image">
-                    <Image src="https://auction-fantasy-images.s3.amazonaws.com/avatar-placeholder.png" height="175px" width="200px" rounded  fluid  />
+                <Col xs={6} md={5} className="player-image">
+                    <Image src={props.data.playerImageUrl} height="175px" width="200px" rounded  fluid  />
                 </Col>
-                <Col md={8} xs={6} className={classes.playerInfoView}>
+                <Col md={7} xs={6} className={classes.playerInfoView}>
                     <Row className={classes.playerDetailsRow}>
                         Name: <span className={classes.playerData}> {props.data.playerName} </span>
                     </Row>

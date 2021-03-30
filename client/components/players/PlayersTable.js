@@ -58,7 +58,8 @@ const headCells = [
   { id: 'teamName', numeric: false, disablePadding: false, label: 'Team', wide: true , sort: true},
   { id: 'playerRole', numeric: false, disablePadding: false, label: 'Role', wide: false , sort: true },
   { id: 'basePrice', numeric: false, disablePadding: false, label: 'Base Price', wide: false, sort: true },
-  { id: 'bagNumber', numeric: false, disablePadding: false, label: 'Bag', wide: false , sort: true},
+  { id: 'bagNumber', numeric: false, disablePadding: false, label: 'Bag Order', wide: false , sort: true},
+  { id: 'bagCode', numeric: false, disablePadding: false, label: 'Bag Name', wide: false , sort: true},
   { id: 'matchesPlayed', numeric: true, disablePadding: false, label: 'Matches', wide: false },
   { id: 'runsScored', numeric: true, disablePadding: false, label: 'Runs', wide: false },
   { id: 'highestScore', numeric: true, disablePadding: false, label: 'HS', wide: false },
@@ -245,7 +246,8 @@ export default function PlayersTable(props) {
                       <TableCell className={classes.rowContent} align="center">
                         {getPriceValue(row.basePrice)}
                       </TableCell>
-                      <TableCell className={classes.rowContent} align="center">{row.bagNumber}</TableCell>
+                      <TableCell className={classes.rowContent} align="center">{parseInt(row.bagNumber)}</TableCell>
+                      <TableCell className={classes.rowContent} align="center">{row.bagCode}</TableCell>
                       <TableCell className={classes.rowContent} align="right">{row.matchesPlayed}</TableCell>
                       <TableCell className={classes.rowContent} align="right">{row.runsScored}</TableCell>
                       <TableCell className={classes.rowContent} align="right">{row.highestScore}</TableCell>

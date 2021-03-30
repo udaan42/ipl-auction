@@ -19,6 +19,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Chatbox from './Chatbox';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import { Paper } from '@material-ui/core';
 
 const styles = {
     playerDetailsRow: {
@@ -154,20 +158,24 @@ const styles = {
         right: "auto"
     },
     onlineUsers: {
-        paddingTop: 15,
+        paddingTop: 10,
         fontSize: 14,
         border: "solid 1px #555",
         borderRadius: 5
     },
     onlineUsersTitle: {
         textAlign: "center",
-        marginBottom: 15,
         display: "block",
         borderBottom: "solid 1px #555",
-        paddingBottom: 10
+        paddingBottom: 5
+    },
+    chatTitle: {
+        fontSize: 17,
+        fontWeight: 600
     },
     onlineUsersItem:{
-        marginBottom: 5
+        marginBottom: 5,
+        marginTop: 10
     }
 
 };
@@ -466,7 +474,7 @@ class PlayerStats extends React.Component{
         if(this.props.role == "player"){
             return(
                 <Row>
-                    <Col md={7} sm={12} className={this.props.classes.playerInfo}>
+                    <Col md={6} sm={12} className={this.props.classes.playerInfo}>
                         {(this.props.data)?<Container>
                             <PlayerDetails  teams={this.props.teams} bidDetails={this.props.bidDetails} data={this.props.data} />
                             {this.getSoldDetails()}
@@ -499,7 +507,7 @@ class PlayerStats extends React.Component{
                             </Dialog>
                         </Container>: ""}
                     </Col>
-                    <Col md={2} sm={12}>
+                    <Col md={3} sm={12}>
                         {this.props.bidHistory.length > 0 ? <LiveTicker bidHistory={this.props.bidHistory} teams={this.props.teams} /> : ""}
                     </Col>
                     <Col md={3} sm={12}>
@@ -510,7 +518,7 @@ class PlayerStats extends React.Component{
         }else{
             return(
                 <Row>
-                    <Col md={7} sm={12} className={this.props.classes.playerInfo}>
+                    <Col md={6} sm={12} className={this.props.classes.playerInfo}>
                         {(this.props.data)?<Container>
                             <PlayerDetails  teams={this.props.teams} bidDetails={this.props.bidDetails}  data={this.props.data} />
                             {this.getSoldDetails()}
@@ -525,9 +533,15 @@ class PlayerStats extends React.Component{
                     <Col md={3} sm={12}>
                         {this.props.bidHistory.length > 0 ? <LiveTicker bidHistory={this.props.bidHistory} teams={this.props.teams} /> : ""}
                     </Col>
-                    <Col md={2}>
-                        <div className={this.props.classes.onlineUsers}>
-                            <span className={this.props.classes.onlineUsersTitle}> Users Online</span>
+                    <Col md={3}>
+                        <Grid component={Paper} className={this.props.classes.onlineUsers}>
+                            {/* <span className={this.props.classes.onlineUsersTitle}> Chat</span> */}
+                            <Grid className= {this.props.classes.onlineUsersTitle} container>
+                                <Grid item xs={12} >
+                                    <Typography variant="h5" className={this.props.classes.chatTitle}>Online Users</Typography>
+                                </Grid>
+                            </Grid>
+                            {/* <Chatbox users={this.props.onlineUsers} /> */}
                             <ul>
                                 {this.props.onlineUsers.map((user)=> {
                                     return(<li className={this.props.classes.onlineUsersItem}>
@@ -535,7 +549,7 @@ class PlayerStats extends React.Component{
                                     </li>)
                                 })}
                             </ul>
-                        </div>
+                        </Grid>
                     </Col>
                 </Row> 
             )
