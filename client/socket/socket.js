@@ -11,8 +11,11 @@ export const startAuction = (data) => {
   socket.emit('start-auction', data);
 };
 
+export const endAuction = (data) => {
+  socket.emit('end-auction', data);
+};
+
 export const sellPlayer = (data) => {
-  console.log('Received SELL DATA', data);
   socket.emit('sell-player', data);
 };
 
@@ -25,6 +28,12 @@ export const playerSold = (cb) => {
 export const onJoinRoom = (cb) => {
   socket.on('notification', (data) => {
     console.log(data);
+    return cb(null, data);
+  });
+};
+
+export const onEndAuction = (cb) => {
+  socket.on('auction-ended', (data) => {
     return cb(null, data);
   });
 };

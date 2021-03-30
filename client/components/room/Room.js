@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import { API_URL, JWT_TOKEN, USER_ID } from '../../config/config';
+import { API_ENDPOINT, API_URL, JWT_TOKEN, USER_ID } from '../../config/config';
 import { getLocalStorage, setLocalStorage } from '../../utils/storageUtil';
 import axios from 'axios';
 import PlayerStats from './PlayerStats';
@@ -8,11 +8,13 @@ import TeamSummary from './TeamSummary';
 import ModeratorZone from './ModeratorZone';
 import PlayerPopupModal from './PlayerPopupModal';
 import _ from 'lodash';
+import { push } from 'connected-react-router';
 import {
   joinAuctionRoom,
   onJoinRoom,
   messageTestListen,
   startAuction,
+  endAuction,
   getCurrentPlayerData,
   getAuctionStatus,
   setNextPlayer,
@@ -24,6 +26,7 @@ import {
   getFoldUpdates,
   foldBid,
   disconnect,
+  onEndAuction
 } from '../../socket/socket';
 
 class Room extends React.Component {
@@ -76,6 +79,14 @@ class Room extends React.Component {
     getAuctionStatus((err, data) => {
       this.setState({
         isActive: data.isActive,
+      });
+    });
+
+    onEndAuction((err, data) => {
+      this.setState({
+        isActive: false
+      },() => {
+        this.props.endAuction();
       });
     });
 
@@ -166,9 +177,9 @@ class Room extends React.Component {
 }
 
 
-    componentWillUnmount(){
-        disconnect();
-    }
+  componentWillUnmount(){
+      disconnect();
+  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.roomDetail !== nextProps.detail) {
@@ -182,7 +193,12 @@ class Room extends React.Component {
       }
 
       let idKey = `currentIndex#${nextProps.detail.leagueId}`;
-      let index = getLocalStorage(idKey);
+      
+      let index = prevState.currentIndex;
+      if(getLocalStorage(idKey)){
+        index = getLocalStorage(idKey);
+      }
+
 
       return {
         roomDetail: nextProps.detail,
@@ -224,7 +240,33 @@ class Room extends React.Component {
     };
 
     startAuction(data);
+
+    const bearer_token = getLocalStorage(JWT_TOKEN);
+    const bearer = 'Bearer ' + bearer_token;
+    const url = `${API_ENDPOINT}/iplauction/league/updateLeagueStatus/${this.props.detail.leagueId}/STARTED`;
+
+    const headers = {
+        'Authorization': bearer
+    }
+    // POST CALL
+    axios.put(url, {}, {
+        headers: headers
+    })
+    .then((response) => {
+        console.log(response);
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
   };
+
+  handleEndButton = ()=> {
+    const data = {
+      roomId: this.props.detail.leagueId
+    }
+    endAuction(data);
+  }
 
   getUserRole = () => {
     let userId = getLocalStorage(USER_ID);
@@ -307,7 +349,10 @@ class Room extends React.Component {
   };
 
   getAuctionUI = () => {
-    const playersRemaining = this.props.playerSet.length - this.state.currentIndex;
+      let playersRemaining = 0;
+      if(this.props.playerSet){
+        playersRemaining = this.props.playerSet.length - this.state.currentIndex;
+      }
     const bidHistory = this.state.bidDetails ? this.state.bidDetails.bidHistory : [];
     if (this.state.role == 'moderator') {
       return (
@@ -317,6 +362,10 @@ class Room extends React.Component {
             submitPlayer={this.getPlayer}
             playersRemaining={playersRemaining}
             nextBag={this.getNextBag}
+            currentBag={this.props.currentBag}
+            futureBag={this.props.nextBag}
+            onEndAuction={this.handleEndButton}
+            leagueId={this.props.detail.leagueId}
           />
           <PlayerStats
             myTable={this.props.loggedUser}
@@ -382,7 +431,7 @@ class Room extends React.Component {
         {this.state.isActive ? (
           this.getAuctionUI()
         ) : (
-          <div> Waiting for Moderator to start the auction</div>
+          <div style={{marginTop: 15}}> Waiting for Moderator to start the auction</div>
         )}
         <PlayerPopupModal
           data={this.state.popData}

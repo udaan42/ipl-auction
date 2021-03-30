@@ -21,12 +21,13 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: 5
     },
 
-    entry: {
-        padding: 6,
-        marginLeft: 20,
-        marginRight: 20,
-        marginTop: 10,
-        marginBottom:10,
+    entryItem: {
+        display: "block",
+        padding: 10,
+        marginLeft: 10,
+        // marginRight: 20,
+        // marginTop: 10,
+        // marginBottom:10,
         fontSize: 13
     }
 }));
@@ -75,7 +76,7 @@ let LiveTicker = (props) => {
                     <div ref={messagesEndRef} />
                     {props.bidHistory.map((item)=> {
                         return(
-                            <Paper className={classes.entry} elevation={1}> {getBiddingTeam(item.userId)} bid {getPrice(item.bid)}</Paper>
+                            <span className={classes.entryItem}> ● {getBiddingTeam(item.userId)} bid {getPrice(item.bid)} </span>
                         )
                     })}
                     

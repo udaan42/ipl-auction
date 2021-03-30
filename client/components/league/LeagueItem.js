@@ -68,6 +68,16 @@ export default function LeagueItem(props) {
     copy(props.item.leagueId);
   }
 
+  const getLeagueStatus = (status) => {
+    if(status == "NOT_STARTED"){
+      return 'Not Started'
+    }else if(status == "STARTED"){
+      return 'In progress'
+    }else{
+      return 'Ended'
+    }
+  }
+
   return (
     <Col>
       <div className={classes.root}>
@@ -86,6 +96,9 @@ export default function LeagueItem(props) {
             <Typography  variant="subtitle1" >
                 {/* <FiberManualRecordIcon className={classes.leaguePoint} /> */}
                 <span className={classes.label}>Your points -</span> {props.item.points}
+            </Typography> 
+            <Typography  variant="subtitle1" >
+                <span className={classes.label}>Auction Status -</span> {getLeagueStatus(props.item.leagueStatus)}
             </Typography> 
         </Paper>
       </div>

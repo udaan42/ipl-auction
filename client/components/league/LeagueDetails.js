@@ -110,7 +110,7 @@ export default function LeagueDetails(props) {
 
     const displayButton = () => {
       if(props.detail){
-        if(props.detail.isActive){
+        if(props.detail.leagueStatus != "ENDED"){
           return (
             <Row className={classes.roomButton}>
                 <Button variant="secondary" onClick={()=>{handleEnterRoom(props.detail.leagueId)}}> Enter Auction Room</Button>

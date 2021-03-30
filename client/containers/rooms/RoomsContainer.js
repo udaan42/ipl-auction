@@ -8,14 +8,18 @@ import  getLeagueDetails  from '../../fetch/LeagueDetails';
 import getPlayerBagDetails from '../../fetch/PlayerBags';
 import axios from 'axios';
 
-const bagNumbers = [1,2,3,4,5,6,7,8,9,10];
-
+const bagNames = ["BA1","BW1","WK1","AR1","BW2","BA2","AR2","BW3","WK2","BA3","BW4", "AR3", "BW5", "AR4", "BA4", "WK3", "AR5","BW6","BW7", "AR6", "BA5","WK4", "AR7","BW8"];
+let bagNumbers = [];
+for (let i=1; i<=24; i++){
+    bagNumbers.push(i);
+}
 
 const RoomsContainer = (props) => {
 
     const [refresh, setRefresh] = useState(false);
     const [index, setIndex] = useState(0);
     const [unsold, setUnsold] = useState(false);
+    const history = useHistory();
     
     const { id } = useParams();
     const key = `${BAG}#${id}`;
@@ -99,13 +103,27 @@ const RoomsContainer = (props) => {
         
     }
 
+    const onEndAuction = () => {
+
+        let userId = getLocalStorage(USER_ID);
+        let user = _.find(data.leagueUsers, ['userId', userId]);
+        if(user.leagueRole == "moderator"){
+            let url = `/leagues/${data.leagueId}`
+            history.push(url);
+        }else{
+            let url = `/my-teams/${data.leagueId}`
+            history.push(url)
+        }
+        
+    }
+
     let teams = getLeagueTeams();
 
     const playerDetail = getLoggedUserDetail();
 
     return(
         <>
-            <Room sellPlayer={sellPlayer} playerSet={players} detail={data} bag={bagNumber} loggedUser={playerDetail} teams={teams} getNextBag={getNextBag} />
+            <Room endAuction={onEndAuction} currentBag={bagNames[index]} nextBag={bagNames[index+1]} sellPlayer={sellPlayer} playerSet={players} detail={data} bag={bagNumber} loggedUser={playerDetail} teams={teams} getNextBag={getNextBag} />
         </>
     )
 

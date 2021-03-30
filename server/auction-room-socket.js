@@ -93,10 +93,10 @@ module.exports = function (io, socket) {
       }
     });
 
-    socket.on('end-auction', async (roomId) => {
+    socket.on('end-auction', async (data) => {
       console.log("End Auction ------->");
       console.log(data);
-      const newObject = { roomId: roomId, isActive: false };
+      const newObject = { roomId: data.roomId, isActive: false, currentPlayerInBid: null };
       await updateAuctionDetailsInCache(newObject);
       io.in(data.roomId).emit('auction-ended', newObject);
     });
