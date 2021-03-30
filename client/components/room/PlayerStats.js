@@ -366,7 +366,7 @@ class PlayerStats extends React.Component{
         
         if(currentPlayerRole){
             if(currentPlayerRole == "Batsman"){
-                if(balance.bat > 3){
+                if(balance.bat > 4){
                     check = true
                 }
             }else if(currentPlayerRole == "Bowler"){
@@ -374,11 +374,11 @@ class PlayerStats extends React.Component{
                     check = true
                 }
             }else if(currentPlayerRole == "All Rounder"){
-                if(balance.ar > 3){
+                if(balance.ar > 4){
                     check = true
                 }
             }else if(currentPlayerRole == "Wicket Keeper"){
-                if(balance.wk > 1){
+                if(balance.wk > 2){
                     check = true;
                 }
             }
