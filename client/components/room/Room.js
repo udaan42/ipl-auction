@@ -96,9 +96,16 @@ class Room extends React.Component {
         getFoldUpdates((err, data) => {
             let tempArray = this.state.foldedArray;
             tempArray.push(data);
-            this.setState({
-                foldedArray: tempArray
-            })
+            if(tempArray.includes(getLocalStorage(USER_ID))){
+                this.setState({
+                    fold: true,
+                    foldedArray: tempArray
+                })
+            }else{
+                this.setState({
+                    foldedArray: tempArray
+                })
+            }
         })
 
     }
