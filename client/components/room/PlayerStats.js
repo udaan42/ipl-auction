@@ -395,10 +395,22 @@ class PlayerStats extends React.Component{
 
     }
 
+    checkFoldDisabledBtn = () => {
+        let disabled = false;
+        
+        if(this.props.bidDetails){
+            return getLocalStorage(USER_ID) == this.props.bidDetails.playerOwnerUserId;
+        }
+
+        return disabled;
+
+    }
+
 
     render(){
 
-        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota() || this.props.sold;
+        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota() || this.props.sold || this.props.fold;
+        const foldDisabled = this.props.sold || this.checkFoldDisabledBtn() || this.props.fold;
         
         const playerTableData = this.props.myTable ? this.props.myTable.playersSquad : [] 
 
@@ -412,7 +424,7 @@ class PlayerStats extends React.Component{
                             <Row>
                                 <div className={this.props.classes.nextBidDetails}><span className={this.props.classes.nextBidLabel}> Next Bid - </span> <span className={this.props.classes.nextBid}>{this.getPrice(this.state.nextBid)}</span></div>
                                 <Button variant="success" disabled={disabled} onClick={this.submitBtn} className={this.props.classes.bidBtnRaise}> Raise <PanToolIcon className={this.props.classes.raise}/></Button>
-                                <Button variant="danger" className={this.props.classes.bidBtnFold}> Fold <ThumbDownAltIcon className={this.props.classes.thumbsdown}/></Button>
+                                <Button variant="danger" disabled={foldDisabled} onClick={()=>{this.props.foldBtn()}} className={this.props.classes.bidBtnFold}> Fold <ThumbDownAltIcon className={this.props.classes.thumbsdown}/></Button>
                             </Row>
                         </Container>: ""}
                     </Col>
@@ -427,7 +439,7 @@ class PlayerStats extends React.Component{
         }else{
             return(
                 <Row>
-                    <Col md={8} sm={12} className={this.props.classes.playerInfo}>
+                    <Col md={7} sm={12} className={this.props.classes.playerInfo}>
                         {(this.props.data)?<Container>
                             <PlayerDetails  teams={this.props.teams} bidDetails={this.props.bidDetails}  data={this.props.data} />
                             {this.getSoldDetails()}

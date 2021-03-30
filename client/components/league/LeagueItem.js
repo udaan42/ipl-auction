@@ -78,15 +78,15 @@ export default function LeagueItem(props) {
             <Typography  variant="subtitle1" >
                 <span className={classes.leagueId}>League code - {props.item.leagueId}</span>
             </Typography> 
-            <Typography  variant="subtitle1" >
-                <FiberManualRecordIcon className={classes.leaguePoint} />
-                <span className={classes.label}>Your points -</span> {props.item.points}
-            </Typography> 
             <Typography className={classes.copyLink}>
               <Link href="#" onClick={copyCode}>
                 Copy League Code
               </Link>
             </Typography>
+            <Typography  variant="subtitle1" >
+                {/* <FiberManualRecordIcon className={classes.leaguePoint} /> */}
+                <span className={classes.label}>Your points -</span> {props.item.points}
+            </Typography> 
         </Paper>
       </div>
     </Col>

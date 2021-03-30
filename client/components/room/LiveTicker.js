@@ -11,8 +11,9 @@ const useStyles = makeStyles((theme) => ({
         border: "solid 1px #dedede",
         maxHeight: 465,
         height: "auto",
-        backgroundColor: '#faf2ed',
-        overflowY: 'auto'
+        backgroundColor: '#C8D8E6',
+        overflowY: 'auto',
+        borderRadius: 5
     },
 
     title: {
@@ -37,7 +38,7 @@ let LiveTicker = (props) => {
     const messagesEndRef = useRef(null)
 
     const scrollToBottom = () => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" })
     }
   
     useEffect(() => {
@@ -71,12 +72,13 @@ let LiveTicker = (props) => {
                     Bid History
                 </Typography> 
                 <div className={classes.box}>
+                    <div ref={messagesEndRef} />
                     {props.bidHistory.map((item)=> {
                         return(
                             <Paper className={classes.entry} elevation={1}> {getBiddingTeam(item.userId)} bid {getPrice(item.bid)}</Paper>
                         )
                     })}
-                    <div ref={messagesEndRef} />
+                    
                 </div>
             </>
     )

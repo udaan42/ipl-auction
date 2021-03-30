@@ -21,15 +21,25 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   title:{
-    textAlign: "center",
+    // textAlign: "center",
     fontWeight: 500,
-    marginBottom: 25
+    marginBottom: 25,
+    marginLeft: 15
+  },
+  subTitle:{
+    // textAlign: "center",
+    fontWeight: 500,
+    marginBottom: 10,
+    marginLeft: 15
   },
   leagueID:{
     textAlign: "center",
     fontWeight: 400,
-    marginBottom: 25,
+    marginBottom: 10,
     fontStyle: "italic"
+  },
+  modName:{
+    fontWeight: 400
   },
   rank:{
     fontSize: theme.typography.pxToRem(15),
@@ -72,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
   roomButton: {
     margin: 20,
-    marginLeft: "44%"
+    // marginLeft: "44%"
   }
 }));
 
@@ -109,11 +119,25 @@ export default function LeagueDetails(props) {
         }
       }
     }
+
+    const getModeratorNames = () => {
+      let modUsers = standings.filter((item)=> {
+        return (item.leagueRole == "moderator")
+      })
+
+      return modUsers.map((item) => {
+        return(
+          <span className={classes.modName}>{item.userName}</span> 
+        )
+      })
+    }
+
   
     return (
       <div className={classes.root}>
-        <Typography variant="h4" className={classes.title}> {(props.detail) ? props.detail.leagueName: ""}</Typography>
-        <Typography variant="h6" className={classes.title}> League ID - {(props.detail) ? (<span className={classes.leagueID}>{props.detail.leagueId}</span>): ""}</Typography>
+        <Typography variant="h6" className={classes.title}> {(props.detail) ? props.detail.leagueName: ""}</Typography>
+        <Typography variant="subtitle1" className={classes.subTitle}> League ID - {(props.detail) ? (<span className={classes.leagueID}>{props.detail.leagueId}</span>): ""}</Typography>
+        <Typography variant="subtitle1" className={classes.subTitle}> Moderators - {getModeratorNames()}</Typography>
         {displayButton()}
         <Col md={8}>
         <Accordion>

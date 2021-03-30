@@ -8,14 +8,34 @@ const styles = {
         marginTop: 15
     },
     tab:{
-        backgroundColor: "#eee",
-        textAlign: "center",
+        backgroundColor: "#C8D8E6",
+        textAlign: "left",
         padding: 10,
         fontSize: 13,
         border: "solid 1px #dedede",
-        borderRadius: 3,
+        borderRadius: 10,
         marginRight: 15,
-        fontFamily: '"Segoe UI"'
+        fontFamily: '"Segoe UI"',
+        marginTop: 20
+    },
+    values: {
+        fontWeight: 600
+    },
+    active: {
+        color: "green",
+        float: "right",
+        marginTop: -15,
+        fontSize: 20,
+        marginRight: -5,
+        textShadow: "1px 0px lightgreen"
+    },
+    folded: {
+        color: "darkred",
+        float: "right",
+        marginTop: -15,
+        fontSize: 20,
+        marginRight: -5,
+        textShadow: "1px 0px indianred"
     }
 }
 
@@ -35,17 +55,26 @@ const getModUI = (props) => {
         props.onOpenPopup(data);
     }
 
+    const getActiveStatus =(id) => {
+        if(props.foldedArray.includes(id)){
+            return (<span className={props.classes.folded}>●</span>)
+        }else{
+            return (<span className={props.classes.active}>●</span>)
+        }
+    }
+
     return(
         <Row>
             {props.data.map((item, index)=> {
                 if(item.leagueRole == "player"){
                     return(
                         <Col md={3} sm={3} xs={3} key={index}  onClick={()=> {handleClick(item.playersSquad)}}>
-                            <div className={props.classes.tab}>
+                            <div key={item.userId} className={props.classes.tab}>
+                                {getActiveStatus(item.userId)}
                                 <Typography variant="body2"> {item.userName}</Typography>
-                                <Typography variant="body2"> {item.teamName}</Typography>
-                                <Typography variant="body2"> Slots left- {15 - item.playersSquad.length}</Typography>
-                                <Typography variant="body2"> Purse balance - {getPurseRemaining(item.playersSquad)} crores</Typography>
+                                <Typography variant="body2"> <span className={props.classes.values}>{item.teamName}</span></Typography>
+                                <Typography variant="body2"> Slots left- <span className={props.classes.values}>{15 - item.playersSquad.length}</span></Typography>
+                                <Typography variant="body2"> Purse balance - <span className={props.classes.values}>{getPurseRemaining(item.playersSquad)} crores</span></Typography>
                             </div>
                         </Col>  
                     )
@@ -61,6 +90,14 @@ const getPlayerUI = (props) => {
         props.onOpenPopup(data);
     }
 
+    const getActiveStatus =(id) => {
+        if(props.foldedArray.includes(id)){
+            return (<span className={props.classes.folded}>●</span>)
+        }else{
+            return (<span className={props.classes.active}>●</span>)
+        }
+    }
+
     return(
         <Row>
             {props.data.map((item, index)=> {
@@ -68,10 +105,11 @@ const getPlayerUI = (props) => {
                     return(
                         <Col md={3} sm={3} xs={3} key={index}  onClick={()=> {handleClick(item.playersSquad)}}>
                             <div className={props.classes.tab}>
+                                {getActiveStatus(item.userId)}
                                 <Typography variant="body2"> {item.userName}</Typography>
-                                <Typography variant="body2"> {item.teamName}</Typography>
-                                <Typography variant="body2"> Slots left- {15 - item.playersSquad.length}</Typography>
-                                <Typography variant="body2"> Purse balance - {getPurseRemaining(item.playersSquad)} crores</Typography>
+                                <Typography variant="body2"> <span className={props.classes.values}>{item.teamName}</span></Typography>
+                                <Typography variant="body2"> Slots left- <span className={props.classes.values}>{15 - item.playersSquad.length}</span></Typography>
+                                <Typography variant="body2"> Purse balance - <span className={props.classes.values}>{getPurseRemaining(item.playersSquad)} crores</span></Typography>
                             </div>                          
                         </Col>  
                     )

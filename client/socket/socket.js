@@ -68,6 +68,16 @@ export const getBidUpdates = (cb) => {
   });
 };
 
+export const foldBid = (data) => {
+  socket.emit('fold-bid', data);
+};
+
+export const getFoldUpdates = (cb) => {
+  socket.on('fold-updates', (data) => {
+    return cb(null, data);
+  });
+};
+
 // Remember to disconnect the socket once you unmount
 export const disconnect = () => {
   socket.disconnect();

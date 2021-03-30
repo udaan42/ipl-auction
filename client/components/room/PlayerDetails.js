@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     playerDetailsRow: {
-        marginBottom: 13,
+        marginBottom: 10,
         fontSize: 15
     },
     playerData: {
@@ -132,7 +132,7 @@ const PlayerDetails = (props) => {
                         Role: <span className={classes.playerData}> {props.data.playerRole} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
-                        Category: <span className={classes.playerData}> {props.data.playerRace} </span>
+                        Category: <span className={classes.playerData}> {props.data.playerRace == "I" ? "Indian" : "Overseas"} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
                         Base Price: <span className={classes.playerData}> {getPrice(props.data.basePrice)} </span>
@@ -148,20 +148,62 @@ const PlayerDetails = (props) => {
                     <Row className={classes.playerDetailsStatsTitle}>
                         <span className={classes.statsTitle}> {props.data.statType} Career Statistics </span>
                     </Row>
+                    <Row className={classes.playerDetailsStatsTitle}>
+                        <span className={classes.statsTitle}> Batting Statistics </span>
+                    </Row>
                     <Row className={classes.playerDetailsRow}>
                         <div className="table-responsive">
                         <Table striped w-auto bordered hover size="sm" className={classes.playerTable} >
                             <thead>
                                 <tr>
                                     <th scope="col">Matches</th>
+                                    <th scope="col">Innings</th>
                                     <th scope="col">Runs</th>
-                                    <th scope="col">High Score</th>
-                                    <th scope="col">Bat avg.</th>
-                                    <th scope="col">Strike rate</th>
+                                    <th scope="col">HS</th>
+                                    <th scope="col">Avg.</th>
+                                    <th scope="col">SR</th>
                                     <th scope="col">50s</th>
+                                    <th scope="col">100s</th>
+                                    <th scope="col">4s</th>
+                                    <th scope="col">6s</th>
+                                    {/* <th scope="col">Catches</th>
+                                    <th scope="col">Stumpings</th> */}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{props.data.matchesPlayed}</td>
+                                    <td>{props.data.battingInningsPlayed}</td>
+                                    <td>{props.data.runsScored}</td>
+                                    <td>{props.data.highestScore}</td>
+                                    <td>{props.data.battingAverage}</td>
+                                    <td>{props.data.battingStrikeRate}</td>
+                                    <td>{props.data.noOfFifties}</td>
+                                    <td>{props.data.noOfHundreds}</td> 
+                                    <td>{props.data.noOfFours}</td>
+                                    <td>{props.data.noOfSixes}</td>
+                                    {/* <td>{props.data.noOfCatches}</td>
+                                    <td>{props.data.noOfStumpings}</td> */}
+                                </tr>
+                            </tbody>
+                        </Table> 
+                        </div>   
+                    </Row>
+                    <Row className={classes.playerDetailsStatsTitle}>
+                        <span className={classes.statsTitle}> Bowling Statistics </span>
+                    </Row>
+                    <Row className={classes.playerDetailsRow}>
+                        <div className="table-responsive">
+                        <Table striped w-auto bordered hover size="sm" className={classes.playerTable} >
+                            <thead>
+                                <tr>
+                                    <th scope="col">Matches</th>
+                                    <th scope="col">Innings</th>
                                     <th scope="col">Wickets</th>
-                                    <th scope="col">Bowl avg.</th>
-                                    <th scope="col">Economy</th>
+                                    <th scope="col">Best Figures</th>
+                                    <th scope="col">Avg.</th>
+                                    <th scope="col">SR</th>
+                                    <th scope="col">4 wkts</th>
                                     <th scope="col">5 wkts</th>
                                     <th scope="col">Catches</th>
                                     <th scope="col">Stumpings</th>
@@ -170,15 +212,13 @@ const PlayerDetails = (props) => {
                             <tbody>
                                 <tr>
                                     <td>{props.data.matchesPlayed}</td>
-                                    <td>{props.data.runsScored}</td>
-                                    <td>{props.data.highestScore}</td>
-                                    <td>{props.data.battingAverage}</td>
-                                    <td>{props.data.battingStrikeRate}</td>
-                                    <td>{props.data.noOfFifties}</td>
+                                    <td>{props.data.bowlingInningsPlayed}</td>
                                     <td>{props.data.noOfWickets}</td>
+                                    <td>{props.data.bestBowlingFigures}</td>
                                     <td>{props.data.bowlingAverage}</td>
-                                    <td>{props.data.bowlingEconomy}</td>
-                                    <td>{props.data.noOfFiveWickets}</td>
+                                    <td>{props.data.bowlingStrikeRate}</td>
+                                    <td>{props.data.noOfFourWickets}</td>
+                                    <td>{props.data.noOfFiveWickets}</td> 
                                     <td>{props.data.noOfCatches}</td>
                                     <td>{props.data.noOfStumpings}</td>
                                 </tr>

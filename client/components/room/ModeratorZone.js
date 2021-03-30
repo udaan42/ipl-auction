@@ -5,16 +5,24 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     bagLabel: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 400
     },
     bagValue: {
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: 500
     },
     modRow:{
         marginBottom: 15,
         marginTop: 15
+    },
+    endButton: {
+        fontSize: 15,
+        float: "right",
+        marginRight: 15
+    },
+    nextBtn: {
+        fontSize: 15
     }
 }));
 
@@ -25,10 +33,15 @@ const ModeratorZone = (props) => {
     return(
         <Row className={classes.modRow}>
             
-                <Col> <span className={classes.bagLabel}> Current Bag - </span> <span className={classes.bagValue}> Marquee players </span> </Col>
-                <Col> {(props.playersRemaining == 0)? <Button disabled={!props.sold} onClick={props.nextBag}> Next Bag</Button>: <Button disabled={!props.sold} onClick={props.submitPlayer}> Next Player</Button>} </Col>
-                <Col> <span className={classes.bagLabel}> Players remaining in this bag - </span> <span className={classes.bagValue}>{props.playersRemaining} </span></Col>                
-            
+                <Col md={3}> 
+                    <div className={classes.bagLabel}> <span>Current Bag - </span><span className={classes.bagValue}> Marquee players </span> </div> 
+                    <div className={classes.bagLabel}> <span> Players remaining in this bag - </span> <span className={classes.bagValue}>{props.playersRemaining}</span> </div>
+                </Col>
+                <Col md={2}> {(props.playersRemaining == 0)? <Button className={classes.nextBtn} disabled={!props.sold} onClick={props.nextBag}> Next Bag</Button>: <Button className={classes.nextBtn} disabled={!props.sold} onClick={props.submitPlayer}> Next Player</Button>} </Col>
+                <Col></Col>              
+                <Col md={2}>
+                    <Button className={classes.endButton} variant="warning"> End Auction</Button>
+                </Col>
         </Row>
     )
 }

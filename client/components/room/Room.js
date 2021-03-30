@@ -9,7 +9,7 @@ import ModeratorZone from './ModeratorZone';
 import PlayerPopupModal from './PlayerPopupModal';
 import _ from 'lodash';
 import { joinAuctionRoom, onJoinRoom, messageTestListen, startAuction, getCurrentPlayerData, 
-    getAuctionStatus, setNextPlayer, submitBid, getBidUpdates, getRoomDetails, sellPlayer, playerSold } from '../../socket/socket';
+    getAuctionStatus, setNextPlayer, submitBid, getBidUpdates, getRoomDetails, sellPlayer, playerSold, getFoldUpdates, foldBid } from '../../socket/socket';
 
 class Room extends React.Component {
 
@@ -27,7 +27,9 @@ class Room extends React.Component {
             playersPopUp: false,
             popData: [],
             roomDetail: null,
-            joinedRoom: false
+            joinedRoom: false,
+            fold: false,
+            foldedArray: []
         }
     }
 
@@ -84,9 +86,19 @@ class Room extends React.Component {
             this.setState({
                 bidDetails: null,
                 sold: true,
-                soldData: data
+                fold: false,
+                soldData: data,
+                foldedArray: []
             })
             this.props.sellPlayer(data);
+        })
+
+        getFoldUpdates((err, data) => {
+            let tempArray = this.state.foldedArray;
+            tempArray.push(data);
+            this.setState({
+                foldedArray: tempArray
+            })
         })
 
     }
@@ -222,6 +234,17 @@ class Room extends React.Component {
         })
     }
 
+    foldBtnClicked = () => {
+        this.setState({
+            fold: true
+        })
+        let data = {
+            roomId: this.props.detail.leagueId,
+            userId: getLocalStorage(USER_ID)
+        }
+        foldBid(data);
+    }
+
 
     getAuctionUI = () => {
         const playersRemaining = this.props.playerSet.length - this.state.currentIndex;
@@ -231,14 +254,14 @@ class Room extends React.Component {
                 <div>
                     <ModeratorZone sold={this.state.sold} submitPlayer={this.getPlayer} playersRemaining={playersRemaining} nextBag={this.getNextBag}/>
                     <PlayerStats myTable={this.props.loggedUser} sold={this.state.sold} soldData={this.state.soldData} sellPlayer={this.soldBtnClicked} teams={this.props.teams} data={this.state.currentPlayer} bidHistory={bidHistory} bidDetails={this.state.bidDetails} role={this.state.role} />
-                    <TeamSummary onOpenPopup={this.handlePopUp} data={this.props.detail.leagueUsers} role={this.state.role} />
+                    <TeamSummary foldedArray={this.state.foldedArray} onOpenPopup={this.handlePopUp} data={this.props.detail.leagueUsers} role={this.state.role} />
                 </div> 
             )
         }else{
             return(
                 <div>
-                    <PlayerStats myTable={this.props.loggedUser} sold={this.state.sold} soldData={this.state.soldData} data={this.state.currentPlayer} teams={this.props.teams} submitBid={this.makeBid} bidHistory={bidHistory} bidDetails={this.state.bidDetails} role={this.state.role} />
-                    <TeamSummary onOpenPopup={this.handlePopUp} data={this.props.detail.leagueUsers} role={this.state.role} />
+                    <PlayerStats foldBtn={this.foldBtnClicked} fold={this.state.fold} myTable={this.props.loggedUser} sold={this.state.sold} soldData={this.state.soldData} data={this.state.currentPlayer} teams={this.props.teams} submitBid={this.makeBid} bidHistory={bidHistory} bidDetails={this.state.bidDetails} role={this.state.role} />
+                    <TeamSummary foldedArray={this.state.foldedArray} onOpenPopup={this.handlePopUp} data={this.props.detail.leagueUsers} role={this.state.role} />
                 </div>
             )
         }

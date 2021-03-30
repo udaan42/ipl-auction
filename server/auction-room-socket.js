@@ -1,5 +1,6 @@
 const { get, set, exists } = require("./config/redis");
 
+let foldedArray = [];
 
 module.exports = function (io, socket) {
 
@@ -29,6 +30,17 @@ module.exports = function (io, socket) {
     
     // Emit Room details only to the user to who has joined; Maintain the room active status here
   });
+
+  socket.on('fold-bid',(data) => {
+    console.log(data.userId, "folded");
+    foldedArray.push(data);
+    io.in(data.roomId).emit('fold-updates', data.userId);
+  })
+
+  socket.on('fold-reset',(data) => {
+    foldedArray = [];
+    io.in(data.roomId).emit('fold-updates', foldedArray);
+  })
 
   socket.on('emit back', (data) => {
     console.log(data, " received");
