@@ -51,18 +51,19 @@ const RoomsContainer = (props) => {
 
     }
 
-    const sellPlayer = (data) => {
+    const sellPlayer = (player) => {
 
-        if(data.playerOwnerUserId != 0){
+        if(player.playerOwnerUserId != 0){
             let userId = getLocalStorage(USER_ID);
             let user = _.find(data.leagueUsers, ['userId', userId]);
+            console.log(user);
             if(user.leagueRole == "moderator"){
                 const bearer_token = getLocalStorage(JWT_TOKEN);
                 const bearer = 'Bearer ' + bearer_token;
-                const url = `${API_ENDPOINT}/iplauction/league/sellPlayerToUser/${data.playerId}/${data.currentBid}`;
+                const url = `${API_ENDPOINT}/iplauction/league/sellPlayerToUser/${player.playerId}/${player.currentBid}`;
 
                 const headers = {
-                    'X-UserId': data.playerOwnerUserId,
+                    'X-UserId': player.playerOwnerUserId,
                     'X-LeagueId': id,
                     'Authorization': bearer
                 }
