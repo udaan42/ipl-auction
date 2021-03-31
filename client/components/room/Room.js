@@ -63,7 +63,7 @@ class Room extends React.Component {
             onlineUsers: [...users]
         });
     });
-    
+
     messageTestListen((err, data) => {
       console.log('Interval');
       console.log(data);
@@ -274,16 +274,17 @@ class Room extends React.Component {
     });
   };
 
-  soldBtnClicked = (val) => {
+  
+  soldProcess = (val) => {
     let data = {
       roomId: this.props.detail.leagueId,
       nextBid: val.nextBid,
       playerId: val.playerId,
     };
     sellPlayer(data);
-
-    // this.props.sellPlayer();
   };
+
+  soldBtnClicked = _.debounce(this.soldProcess, 500);
 
   handlePopUp = (data) => {
     this.setState({

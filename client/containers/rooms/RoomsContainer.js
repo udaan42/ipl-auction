@@ -79,7 +79,7 @@ const RoomsContainer = (props) => {
                     console.log(error);
                 });
             }else{
-                setTimeout(setRefresh(!refresh),2000);
+                setTimeout(setRefresh(!refresh),3000);
             }
 
         }
