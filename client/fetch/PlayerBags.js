@@ -39,7 +39,7 @@ export default function getPlayerBagDetails(url, bagNumber) {
         .then(async response => {
           const data = await response.json();
           let playerData = _.shuffle(data.payload.playerInfos);
-          setLocalStorage(bagName, bagNumber);
+          setLocalStorage(bagNameKey, bagNumber);
           setLocalStorage(bagData, playerData);
           setPlayers({
             players: playerData,
