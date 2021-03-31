@@ -5,7 +5,6 @@ import Typography from '@material-ui/core/Typography';
 import TeamTable from './TeamTable';
 import _ from 'lodash';
 import {Button} from 'react-bootstrap';
-import Temp from './Temp'
 
 const styles = {
     header:{
@@ -180,9 +179,6 @@ class Team extends React.Component{
                     <Row>
                         <Typography className={this.props.classes.subHeader} variant="subtitle1"> Team Name - {this.props.detail.teamName} </Typography>
                     </Row>
-                    {/* <Row>
-                        <Temp />
-                    </Row> */}
                     <Row>
                         <Col md={5}>
                             <TeamTable rows={this.state.squad} itemSelect={this.onSquadSelect}/>
