@@ -46,8 +46,8 @@ app.use(errorHandler.methodNotAllowed);
 var server = require('http').Server(app);
 var io = require('socket.io')(server, {
   cors: {
-    // origin: "http://auction-fantasy.us-east-2.elasticbeanstalk.com",
-    origin: "http://localhost:3000",
+    origin: ["http://auction-fantasy.us-east-2.elasticbeanstalk.com", "http://localhost:3000"],
+    // origin: "http://localhost:3000",
     methods: ["GET", "POST"]
   }
 });

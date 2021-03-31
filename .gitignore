@@ -4,6 +4,7 @@
 .env
 /logs
 /dist
+NodeWebapp.zip
 
 
 npm-debug.log
