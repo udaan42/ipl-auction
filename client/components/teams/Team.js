@@ -144,7 +144,8 @@ class Team extends React.Component{
     }
 
     render(){
-        return(
+        if(this.props.detail.leagueRole == "player"){
+            return(
                 <Container fluid>
                     <Row>
                         <Typography className={this.props.classes.header} variant="h5"> My Team </Typography>
@@ -170,6 +171,22 @@ class Team extends React.Component{
                     </Row>
                 </Container>
             )
+        }else{
+            return(
+                <Container fluid>
+                    <Row>
+                        <Typography className={this.props.classes.header} variant="h5"> My Team </Typography>
+                    </Row>
+                    <Row>
+                        <Typography className={this.props.classes.subHeader} variant="subtitle1"> League Name - {this.props.id} </Typography>   
+                    </Row>
+                    <Row>
+                        <Typography className={this.props.classes.subHeader} variant="subtitle1"> You are a moderator for this league. No team selection available </Typography>
+                    </Row>
+                </Container>
+            )
+        }
+        
     }
 }
 

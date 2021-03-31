@@ -28,7 +28,7 @@ class MyTeams extends React.Component{
     }
 
     getCompletedLeagues = () => {
-        return this.props.list.filter(item => item.isActive);
+        return this.props.list.filter(item => item.leagueStatus == "ENDED");
     }
 
 

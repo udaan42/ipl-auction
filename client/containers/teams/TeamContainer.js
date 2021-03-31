@@ -11,10 +11,9 @@ const TeamContainer = (props) => {
 
     const { id } = useParams();
     let myTeam = [];
-    const url = `${API_ENDPOINT}iplauction/league/${id}`;;
+    const url = `${API_ENDPOINT}/iplauction/league/${id}`;;
     const {data} = getLeagueDetails(url);
     let userId = getLocalStorage(USER_ID); 
-    userId = "61994eeb-5d4e-48bf-9bd1-bd0fbb7e8125";
     let leagueName = "";
 
     if(data){
