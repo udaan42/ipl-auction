@@ -63,6 +63,7 @@ class Room extends React.Component {
             onlineUsers: [...users]
         });
     });
+    
     messageTestListen((err, data) => {
       console.log('Interval');
       console.log(data);
@@ -128,52 +129,6 @@ class Room extends React.Component {
       });
     });
   
-
-    getRoomDetails((err, data) => {
-        this.setState({
-            isActive: data.isActive,
-            currentPlayer: data.currentPlayerInBid
-        })
-    })
-
-    getBidUpdates((err, data) => {
-        if(data.currentBid == 0){
-            this.setState({
-                sold: false
-            })
-        }else{
-            this.setState({
-                bidDetails: data
-            })
-        }
-    })
-
-    playerSold((err, data) => {
-        this.setState({
-            bidDetails: null,
-            sold: true,
-            fold: false,
-            soldData: data,
-            foldedArray: []
-        })
-        this.props.sellPlayer(data);
-    })
-
-    getFoldUpdates((err, data) => {
-        let tempArray = this.state.foldedArray;
-        tempArray.push(data);
-        if(tempArray.includes(getLocalStorage(USER_ID))){
-            this.setState({
-                fold: true,
-                foldedArray: tempArray
-            })
-        }else{
-            this.setState({
-                foldedArray: tempArray
-            })
-        }
-    })
-
 }
 
 

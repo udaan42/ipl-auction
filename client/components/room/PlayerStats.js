@@ -463,10 +463,27 @@ class PlayerStats extends React.Component{
         }
     }
 
+    checkPurseBalance = () => {
+        let squadRemain = 15;
+        let purseRemain = 10000;
+        let purseSpent = 0;
+        if(this.props.myTable){
+            squadRemain = 15 - this.props.myTable.playersSquad.length;
+            this.props.myTable.playersSquad.forEach(element => {
+                purseSpent = purseSpent + element.soldPrice;
+            });
+            purseRemain = 10000 - purseSpent;
+        }
+        let requiredBalance = (squadRemain + 1) * 30;
+        
+        return ((purseRemain - this.state.nextBid) <= requiredBalance)
+
+    }
+
 
     render(){
 
-        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota() || this.props.sold || this.props.fold;
+        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota() || this.props.sold || this.props.fold || this.checkPurseBalance();
         const foldDisabled = this.props.sold || this.checkFoldDisabledBtn() || this.props.fold;
         
         const playerTableData = this.props.myTable ? this.props.myTable.playersSquad : [] 
