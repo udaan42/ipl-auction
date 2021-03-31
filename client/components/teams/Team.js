@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import TeamTable from './TeamTable';
 import _ from 'lodash';
 import {Button} from 'react-bootstrap';
+import Temp from './Temp'
 
 const styles = {
     header:{
@@ -43,42 +44,64 @@ class Team extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            squad: rows,
+            detail: [],
+            squad: [],
             team: [],
-            tempSquad: rows,
+            tempSquad: [],
             tempTeam: []
         }
     }
 
+    
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.detail != nextProps.detail) {
+        if(nextProps.detail.playersSquad){
+            let tempSquad =  [...nextProps.detail.playersSquad]
+            let playersSquad= _.uniqBy(tempSquad, 'playerName')
+            let team = playersSquad.filter((item)=> item.playing);
+            let squad = playersSquad.filter((item) => !item.playing); 
+            return {
+                detail: nextProps.detail,       
+                team : team,
+                squad : squad,
+                tempSquad: squad
+            };
+        }   
+    }
+
+    // Return null to indicate no change to state.
+    return null;
+  }
+
     onSquadSelect = (item) => {
         let tempSquad = [...this.state.tempSquad];
         let tempTeam = [...this.state.tempTeam];
-        const selectedIndex = _.findIndex(tempTeam, ['name', item]);
+        const selectedIndex = _.findIndex(tempTeam, ['playerName', item]);
         
         console.log(selectedIndex);
 
         let newSelected = [];
         if (selectedIndex === -1) {
             
-            const selectedItem = _.find(tempSquad, ['name', item]);
+            const selectedItem = _.find(tempSquad, ['playerName', item]);
             newSelected = newSelected.concat(tempTeam, selectedItem);
-            _.remove(tempSquad,['name', item]);
+            _.remove(tempSquad,['playerName', item]);
 
         } else if (selectedIndex === 0) {
 
-            const selectedItem = _.find(tempTeam, ['name', item]);
+            const selectedItem = _.find(tempTeam, ['playerName', item]);
             newSelected = newSelected.concat(tempTeam.slice(1));
             tempSquad.push(selectedItem);
 
         } else if (selectedIndex === tempTeam.length - 1) {
 
-            const selectedItem = _.find(tempTeam, ['name', item]);
+            const selectedItem = _.find(tempTeam, ['playerName', item]);
             newSelected = newSelected.concat(tempTeam.slice(0, -1));
             tempSquad.push(selectedItem);
 
         } else if (selectedIndex > 0) {
 
-            const selectedItem = _.find(tempTeam, ['name', item]);
+            const selectedItem = _.find(tempTeam, ['playerName', item]);
             newSelected = newSelected.concat(
                 tempTeam.slice(0, selectedIndex),
                 tempTeam.slice(selectedIndex + 1),
@@ -95,32 +118,33 @@ class Team extends React.Component{
 
     onTeamSelect = (item) => {
         
+        console.log(item);
         let tempSquad = [...this.state.tempSquad];
         let tempTeam = [...this.state.tempTeam];
-        const selectedIndex = _.findIndex(tempSquad, ['name', item]);
+        const selectedIndex = _.findIndex(tempSquad, ['playerName', item]);
 
         let newSelected = [];
         if (selectedIndex === -1) {
             
-            const selectedItem = _.find(tempTeam, ['name', item]);
+            const selectedItem = _.find(tempTeam, ['playerName', item]);
             newSelected = newSelected.concat(tempSquad, selectedItem);
-            _.remove(tempTeam,['name', item]);
+            _.remove(tempTeam,['playerName', item]);
 
         } else if (selectedIndex === 0) {
 
-            const selectedItem = _.find(tempSquad, ['name', item]);
+            const selectedItem = _.find(tempSquad, ['playerName', item]);
             newSelected = newSelected.concat(tempSquad.slice(1));
             tempTeam.push(selectedItem);
 
         } else if (selectedIndex === tempSquad.length - 1) {
 
-            const selectedItem = _.find(tempSquad, ['name', item]);
+            const selectedItem = _.find(tempSquad, ['playerName', item]);
             newSelected = newSelected.concat(tempSquad.slice(0, -1));
             tempTeam.push(selectedItem);
 
         } else if (selectedIndex > 0) {
 
-            const selectedItem = _.find(tempSquad, ['name', item]);
+            const selectedItem = _.find(tempSquad, ['playerName', item]);
             newSelected = newSelected.concat(
                 tempSquad.slice(0, selectedIndex),
                 tempSquad.slice(selectedIndex + 1),
@@ -135,8 +159,8 @@ class Team extends React.Component{
     }
 
     moveRight = () => {
-        let sortedSquad = _.sortBy(this.state.tempSquad, 'name');
-        let sortedTeam = _.sortBy(this.state.tempTeam, 'name');
+        let sortedSquad = _.sortBy(this.state.tempSquad, 'playerName');
+        let sortedTeam = _.sortBy(this.state.tempTeam, 'playerName');
         this.setState({
             squad: sortedSquad,
             team: sortedTeam
@@ -156,6 +180,9 @@ class Team extends React.Component{
                     <Row>
                         <Typography className={this.props.classes.subHeader} variant="subtitle1"> Team Name - {this.props.detail.teamName} </Typography>
                     </Row>
+                    {/* <Row>
+                        <Temp />
+                    </Row> */}
                     <Row>
                         <Col md={5}>
                             <TeamTable rows={this.state.squad} itemSelect={this.onSquadSelect}/>
@@ -186,7 +213,6 @@ class Team extends React.Component{
                 </Container>
             )
         }
-        
     }
 }
 

@@ -54,26 +54,33 @@ const RoomsContainer = (props) => {
     const sellPlayer = (data) => {
 
         if(data.playerOwnerUserId != 0){
-            const bearer_token = getLocalStorage(JWT_TOKEN);
-            const bearer = 'Bearer ' + bearer_token;
-            const url = `${API_ENDPOINT}/iplauction/league/sellPlayerToUser/${data.playerId}/${data.currentBid}`;
+            let userId = getLocalStorage(USER_ID);
+            let user = _.find(data.leagueUsers, ['userId', userId]);
+            if(user.leagueRole == "moderator"){
+                const bearer_token = getLocalStorage(JWT_TOKEN);
+                const bearer = 'Bearer ' + bearer_token;
+                const url = `${API_ENDPOINT}/iplauction/league/sellPlayerToUser/${data.playerId}/${data.currentBid}`;
 
-            const headers = {
-                'X-UserId': data.playerOwnerUserId,
-                'X-LeagueId': id,
-                'Authorization': bearer
+                const headers = {
+                    'X-UserId': data.playerOwnerUserId,
+                    'X-LeagueId': id,
+                    'Authorization': bearer
+                }
+                // POST CALL
+                axios.post(url, {}, {
+                    headers: headers
+                })
+                .then((response) => {
+                    setRefresh(!refresh);
+                })
+                .catch((error) => {
+                    setRefresh(!refresh);
+                    console.log(error);
+                });
+            }else{
+                setTimeout(setRefresh(!refresh),2000);
             }
-            // POST CALL
-            axios.post(url, {}, {
-                headers: headers
-            })
-            .then((response) => {
-                setRefresh(!refresh);
-            })
-            .catch((error) => {
-                setRefresh(!refresh);
-                console.log(error);
-            });
+
         }
         
     }

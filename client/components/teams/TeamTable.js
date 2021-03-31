@@ -39,9 +39,9 @@ const rows = [
 
 
 const headCells = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'team', numeric: true, disablePadding: false, label: 'Team' },
-  { id: 'role', numeric: true, disablePadding: false, label: 'Role' },
+  { id: 'playerName', numeric: false, disablePadding: true, label: 'Name' },
+  { id: 'teamName', numeric: true, disablePadding: false, label: 'Team' },
+  { id: 'playerRole', numeric: true, disablePadding: false, label: 'Role' },
   { id: 'points', numeric: true, disablePadding: false, label: 'Points' }
 ];
 
@@ -118,19 +118,19 @@ export default function TeamTable(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.playerName);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, playerName) => {
+    const selectedIndex = selected.indexOf(playerName);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, playerName);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -141,11 +141,11 @@ export default function TeamTable(props) {
         selected.slice(selectedIndex + 1),
       );
     }
-    props.itemSelect(name);
+    props.itemSelect(playerName);
     setSelected(newSelected);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (playerName) => selected.indexOf(playerName) !== -1;
 
   return (
     <div className={classes.root}>
@@ -166,17 +166,17 @@ export default function TeamTable(props) {
             <TableBody>
               {props.rows
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.playerName);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.playerName)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.playerName}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -186,10 +186,10 @@ export default function TeamTable(props) {
                         />
                       </TableCell>
                       <TableCell className={classes.rowContent} component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
+                        {row.playerName}
                       </TableCell>
-                      <TableCell align="right">{row.team}</TableCell>
-                      <TableCell align="right">{row.role}</TableCell>
+                      <TableCell align="right">{row.teamName}</TableCell>
+                      <TableCell align="right">{row.playerRole}</TableCell>
                       <TableCell align="right">{row.points}</TableCell>
                     </TableRow>
                   );
