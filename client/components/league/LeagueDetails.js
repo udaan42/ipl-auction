@@ -108,12 +108,24 @@ export default function LeagueDetails(props) {
       history.push(url);
     }
 
+    const handleEnterTeam = (id) => {
+      console.log(props.detail.leagueId)
+      let url = `/my-teams/${id}`
+      history.push(url);
+    }
+
     const displayButton = () => {
       if(props.detail){
         if(props.detail.leagueStatus != "ENDED"){
           return (
             <Row className={classes.roomButton}>
                 <Button variant="secondary" onClick={()=>{handleEnterRoom(props.detail.leagueId)}}> Enter Auction Room</Button>
+            </Row>
+          )
+        }else{
+          return (
+            <Row className={classes.roomButton}>
+                <Button variant="secondary" onClick={()=>{handleEnterTeam(props.detail.leagueId)}}> View/ Change your playing 11</Button>
             </Row>
           )
         }

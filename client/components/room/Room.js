@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import { API_ENDPOINT, API_URL, JWT_TOKEN, USER_ID } from '../../config/config';
-import { getLocalStorage, setLocalStorage } from '../../utils/storageUtil';
+import { clearLocalStorage, getLocalStorage, setLocalStorage } from '../../utils/storageUtil';
 import axios from 'axios';
 import PlayerStats from './PlayerStats';
 import TeamSummary from './TeamSummary';
@@ -70,6 +70,7 @@ class Room extends React.Component {
     });
 
     getCurrentPlayerData((err, data) => {
+      this.props.refresh();
       this.setState({
         currentPlayer: data,
         sold: false,
@@ -87,6 +88,9 @@ class Room extends React.Component {
       this.setState({
         isActive: false
       },() => {
+        
+        let idKey = `currentIndex#${this.props.detail.leagueId}`;
+        clearLocalStorage(idKey);
         this.props.endAuction();
       });
     });
@@ -221,6 +225,7 @@ class Room extends React.Component {
       roomId: this.props.detail.leagueId
     }
     endAuction(data);
+    
   }
 
   getUserRole = () => {

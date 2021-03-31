@@ -3,7 +3,7 @@ import Room from '../../components/room/Room';
 import _ from 'lodash';
 import { useHistory, useParams } from 'react-router-dom';
 import { API_ENDPOINT, USER_ID, JWT_TOKEN, BAG } from '../../config/config';
-import { getLocalStorage, setLocalStorage } from '../../utils/storageUtil';
+import { getLocalStorage, setLocalStorage, clearLocalStorage } from '../../utils/storageUtil';
 import  getLeagueDetails  from '../../fetch/LeagueDetails';
 import getPlayerBagDetails from '../../fetch/PlayerBags';
 import axios from 'axios';
@@ -79,7 +79,7 @@ const RoomsContainer = (props) => {
                     console.log(error);
                 });
             }else{
-                setTimeout(setRefresh(!refresh),3000);
+                setTimeout(setRefresh(!refresh),4000);
             }
 
         }
@@ -115,7 +115,13 @@ const RoomsContainer = (props) => {
 
         let userId = getLocalStorage(USER_ID);
         let user = _.find(data.leagueUsers, ['userId', userId]);
+        const bagNameKey = `bagName#${id}`;
+        const bagData = `bagData#${id}`;
+
         if(user.leagueRole == "moderator"){
+            clearLocalStorage(key);
+            clearLocalStorage(bagNameKey);
+            clearLocalStorage(bagData);
             let url = `/leagues/${data.leagueId}`
             history.push(url);
         }else{
@@ -125,13 +131,17 @@ const RoomsContainer = (props) => {
         
     }
 
+    const refreshData = () => {
+        setRefresh(!refresh);
+    }
+
     let teams = getLeagueTeams();
 
     const playerDetail = getLoggedUserDetail();
 
     return(
         <>
-            <Room endAuction={onEndAuction} currentBag={bagNames[index]} nextBag={bagNames[index+1]} sellPlayer={sellPlayer} playerSet={players} detail={data} bag={bagNumber} loggedUser={playerDetail} teams={teams} getNextBag={getNextBag} />
+            <Room refresh={refreshData} endAuction={onEndAuction} currentBag={bagNames[index]} nextBag={bagNames[index+1]} sellPlayer={sellPlayer} playerSet={players} detail={data} bag={bagNumber} loggedUser={playerDetail} teams={teams} getNextBag={getNextBag} />
         </>
     )
 
