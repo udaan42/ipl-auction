@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -292,9 +293,13 @@ public class LeagueInfoService {
     public LeagueInfo getLeagueByLeagueName(String leagueName){
         Iterable<LeagueInfo> leagueInfos = leagueInfoRepository.findAll();
 
-        for (LeagueInfo leagueInfo : leagueInfos) {
-            if(leagueInfo.getLeagueName().equalsIgnoreCase(leagueName)){
-                return leagueInfo;
+        if(!CollectionUtils.isEmpty((Collection<?>) leagueInfos)) {
+            for (LeagueInfo leagueInfo : leagueInfos) {
+                if(!StringUtils.isEmpty(leagueInfo.getLeagueName())) {
+                    if (leagueInfo.getLeagueName().equalsIgnoreCase(leagueName)) {
+                        return leagueInfo;
+                    }
+                }
             }
         }
         return null;
