@@ -83,7 +83,7 @@ class Team extends React.Component{
                 let selectedCaptain = null;
                 let selectedKeeper = null;
                 let captain = team.filter((item)=> item.captain);
-                if(captain){
+                if(captain.length > 0){
                     selectedCaptain = {
                         value: captain[0].playerName,
                         label: captain[0].playerName
@@ -91,7 +91,7 @@ class Team extends React.Component{
                 }
                 let keeper = team.filter((item) => item.wicketKeeper);
 
-                if(keeper){
+                if(keeper.length > 0){
                     selectedKeeper = {
                         value: keeper[0].playerName,
                         label: keeper[0].playerName
