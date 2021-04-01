@@ -11,13 +11,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Alert from '@material-ui/lab/Alert';
 
 const styles = {
     header:{
         fontWeight: 500
     },
     subHeader: {
-        marginBottom: 15
+        marginBottom: 15,
+        fontSize: 16
     },
     captainSelect: {
         width: 250,
@@ -29,6 +31,14 @@ const styles = {
         display: "inline-block",
         marginLeft: 25,
         fontSize: 15
+    },
+    titleValue: {
+        fontWeight: 600,
+        marginLeft: 5
+    },
+    captainLabel: {
+        fontSize: 16,
+        marginRight: 5
     }
     
 };
@@ -49,7 +59,8 @@ class Team extends React.Component{
             error: false,
             errorMessage: "",
             selectedCaptain: null,
-            selectedKeeper: null
+            selectedKeeper: null,
+            success: false
         }
     }
 
@@ -366,6 +377,8 @@ class Team extends React.Component{
         });
         if(wkOptions.length > 1){
             return(
+                <>
+                <span classes={this.props.classes.captainLabel}> Wicket Keeper - </span>
                 <Select
                     className={this.props.classes.captainSelect}
                     value={this.state.selectedKeeper}
@@ -373,6 +386,7 @@ class Team extends React.Component{
                     options={wkOptions}
                     placeholder= "Select a Wicket Keeper"
                 />
+                </>
             )
         }
     }
@@ -473,7 +487,10 @@ class Team extends React.Component{
         let finalSquad = [...team, ...this.state.squad];
         console.log(finalSquad);
 
-        this.props.updateSquad(finalSquad);        
+        this.props.updateSquad(finalSquad);
+        this.setState({
+            success: true
+        })        
 
     }
 
@@ -496,16 +513,17 @@ class Team extends React.Component{
                     </Row>
                     <Row>
                         <Col>
-                            <Typography className={this.props.classes.subHeader} variant="subtitle1"> League Name - {this.props.id} </Typography>   
+                            <Typography className={this.props.classes.subHeader} variant="subtitle1"> League Name - <span className={this.props.classes.titleValue}>{this.props.id} </span></Typography>   
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                        <Typography className={this.props.classes.subHeader} variant="subtitle1"> Team Name - {this.props.detail.teamName} </Typography>
+                        <Typography className={this.props.classes.subHeader} variant="subtitle1"> Team Name - <span className={this.props.classes.titleValue}>{this.props.detail.teamName} </span></Typography>
                         </Col>
                     </Row>
                     <Row className={this.props.classes.captainSelectionArea}>
                         <Col>
+                            <span classes={this.props.classes.captainLabel}> Captain - </span>
                             <Select
                                 className={this.props.classes.captainSelect}
                                 value={this.state.selectedCaptain}
@@ -514,9 +532,10 @@ class Team extends React.Component{
                                 placeholder= "Select a Captain"
                             />
                             {this.getWicketKeeperSelection()}
-                            <Button variant="info" onClick={this.submitButtonClicked} className={this.props.classes.submitButton}> Submit </Button>
+                            <Button variant="info" onClick={this.submitButtonClicked} className={this.props.classes.submitButton}> Submit Team</Button>
                         </Col>
                     </Row>
+                    {this.state.success? <Alert onClose={() => {this.setState({success: false})}}>Team submitted successfully</Alert> : ""}
                     <Row className={this.props.classes.tableData}>
                         <Col md={6} xs={12}>
                             <Typography variant="h6" className={this.props.classes.subHeader}> Your Squad</Typography>

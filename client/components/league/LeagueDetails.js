@@ -15,6 +15,7 @@ import Paper from '@material-ui/core/Paper';
 import _ from 'lodash';
 import { useHistory } from "react-router-dom";
 import { Col, Button, Row } from 'react-bootstrap';
+import FlightIcon from '@material-ui/icons/Flight';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -83,6 +84,12 @@ const useStyles = makeStyles((theme) => ({
   roomButton: {
     margin: 20,
     // marginLeft: "44%"
+  },
+  overseasIcon: {
+    fontSize: "small"
+  },
+  captain: {
+    fontWeight: 700
   }
 }));
 
@@ -165,43 +172,44 @@ export default function LeagueDetails(props) {
         </Accordion>
         {standings.map((item)=>{
             if(item.leagueRole == "player"){
+              const squad = item.playersSquad.filter((player)=> player.playing);
               return(
                 <Accordion >
                     <AccordionSummary
-                        // expandIcon={<ExpandMoreIcon />}
+                        expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1bh-content"
                         id={item.userName}
                         onClick={()=> {handleClick(item.userName)}}
                     >
                         <Typography className={classes.heading}>-</Typography>
-                        <Typography className={classes.heading}>{item.userName}</Typography>
+                        <Typography className={classes.heading}>{item.userName} </Typography>
                         <Typography className={classes.secondaryHeading}>{item.teamName}</Typography>
                         <Typography className={classes.secondaryHeading}>{item.points}</Typography>
                     </AccordionSummary>
-                    {/* <AccordionDetails>
+                    <AccordionDetails>
                         <TableContainer component={Paper}>
                             <Table className={classes.table} size="small" aria-label="a dense table">
                                 <TableHead>
                                 <TableRow>
                                     <TableCell>Name</TableCell>
-                                    <TableCell align="right">Role</TableCell>
+                                    <TableCell align="left">Role</TableCell>
                                     <TableCell align="right">Points</TableCell>
                                 </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {item.playersSquad.map((row) => (
+                                    {squad.map((row) => (
                                         <TableRow key={row.name}>
                                             <TableCell component="th" scope="row">
-                                                {row.name}
+                                                {row.playerName} {row.playerRace == 'F' ? <FlightIcon className={classes.overseasIcon} />: ""}{row.captain? <span className={classes.captain}> - C</span>: ""}
                                             </TableCell>
-                                            <TableCell align="right">{row.position}</TableCell>
+                                            <TableCell align="left">{row.playerRole}</TableCell>
                                             <TableCell align="right">{row.points}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </AccordionDetails> */}
+                    </AccordionDetails>
                 </Accordion>
                
               )
