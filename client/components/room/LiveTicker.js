@@ -73,13 +73,13 @@ let LiveTicker = (props) => {
                     Bid History
                 </Typography> 
                 <div className={classes.box}>
-                    <div ref={messagesEndRef} />
+                    
                     {props.bidHistory.map((item)=> {
                         return(
                             <span className={classes.entryItem}> ● {getBiddingTeam(item.userId)} bid {getPrice(item.bid)} </span>
                         )
                     })}
-                    
+                    <div ref={messagesEndRef} />
                 </div>
             </>
     )

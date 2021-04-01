@@ -139,6 +139,7 @@ const JoinLeagueForm = (props) => {
                       /> </>: ""}
                       { (props.form == 3) ? <><Typography className={classes.label} variant="subtitle1"> Please select your team name. </Typography>
                       <Field type="text" name="teamName" component={renderText} label="Team Name" />
+                      <Typography className={classes.label} variant="subtitle1"> Pick your favorite team </Typography>
                       <Select
                         className={classes.dropdownSelect}
                         value={selectedTeam}
@@ -146,12 +147,12 @@ const JoinLeagueForm = (props) => {
                         options={teamOptions}
                       /> </>: "" }
                     <div className={classes.btnDiv}>
-                      { (props.form == 1) ? (<><Button onClick={handleClick} className={classes.btn} type="submit" variant="contained" color="primary">
+                      { (props.form == 1) ? (<><Button disabled={leagueName ? leagueName.length == 0 : true} onClick={handleClick} className={classes.btn} type="submit" variant="contained" color="primary">
                           Join League
                         </Button>
                       <p className={classes.footer}>
                         Want to create a new league? <Link onClick={joinLeague}>Create a new league</Link>.
-                      </p></>) : <Button className={classes.btn} onClick={handleClick} type="submit" variant="contained" color="primary">
+                      </p></>) : <Button disabled={!selectedOption} className={classes.btn} onClick={handleClick} type="submit" variant="contained" color="primary">
                         Submit
                       </Button>}
                     </div>
