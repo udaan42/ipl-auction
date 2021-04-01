@@ -5,38 +5,33 @@ import Typography from '@material-ui/core/Typography';
 import TeamTable from './TeamTable';
 import _ from 'lodash';
 import {Button} from 'react-bootstrap';
+import Select from 'react-select';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const styles = {
     header:{
         fontWeight: 500
     },
     subHeader: {
-
+        marginBottom: 15
+    },
+    captainSelect: {
+        width: 250,
+        marginRight: 25,
+        marginBottom: 15,
+        display: "inline-block"
+    },
+    submitButton: {
+        display: "inline-block",
+        marginLeft: 25,
+        fontSize: 15
     }
     
 };
-
-function createData(name, team, role, points) {
-    return { name, team, role, points };
-}
-
-const rows = [
-    createData('Sachin Tendulkar', "MI", "Bat", 67),
-    createData('Ricky Ponting', "MI", "Bat", 51),
-    createData('Brian Lara', "MI", "Bat", 24),
-    createData('Yuvraj yoghurt', "MI", "Bat", 24),
-    createData('MS Dhoni', "MI", "Bat", 49),
-    createData('Stephen Fleming', "MI", "Bat", 87),
-    createData('Ice cream sandwich', "MI", "Bat", 37),
-    createData('Nathan Astle', "MI", "Bat", 94),
-    createData('Chris Gayle', "MI", "Bat", 65),
-    createData('Random Player1234', "MI","Bat", 98),
-    createData('Testing player', "MI","Bat", 81),
-    createData('Virat Kohli', "MI", "Bat", 9),
-    createData('Rohit Sharma', "MI", "Bat", 63),
-    createData('Rahul Sharma', "MI", "Bat", 63),
-    createData('Mohit Sharma', "MI", "Bat", 63),
-];
 
 class Team extends React.Component{
 
@@ -46,152 +41,511 @@ class Team extends React.Component{
             detail: [],
             squad: [],
             team: [],
-            tempSquad: [],
-            tempTeam: []
+            wk: 0,
+            bat: 0,
+            bowl: 0,
+            ar: 0,
+            overseas: 0,
+            error: false,
+            errorMessage: "",
+            selectedCaptain: null,
+            selectedKeeper: null
         }
     }
 
     
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.detail != nextProps.detail) {
-        if(nextProps.detail.playersSquad){
-            let tempSquad =  [...nextProps.detail.playersSquad]
-            let playersSquad= _.uniqBy(tempSquad, 'playerName')
-            let team = playersSquad.filter((item)=> item.playing);
-            let squad = playersSquad.filter((item) => !item.playing); 
-            return {
-                detail: nextProps.detail,       
-                team : team,
-                squad : squad,
-                tempSquad: squad
-            };
-        }   
-    }
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (prevState.detail != nextProps.detail) {
+            if(nextProps.detail.playersSquad){
 
-    // Return null to indicate no change to state.
-    return null;
-  }
+                let tempSquad =  [...nextProps.detail.playersSquad]
+                let playersSquad= _.uniqBy(tempSquad, 'playerName')
+                let team = playersSquad.filter((item)=> item.playing);
+                let squad = playersSquad.filter((item) => !item.playing);
+                
+                let wk = team.filter((item)=> item.playerRole == "Wicket Keeper");
+                let bat = team.filter((item)=> item.playerRole == "Batsman");
+                let bowl = team.filter((item)=> item.playerRole == "Bowler");
+                let ar = team.filter((item)=> item.playerRole == "All Rounder");
+                let overseas = team.filter((item)=> item.playerRace == "F");
 
-    onSquadSelect = (item) => {
-        let tempSquad = [...this.state.tempSquad];
-        let tempTeam = [...this.state.tempTeam];
-        const selectedIndex = _.findIndex(tempTeam, ['playerName', item]);
-        
-        console.log(selectedIndex);
+                let selectedCaptain = null;
+                let selectedKeeper = null;
+                let captain = team.filter((item)=> item.captain);
+                if(captain){
+                    selectedCaptain = {
+                        value: captain[0].playerName,
+                        label: captain[0].playerName
+                    }
+                }
+                let keeper = team.filter((item) => item.wicketKeeper);
 
-        let newSelected = [];
-        if (selectedIndex === -1) {
-            
-            const selectedItem = _.find(tempSquad, ['playerName', item]);
-            newSelected = newSelected.concat(tempTeam, selectedItem);
-            _.remove(tempSquad,['playerName', item]);
+                if(keeper){
+                    selectedKeeper = {
+                        value: keeper[0].playerName,
+                        label: keeper[0].playerName
+                    }
+                }
 
-        } else if (selectedIndex === 0) {
-
-            const selectedItem = _.find(tempTeam, ['playerName', item]);
-            newSelected = newSelected.concat(tempTeam.slice(1));
-            tempSquad.push(selectedItem);
-
-        } else if (selectedIndex === tempTeam.length - 1) {
-
-            const selectedItem = _.find(tempTeam, ['playerName', item]);
-            newSelected = newSelected.concat(tempTeam.slice(0, -1));
-            tempSquad.push(selectedItem);
-
-        } else if (selectedIndex > 0) {
-
-            const selectedItem = _.find(tempTeam, ['playerName', item]);
-            newSelected = newSelected.concat(
-                tempTeam.slice(0, selectedIndex),
-                tempTeam.slice(selectedIndex + 1),
-            );
-            tempSquad.push(selectedItem);
+                return {
+                    detail: nextProps.detail,       
+                    team : team,
+                    squad : squad,
+                    wk: wk.length,
+                    bat: bat.length,
+                    bowl: bowl.length,
+                    ar: ar.length,
+                    overseas: overseas.length,
+                    selectedCaptain: selectedCaptain,
+                    selectedKeeper: selectedKeeper
+                };
+            }   
         }
 
-        this.setState({
-            tempSquad: tempSquad,
-            tempTeam: newSelected
-        })
+        // Return null to indicate no change to state.
+        return null;
+    }
 
+    wkCheck = (player) => {
+        if(player.playerRole == "Wicket Keeper" && this.state.wk == 2){
+            return true;
+        }
+        return false;
+    }
+
+    batCheck = (player) => {
+        if(player.playerRole == "Batsman" && this.state.bat == 4){
+            return true;
+        }
+        return false;
+    }
+
+    bowlCheck = (player) => {
+        if(player.playerRole == "Bowler" && this.state.bowl == 4){
+            return true;
+        }
+        return false;
+    }
+
+    arCheck = (player) => {
+        if(player.playerRole == "All Rounder" && this.state.ar == 4){
+            return true;
+        }
+        return false;
+    }
+
+    overseasCheck = (player) => {
+        if(player.playerRace == "F" && this.state.overseas == 4){
+            return true;
+        }
+        return false;
+    }
+
+    onSquadSelect = (item) => {
+        let tempSquad = [...this.state.squad];
+        let tempTeam = [...this.state.team];
+        let selectedItem = _.find(tempSquad, ['playerName', item]);
+        let selectedPlayerRole = selectedItem.playerRole;
+        let selectedPlayerRace = selectedItem.playerRace;
+        
+        if(tempTeam.length >= 11){
+            this.setState({
+                error: true,
+                errorMessage: "You already have a 11"
+            })
+        }else if(this.wkCheck(selectedItem)) {
+            this.setState({
+                error: true,
+                errorMessage: "You already have 2 Wicket Keepers in the 11"
+            })
+        }else if(this.batCheck(selectedItem)) {
+            this.setState({
+                error: true,
+                errorMessage: "You already have 4 Batsmen in the 11"
+            })
+        }else if(this.bowlCheck(selectedItem)) {
+            this.setState({
+                error: true,
+                errorMessage: "You already have 4 Bowlers in the 11"
+            })
+        }else if(this.arCheck(selectedItem)) {
+            this.setState({
+                error: true,
+                errorMessage: "You already have 4 All rounders in the 11"
+            })
+        }else if(this.overseasCheck(selectedItem)) {
+            this.setState({
+                error: true,
+                errorMessage: "You already have 4 foreign players in the 11"
+            })
+        }else{
+            let newSelected = [];
+            let count = 0;
+            selectedItem.playing = true;
+            newSelected = newSelected.concat(tempTeam, selectedItem);
+            _.remove(tempSquad,['playerName', item]);
+            
+            if(selectedPlayerRole == "Wicket Keeper"){
+                count = this.state.wk + 1;
+                if(selectedPlayerRace == "F"){
+                    this.setState({
+                        squad: tempSquad,
+                        team: newSelected,
+                        wk: count,
+                        overseas: this.state.overseas + 1
+                    })
+                }else{
+                    this.setState({
+                        squad: tempSquad,
+                        team: newSelected,
+                        wk: count
+                    })
+                }
+            }else if(selectedPlayerRole == "Batsman"){
+                count = this.state.bat + 1;
+                if(selectedPlayerRace == "F"){
+                    this.setState({
+                        squad: tempSquad,
+                        team: newSelected,
+                        bat: count,
+                        overseas: this.state.overseas + 1
+                    })
+                }else{
+                    this.setState({
+                        squad: tempSquad,
+                        team: newSelected,
+                        bat: count
+                    })
+                }
+            }else if(selectedPlayerRole == "Bowler"){
+                count = this.state.bowl + 1;
+                if(selectedPlayerRace == "F"){
+                    this.setState({
+                        squad: tempSquad,
+                        team: newSelected,
+                        bowl: count,
+                        overseas: this.state.overseas + 1
+                    })
+                }else{
+                    this.setState({
+                        squad: tempSquad,
+                        team: newSelected,
+                        bowl: count
+                    })
+                }
+            }else if(selectedPlayerRole == "All Rounder"){
+                count = this.state.ar + 1;
+                if(selectedPlayerRace == "F"){
+                    this.setState({
+                        squad: tempSquad,
+                        team: newSelected,
+                        ar: count,
+                        overseas: this.state.overseas + 1
+                    })
+                }else{
+                    this.setState({
+                        squad: tempSquad,
+                        team: newSelected,
+                        ar: count
+                    })
+                }
+            }
+        }
+
+        
     }
 
     onTeamSelect = (item) => {
         
+        let tempSquad = [...this.state.squad];
+        let tempTeam = [...this.state.team];
+
         console.log(item);
-        let tempSquad = [...this.state.tempSquad];
-        let tempTeam = [...this.state.tempTeam];
-        const selectedIndex = _.findIndex(tempSquad, ['playerName', item]);
-
         let newSelected = [];
-        if (selectedIndex === -1) {
-            
-            const selectedItem = _.find(tempTeam, ['playerName', item]);
-            newSelected = newSelected.concat(tempSquad, selectedItem);
-            _.remove(tempTeam,['playerName', item]);
 
-        } else if (selectedIndex === 0) {
+        let selectedItem = _.find(tempTeam, ['playerName', item]);
+        let selectedPlayerRole = selectedItem.playerRole;
+        let selectedPlayerRace = selectedItem.playerRace;
 
-            const selectedItem = _.find(tempSquad, ['playerName', item]);
-            newSelected = newSelected.concat(tempSquad.slice(1));
-            tempTeam.push(selectedItem);
+        newSelected = newSelected.concat(tempSquad, selectedItem);
+        _.remove(tempTeam,['playerName', item]);
+        let count = 0;
+        selectedItem.playing = false;
 
-        } else if (selectedIndex === tempSquad.length - 1) {
-
-            const selectedItem = _.find(tempSquad, ['playerName', item]);
-            newSelected = newSelected.concat(tempSquad.slice(0, -1));
-            tempTeam.push(selectedItem);
-
-        } else if (selectedIndex > 0) {
-
-            const selectedItem = _.find(tempSquad, ['playerName', item]);
-            newSelected = newSelected.concat(
-                tempSquad.slice(0, selectedIndex),
-                tempSquad.slice(selectedIndex + 1),
-            );
-            tempTeam.push(selectedItem);
+        if(selectedPlayerRole == "Wicket Keeper"){
+            count = this.state.wk - 1;
+            if(selectedPlayerRace == "F"){
+                this.setState({
+                    team: tempTeam,
+                    squad: newSelected,
+                    wk: count,
+                    overseas: this.state.overseas - 1
+                })
+            }else{
+                this.setState({
+                    team: tempTeam,
+                    squad: newSelected,
+                    wk: count
+                })
+            }
+        }else if(selectedPlayerRole == "Batsman"){
+            count = this.state.bat - 1;
+            if(selectedPlayerRace == "F"){
+                this.setState({
+                    team: tempTeam,
+                    squad: newSelected,
+                    bat: count,
+                    overseas: this.state.overseas - 1
+                })
+            }else{
+                this.setState({
+                    team: tempTeam,
+                    squad: newSelected,
+                    bat: count
+                })
+            }
+        }else if(selectedPlayerRole == "Bowler"){
+            count = this.state.bowl - 1;
+            if(selectedPlayerRace == "F"){
+                this.setState({
+                    team: tempTeam,
+                    squad: newSelected,
+                    bowl: count,
+                    overseas: this.state.overseas - 1
+                })
+            }else{
+                this.setState({
+                    team: tempTeam,
+                    squad: newSelected,
+                    bowl: count
+                })
+            }
+        }else if(selectedPlayerRole == "All Rounder"){
+            count = this.state.ar - 1;
+            if(selectedPlayerRace == "F"){
+                this.setState({
+                    team: tempTeam,
+                    squad: newSelected,
+                    ar: count,
+                    overseas: this.state.overseas - 1
+                })
+            }else{
+                this.setState({
+                    team: tempTeam,
+                    squad: newSelected,
+                    ar: count
+                })
+            }
         }
-
-        this.setState({
-            tempTeam: tempTeam,
-            tempSquad: newSelected
-        })
     }
 
-    moveRight = () => {
-        let sortedSquad = _.sortBy(this.state.tempSquad, 'playerName');
-        let sortedTeam = _.sortBy(this.state.tempTeam, 'playerName');
+    getCaptainOptions = () => {
+        let options = [...this.state.team].map((player)=> {
+            return {
+                value: player.playerName,
+                label: player. playerName
+            }
+        })
+        return options
+    }
+
+    handleCaptainChange = (selectedCaptain) => {
+        this.setState({selectedCaptain})
+    }
+
+    handleKeeperChange = (selectedKeeper) => {
+        this.setState({selectedKeeper})
+    }
+
+    getWicketKeeperSelection = () => {
+        let wkOptions = [...this.state.team].filter((item) => item.playerRole == "Wicket Keeper").map((player)=> {
+            return {
+                value: player.playerName,
+                label: player. playerName
+            }
+        });
+        if(wkOptions.length > 1){
+            return(
+                <Select
+                    className={this.props.classes.captainSelect}
+                    value={this.state.selectedKeeper}
+                    onChange={this.handleKeeperChange}
+                    options={wkOptions}
+                    placeholder= "Select a Wicket Keeper"
+                />
+            )
+        }
+    }
+
+    submitButtonClicked = () => {
+
+        let team = [...this.state.team];
+        let wk = team.filter((item)=> item.playerRole == "Wicket Keeper").length;
+        let bat = team.filter((item)=> item.playerRole == "Batsman").length;
+        let bowl = team.filter((item)=> item.playerRole == "Bowler").length;
+        let ar = team.filter((item)=> item.playerRole == "All Rounder").length;
+        let overseas = team.filter((item)=> item.playerRace == "F").length;
+
+
+        if(wk < 1){
+            this.setState({
+                error: true,
+                errorMessage: "Wicket Keeper minimum criteria not met! Need at least 1 wicket keeper in the 11"
+            })
+        }else if(bat < 3){
+            this.setState({
+                error: true,
+                errorMessage: "Batsman minimum criteria not met! Need at least 3 batsmen in the 11"
+            })
+        }else if(bowl < 3){
+            this.setState({
+                error: true,
+                errorMessage: "Bowler minimum criteria not met! Need at least 3 bowlers in the 11"
+            })
+        }else if(ar < 1){
+            this.setState({
+                error: true,
+                errorMessage: "All rounder minimum criteria not met! Need at least 1 all rounder in the 11"
+            })
+        }else if(overseas < 4){
+            this.setState({
+                error: true,
+                errorMessage: "Overseas player criteria not met! Need 4 overseas player in the 11"
+            })
+        }else if(wk > 1){
+            if(!this.state.selectedKeeper){
+                this.setState({
+                    error: true,
+                    errorMessage: "You have more than 1 keeper. Please select your wicket keeper for the 11"
+                })
+            }
+        }
+        
+        if(!this.state.selectedCaptain){
+            this.setState({
+                error: true,
+                errorMessage: "Please select a captain"
+            })
+        }
+
+        let captain = _.find(team, ['playerName', this.state.selectedCaptain.value]);
+        if(!captain){
+            this.setState({
+                error: true,
+                errorMessage: "Your selected captain is not part of the playing 11"
+            })
+        }
+        captain.captain = true;
+        if(wk > 1 && this.state.selectedKeeper){
+            let keeper = _.find(team, ['playerName', this.state.selectedKeeper.value]);
+            if(!keeper){
+                this.setState({
+                    error: true,
+                    errorMessage: "Your selected Keeper is not part of the playing 11"
+                })
+            }
+        }
+
+        
+        team.map((player)=> {
+            if(wk > 1){
+                if(player.playerRole == "Wicket Keeper" && player.playerName == this.state.selectedKeeper.value){
+                    player.wicketKeeper = true;
+                }else{
+                    player.wicketKeeper = false;
+                }
+            }else{
+                if(player.playerRole == "Wicket Keeper"){
+                    player.wicketKeeper = true;
+                }
+            }
+        })
+        
+
+        team.map((player) => {
+            if(player.playerName == this.state.selectedCaptain.value){
+                player.captain = true;
+            }else{
+                player.captain = false;
+            }
+        })
+        console.log(team);
+        let finalSquad = [...team, ...this.state.squad];
+        console.log(finalSquad);
+
+        this.props.updateSquad(finalSquad);        
+
+    }
+
+    handleErrorClose = () => {
         this.setState({
-            squad: sortedSquad,
-            team: sortedTeam
+            error: false,
+            errorMessage: ""
         })
     }
 
     render(){
+
+        const captainOptions = this.getCaptainOptions();
+
         if(this.props.detail.leagueRole == "player"){
             return(
                 <Container fluid>
                     <Row>
-                        <Typography className={this.props.classes.header} variant="h5"> My Team </Typography>
+                        {/* <Typography className={this.props.classes.header} variant="h5"> My Team </Typography> */}
                     </Row>
                     <Row>
-                        <Typography className={this.props.classes.subHeader} variant="subtitle1"> League Name - {this.props.id} </Typography>   
+                        <Col>
+                            <Typography className={this.props.classes.subHeader} variant="subtitle1"> League Name - {this.props.id} </Typography>   
+                        </Col>
                     </Row>
                     <Row>
+                        <Col>
                         <Typography className={this.props.classes.subHeader} variant="subtitle1"> Team Name - {this.props.detail.teamName} </Typography>
-                    </Row>
-                    <Row>
-                        <Col md={5}>
-                            <TeamTable rows={this.state.squad} itemSelect={this.onSquadSelect}/>
-                        </Col>
-                        <Col md={2}>
-                            <Button onClick={this.moveRight}>
-                                >>
-                            </Button>
-                        </Col>
-                        <Col md={5}>
-                            <TeamTable rows={this.state.team} itemSelect={this.onTeamSelect}/>
                         </Col>
                     </Row>
+                    <Row className={this.props.classes.captainSelectionArea}>
+                        <Col>
+                            <Select
+                                className={this.props.classes.captainSelect}
+                                value={this.state.selectedCaptain}
+                                onChange={this.handleCaptainChange}
+                                options={captainOptions}
+                                placeholder= "Select a Captain"
+                            />
+                            {this.getWicketKeeperSelection()}
+                            <Button variant="info" onClick={this.submitButtonClicked} className={this.props.classes.submitButton}> Submit </Button>
+                        </Col>
+                    </Row>
+                    <Row className={this.props.classes.tableData}>
+                        <Col md={6} xs={12}>
+                            <Typography variant="h6" className={this.props.classes.subHeader}> Your Squad</Typography>
+                            <TeamTable value="squad" rows={this.state.squad} itemSelect={this.onSquadSelect}/>
+                        </Col>
+                        <Col md={6} xs={12}>
+                            <Typography variant="h6" className={this.props.classes.subHeader}> Your Playing 11</Typography>
+                            <TeamTable value="team" rows={this.state.team} itemSelect={this.onTeamSelect}/>
+                        </Col>
+                    </Row>
+                    <Dialog
+                        open={this.state.error}
+                        keepMounted
+                        onClose={this.handleErrorClose}
+                        aria-labelledby="alert-dialog-slide-title"
+                        aria-describedby="alert-dialog-slide-description"
+                    >
+                        <DialogTitle id="alert-dialog-slide-title">{"Criteria Check!!!"}</DialogTitle>
+                        <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            {this.state.errorMessage}
+                        </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                        <Button onClick={this.handleErrorClose} variant="danger">
+                            Okay
+                        </Button>
+                        </DialogActions>
+                    </Dialog>
                 </Container>
             )
         }else{

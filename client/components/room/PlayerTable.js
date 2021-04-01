@@ -3,7 +3,6 @@ import { Table} from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
 import FlightIcon from '@material-ui/icons/Flight';
 
-
 const useStyles = makeStyles((theme) => ({
     yourTable: {
         marginTop: 10

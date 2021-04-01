@@ -1,86 +1,50 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Sachin Tendulkar', "MI", "Bat", 67),
-  createData('Ricky Ponting', "MI", "Bat", 51),
-  createData('Brian Lara', "MI", "Bat", 24),
-  createData('Yuvraj yoghurt', "MI", "Bat", 24),
-  createData('MS Dhoni', "MI", "Bat", 49),
-  createData('Stephen Fleming', "MI", "Bat", 87),
-  createData('Ice cream sandwich', "MI", "Bat", 37),
-  createData('Nathan Astle', "MI", "Bat", 94),
-  createData('Chris Gayle', "MI", "Bat", 65),
-  createData('Random Player1234', "MI","Bat", 98),
-  createData('Testing player', "MI","Bat", 81),
-  createData('Virat Kohli', "MI", "Bat", 9),
-  createData('Rohit Sharma', "MI", "Bat", 63),
-  createData('Rohit Sharma', "MI", "Bat", 63),
-  createData('Rohit Sharma', "MI", "Bat", 63),
-];
-
+import FlightIcon from '@material-ui/icons/Flight';
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 
 const headCells = [
-  { id: 'playerName', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'teamName', numeric: true, disablePadding: false, label: 'Team' },
-  { id: 'playerRole', numeric: true, disablePadding: false, label: 'Role' },
+  { id: 'playerName', numeric: false, disablePadding: false, label: 'Name' },
+  { id: 'teamName', numeric: false, disablePadding: false, label: 'Team' },
+  { id: 'playerRole', numeric: false, disablePadding: false, label: 'Role' },
   { id: 'points', numeric: true, disablePadding: false, label: 'Points' }
 ];
 
 function EnhancedTableHead(props) {
-  const { classes, onSelectAllClick, numSelected, rowCount } = props;
+  const { classes } = props;
 
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all desserts' }}
-          />
-        </TableCell>
+        {props.value == "team" ? <TableCell padding="checkbox"></TableCell>:""}
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'default'}
           >
-            <TableSortLabel
-            >
+            <TableSortLabel>
               {headCell.label}
             </TableSortLabel>
           </TableCell>
         ))}
+        {props.value == "squad" ? <TableCell padding="checkbox"></TableCell>:""}
       </TableRow>
     </TableHead>
   );
 }
 
 EnhancedTableHead.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  rowCount: PropTypes.number.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 
@@ -109,44 +73,32 @@ const useStyles = makeStyles((theme) => ({
   rowContent: {
       paddingTop: 8,
       paddingBottom: 8
+  },
+  swapIcon: {
+    '&:hover' :{
+      cursor: "pointer"
+    }
+  },
+  overseasIcon:{
+    fontSize: "small"
   }
 }));
 
+const getPlayerRole = (role) => {
+  if(role == "Batsman"){
+    return "Bat"
+  }else if(role == "Bowler"){
+    return "Bowl"
+  }else if(role == "Wicket Keeper"){
+    return "WK"
+  }else if(role == "All Rounder"){
+    return "AR"
+  }
+}
+
 export default function TeamTable(props) {
   const classes = useStyles();
-  const [selected, setSelected] = React.useState([]);
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.playerName);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, playerName) => {
-    const selectedIndex = selected.indexOf(playerName);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, playerName);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    props.itemSelect(playerName);
-    setSelected(newSelected);
-  };
-
-  const isSelected = (playerName) => selected.indexOf(playerName) !== -1;
-
+  
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -159,38 +111,31 @@ export default function TeamTable(props) {
           >
             <EnhancedTableHead
               classes={classes}
-              numSelected={selected.length}
-              onSelectAllClick={handleSelectAllClick}
-              rowCount={rows.length}
+              value={props.value}
             />
             <TableBody>
               {props.rows
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.playerName);
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.playerName)}
                       role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.playerName}
-                      selected={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
+                      {props.value == "team" ? <TableCell padding="checkbox">
+                        <SwapHorizIcon onClick={() => props.itemSelect(row.playerName)} className={classes.swapIcon} />
+                      </TableCell>:""}
+                      <TableCell className={classes.rowContent} component="th" id={labelId} scope="row">
+                        {row.playerName} {row.playerRace == 'F' ? <FlightIcon className={classes.overseasIcon} />: ""}
                       </TableCell>
-                      <TableCell className={classes.rowContent} component="th" id={labelId} scope="row" padding="none">
-                        {row.playerName}
-                      </TableCell>
-                      <TableCell align="right">{row.teamName}</TableCell>
-                      <TableCell align="right">{row.playerRole}</TableCell>
+                      <TableCell align="left">{row.teamName}</TableCell>
+                      <TableCell align="left">{getPlayerRole(row.playerRole)}</TableCell>
                       <TableCell align="right">{row.points}</TableCell>
+                      {props.value == "squad" ? <TableCell padding="checkbox">
+                        <SwapHorizIcon onClick={() => props.itemSelect(row.playerName)} className={classes.swapIcon} />
+                      </TableCell>:""}
                     </TableRow>
                   );
                 })}
