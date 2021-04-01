@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 // Import custom components
 import renderText from '../common/form/renderText';
 import CustomizedSnackbar from '../common/snakebar/CustomizedSnackbar';
-
+import FormLabel from '@material-ui/core/FormLabel';
 import Select from 'react-select';
 
 const options = [
@@ -69,7 +69,7 @@ const styles = {
   
 const CreateLeagueForm = (props) => {
 
-    const [selectedOption, setRole] = useState({});
+    const [selectedOption, setRole] = useState(null);
     const [selectedTeam, setTeam] = useState({});
     const [leagueName, setLeagueName] = useState();
     const [teamName, setTeamName] = useState();
@@ -89,9 +89,9 @@ const CreateLeagueForm = (props) => {
       if(values.teamName){
         setTeamName(values.teamName);
       }
-      
-  
       return errors;
+      
+      
   };
 
     const handleChange = selectedOption => {
@@ -143,6 +143,7 @@ const CreateLeagueForm = (props) => {
                     /> </>: ""}
                     { (props.form == 3) ? <><Typography className={classes.label} variant="subtitle1"> Please select your team name. </Typography>
                     <Field type="text" name="teamName" component={renderText} label="Team Name" />
+                    <Typography className={classes.label} variant="subtitle1"> Pick your favorite team </Typography>
                     <Select
                       className={classes.dropdownSelect}
                       value={selectedTeam}
@@ -150,12 +151,12 @@ const CreateLeagueForm = (props) => {
                       options={teamOptions}
                     /> </>: "" }
                     <div className={classes.btnDiv}>
-                      { (props.form == 1) ? (<><Button className={classes.btn} onClick={handleClick} type="submit" variant="contained" color="primary">
+                      { (props.form == 1) ? (<><Button disabled={leagueName ? leagueName.length == 0 : true} className={classes.btn} onClick={handleClick} type="submit" variant="contained" color="primary">
                         Create
                       </Button>
                       <p className={classes.footer}>
                         Have a league code already? <Link onClick={joinLeague}>Join a league</Link>.
-                      </p></>) : <Button className={classes.btn} onClick={handleClick} type="submit" variant="contained" color="primary">
+                      </p></>) : <Button disabled={!selectedOption} className={classes.btn} onClick={handleClick} type="submit" variant="contained" color="primary">
                         Submit
                       </Button>}
                     </div>

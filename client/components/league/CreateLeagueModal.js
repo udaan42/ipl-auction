@@ -12,6 +12,7 @@ export default function CreateLeagueModal(props) {
     }  
 
     const submitForm = (formProps) =>  {
+      console.log(formProps)
       if(props.form == 1 && props.show){
         props.onNext();
       }
