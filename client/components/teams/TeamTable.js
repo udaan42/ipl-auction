@@ -13,6 +13,7 @@ import FlightIcon from '@material-ui/icons/Flight';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 
 const headCells = [
+  { id: 'id', numeric: false, disablePadding: true, label: '#' },
   { id: 'playerName', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'teamName', numeric: false, disablePadding: false, label: 'Team' },
   { id: 'playerRole', numeric: false, disablePadding: false, label: 'Role' },
@@ -127,6 +128,7 @@ export default function TeamTable(props) {
                       {props.value == "team" ? <TableCell padding="checkbox">
                         <SwapHorizIcon onClick={() => props.itemSelect(row.playerName)} className={classes.swapIcon} />
                       </TableCell>:""}
+                      <TableCell padding="none" align="left">{index + 1}</TableCell>
                       <TableCell className={classes.rowContent} component="th" id={labelId} scope="row">
                         {row.playerName} {row.playerRace == 'F' ? <FlightIcon className={classes.overseasIcon} />: ""}
                       </TableCell>

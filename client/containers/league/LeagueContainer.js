@@ -15,7 +15,6 @@ export default function LeagueContainer(props) {
     const url = `${API_URL}userLeagues`;
     const userId = getLocalStorage(USER_ID);
     data = getLeagueData(url, userId);
-    // data = getLeagueData(url, "2ee54e87-9652-4b04-8b1d-70323de443d1");
 
     return(
         <League list={data} leagues={state.leagues}/>

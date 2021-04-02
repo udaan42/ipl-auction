@@ -25,11 +25,17 @@ const TeamContainer = (props) => {
         leagueName = data.leagueName;
     }
 
+    const history = useHistory();
+
+    const goBack = () => {
+        let url = `/leagues/${id}`
+        history.push(url);
+    }
+
     const submitUpdatedSquad = (data) => {
         const bearer_token = getLocalStorage(JWT_TOKEN);
         const bearer = 'Bearer ' + bearer_token;
         const url = `${API_ENDPOINT}/iplauction/league/updateTeamSquad`;
-        console.log(data);
 
         const headers = {
             'Authorization': bearer,
@@ -43,7 +49,6 @@ const TeamContainer = (props) => {
         .then((response) => {
             setConfirm(true);
             // setRefresh(!refresh);
-            
         })
         .catch((error) => {
             console.log(error);
@@ -55,7 +60,7 @@ const TeamContainer = (props) => {
     }
 
     return(
-        <Team updateSquad={submitUpdatedSquad} success={confirm} cancelSuccess={changeConfirmState} detail={myTeam} id={leagueName} />
+        <Team goBack={goBack} updateSquad={submitUpdatedSquad} success={confirm} cancelSuccess={changeConfirmState} detail={myTeam} id={leagueName} />
     )
 
 }

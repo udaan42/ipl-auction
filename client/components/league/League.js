@@ -93,7 +93,6 @@ class League extends React.Component{
     }
     render(){
         const adminAccess = this.getAdminRole();
-        console.log(adminAccess);
         return(
                 <Box>
                     {this.props.leagues.list == 0? <Grid className={this.props.classes.headerBlock} container-fluid spacing={2}>

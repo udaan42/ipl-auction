@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
     playersTeam: {
         fontSize: 16,
         fontWeight: 600,
+        marginLeft: 125
         // marginBottom: 15
     }
 }));
