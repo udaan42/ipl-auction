@@ -243,6 +243,7 @@ class PlayerStats extends React.Component{
             nextBid: this.state.nextBid,
             playerId: this.state.data.playerId
         }
+
         console.log("Inside SOLD BUTTON")
         this.props.sellPlayer(data);
     }
@@ -331,12 +332,15 @@ class PlayerStats extends React.Component{
         if(this.props.bidDetails){
             return getLocalStorage(USER_ID) == this.props.bidDetails.playerOwnerUserId;
         }
+        
+        return disabled;
+
+    }
+
+    checkMaxPlayers = () => {
         if(this.props.myTable){
             return this.props.myTable.playersSquad.length == 15
         }
-
-        return disabled;
-
     }
 
     checkSquadBalance = () => {
@@ -488,7 +492,7 @@ class PlayerStats extends React.Component{
 
     render(){
 
-        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota() || this.props.sold || this.props.fold || this.checkPurseBalance();
+        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota() || this.props.sold || this.props.fold || this.checkPurseBalance() || this.checkMaxPlayers();
         const foldDisabled = this.props.sold || this.checkFoldDisabledBtn() || this.props.fold;
         
         const playerTableData = this.props.myTable ? this.props.myTable.playersSquad : [] 

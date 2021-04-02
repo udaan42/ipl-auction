@@ -483,14 +483,11 @@ class Team extends React.Component{
                 player.captain = false;
             }
         })
-        console.log(team);
-        let finalSquad = [...team, ...this.state.squad];
-        console.log(finalSquad);
 
-        this.props.updateSquad(finalSquad);
-        this.setState({
-            success: true
-        })        
+        let finalSquad = [...team, ...this.state.squad];
+
+
+        this.props.updateSquad(finalSquad);       
 
     }
 
@@ -549,7 +546,7 @@ class Team extends React.Component{
                             <Button variant="info" onClick={this.submitButtonClicked} className={this.props.classes.submitButton}> Submit Team</Button>
                         </Col>
                     </Row>
-                    {this.state.success? <Alert onClose={() => {this.setState({success: false})}}>Team submitted successfully</Alert> : ""}
+                    {this.props.success? <Alert onClose={() => {this.props.cancelSuccess()}}>Team submitted successfully</Alert> : ""}
                     <Row className={this.props.classes.tableData}>
                         <Col md={6} xs={12}>
                             <Typography variant="h6" className={this.props.classes.subHeader}> Your Squad</Typography>

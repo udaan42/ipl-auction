@@ -11,7 +11,7 @@ const router = express.Router();
 router.use('/auth', authRoutes);
 
 // mount user routes at /users
-router.use('/user', userRoutes);
+router.use('/users', userRoutes);
 
 // mount java service route at /test
 router.use('/test', testRoutes);

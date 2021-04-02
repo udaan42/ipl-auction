@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Room from '../../components/room/Room';
 import _ from 'lodash';
 import { useHistory, useParams } from 'react-router-dom';
-import { API_ENDPOINT, USER_ID, JWT_TOKEN, BAG } from '../../config/config';
+import { API_URL, API_ENDPOINT, USER_ID, JWT_TOKEN, BAG } from '../../config/config';
 import { getLocalStorage, setLocalStorage, clearLocalStorage } from '../../utils/storageUtil';
 import  getLeagueDetails  from '../../fetch/LeagueDetails';
 import getPlayerBagDetails from '../../fetch/PlayerBags';
@@ -34,7 +34,7 @@ const RoomsContainer = (props) => {
     }
     
     
-    const url = `${API_ENDPOINT}/iplauction/league/${id}`;
+    const url = `${API_URL}leagues/${id}`;
     const { data, reload, error } = getLeagueDetails(url, refresh);
 
     const playerBagsURL =  `${API_ENDPOINT}/iplauction/player/getPlayersBag`;
@@ -53,37 +53,39 @@ const RoomsContainer = (props) => {
 
     const sellPlayer = (player) => {
 
+        // if(player.playerOwnerUserId != 0){
+        //     let userId = getLocalStorage(USER_ID);
+        //     let user = _.find(data.leagueUsers, ['userId', userId]);
+        //     console.log(user);
+        //     if(user.leagueRole == "moderator"){
+        //         const bearer_token = getLocalStorage(JWT_TOKEN);
+        //         const bearer = 'Bearer ' + bearer_token;
+        //         const url = `${API_ENDPOINT}/iplauction/league/sellPlayerToUser/${player.playerId}/${player.currentBid}`;
+
+        //         const headers = {
+        //             'X-UserId': player.playerOwnerUserId,
+        //             'X-LeagueId': id,
+        //             'Authorization': bearer
+        //         }
+        //         // POST CALL
+        //         axios.post(url, {}, {
+        //             headers: headers
+        //         })
+        //         .then((response) => {
+        //             setRefresh(!refresh);
+        //         })
+        //         .catch((error) => {
+        //             setRefresh(!refresh);
+        //             console.log(error);
+        //         });
+        //     }else{
+        //         setTimeout(setRefresh(!refresh),4000);
+        //     }
+
+        // }
         if(player.playerOwnerUserId != 0){
-            let userId = getLocalStorage(USER_ID);
-            let user = _.find(data.leagueUsers, ['userId', userId]);
-            console.log(user);
-            if(user.leagueRole == "moderator"){
-                const bearer_token = getLocalStorage(JWT_TOKEN);
-                const bearer = 'Bearer ' + bearer_token;
-                const url = `${API_ENDPOINT}/iplauction/league/sellPlayerToUser/${player.playerId}/${player.currentBid}`;
-
-                const headers = {
-                    'X-UserId': player.playerOwnerUserId,
-                    'X-LeagueId': id,
-                    'Authorization': bearer
-                }
-                // POST CALL
-                axios.post(url, {}, {
-                    headers: headers
-                })
-                .then((response) => {
-                    setRefresh(!refresh);
-                })
-                .catch((error) => {
-                    setRefresh(!refresh);
-                    console.log(error);
-                });
-            }else{
-                setTimeout(setRefresh(!refresh),4000);
-            }
-
+            setRefresh(!refresh);
         }
-        
     }
 
     const getLeagueTeams = () => {

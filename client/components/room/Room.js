@@ -70,7 +70,6 @@ class Room extends React.Component {
     });
 
     getCurrentPlayerData((err, data) => {
-      this.props.refresh();
       this.setState({
         currentPlayer: data,
         sold: false,
@@ -89,7 +88,7 @@ class Room extends React.Component {
         isActive: false
       },() => {
         
-        let idKey = `currentIndex#${this.props.detail.leagueId}`;
+        let idKey = `currentIndex#${this.state.roomDetail.leagueId}`;
         clearLocalStorage(idKey);
         this.props.endAuction();
       });
@@ -172,11 +171,11 @@ class Room extends React.Component {
   }
 
   enterAuctionRoom = () => {
-    if (this.props.detail) {
+    if (this.state.roomDetail) {
       console.log('ENter auction room');
       const data = {
         userId: getLocalStorage(USER_ID),
-        roomId: this.props.detail.leagueId,
+        roomId: this.state.roomDetail.leagueId,
       };
       joinAuctionRoom(data);
     }
@@ -185,7 +184,7 @@ class Room extends React.Component {
   bidBtnClick = (val) => {
     let data = {
       userId: getLocalStorage(USER_ID),
-      roomId: this.props.detail.leagueId,
+      roomId: this.state.roomDetail.leagueId,
       nextBid: val.nextBid,
       playerId: val.playerId,
     };
@@ -197,14 +196,14 @@ class Room extends React.Component {
   handleStartButton = () => {
     const data = {
       isActive: true,
-      roomId: this.props.detail.leagueId,
+      roomId: this.state.roomDetail.leagueId,
     };
 
     startAuction(data);
 
     const bearer_token = getLocalStorage(JWT_TOKEN);
     const bearer = 'Bearer ' + bearer_token;
-    const url = `${API_ENDPOINT}/iplauction/league/updateLeagueStatus/${this.props.detail.leagueId}/STARTED`;
+    const url = `${API_ENDPOINT}/iplauction/league/updateLeagueStatus/${this.state.roomDetail.leagueId}/STARTED`;
 
     const headers = {
         'Authorization': bearer
@@ -224,7 +223,7 @@ class Room extends React.Component {
 
   handleEndButton = ()=> {
     const data = {
-      roomId: this.props.detail.leagueId
+      roomId: this.state.roomDetail.leagueId
     }
     endAuction(data);
     
@@ -234,8 +233,17 @@ class Room extends React.Component {
     let userId = getLocalStorage(USER_ID);
 
     let user = {};
-    if (!_.isEmpty(this.props.detail)) {
-      user = _.find(this.props.detail.leagueUsers, ['userId', userId]);
+    // if (!_.isEmpty(this.props.detail)) {
+    //   user = _.find(this.props.detail.leagueUsers, ['userId', userId]);
+    //   if (this.state.role != user.leagueRole) {
+    //     this.setState({
+    //       role: user.leagueRole,
+    //     });
+    //   }
+    // }
+
+    if (this.state.roomDetail) {
+      user = _.find(this.state.roomDetail.leagueUsers, ['userId', userId]);
       if (this.state.role != user.leagueRole) {
         this.setState({
           role: user.leagueRole,
@@ -255,11 +263,11 @@ class Room extends React.Component {
   getPlayer = () => {
     if (this.state.currentIndex < this.props.playerSet.length) {
       const data = {
-        roomId: this.props.detail.leagueId,
+        roomId: this.state.roomDetail.leagueId,
         player: this.props.playerSet[this.state.currentIndex],
       };
       setNextPlayer(data);
-      let idKey = `currentIndex#${this.props.detail.leagueId}`;
+      let idKey = `currentIndex#${this.state.roomDetail.leagueId}`;
       setLocalStorage(idKey, this.state.currentIndex + 1);
       this.setState({
         currentIndex: this.state.currentIndex + 1,
@@ -270,11 +278,11 @@ class Room extends React.Component {
   getNextBag = () => {
     this.props.getNextBag();
     const data = {
-      roomId: this.props.detail.leagueId,
+      roomId: this.state.roomDetail.leagueId,
       player: null,
     };
     setNextPlayer(data);
-    let idKey = `currentIndex#${this.props.detail.leagueId}`;
+    let idKey = `currentIndex#${this.state.roomDetail.leagueId}`;
     setLocalStorage(idKey, 0);
     this.setState({
       currentIndex: 0,
@@ -284,11 +292,37 @@ class Room extends React.Component {
   
   soldProcess = (val) => {
     let data = {
-      roomId: this.props.detail.leagueId,
+      roomId: this.state.roomDetail.leagueId,
       nextBid: val.nextBid,
       playerId: val.playerId,
     };
-    sellPlayer(data);
+
+    if(this.state.bidDetails){
+        let ownerPlayerId = this.state.bidDetails.playerOwnerUserId;
+        let currentBid = this.state.bidDetails.currentBid;
+        const bearer_token = getLocalStorage(JWT_TOKEN);
+        const bearer = 'Bearer ' + bearer_token;
+        const url = `${API_ENDPOINT}/iplauction/league/sellPlayerToUser/${val.playerId}/${currentBid}`;
+
+        const headers = {
+            'X-UserId': ownerPlayerId,
+            'X-LeagueId': this.state.roomDetail.leagueId,
+            'Authorization': bearer
+        }
+
+        axios.post(url, {}, {
+            headers: headers
+        })
+        .then((response) => {
+            sellPlayer(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }else{
+      sellPlayer(data);
+    }
+    
   };
 
   soldBtnClicked = _.debounce(this.soldProcess, 500);
@@ -305,7 +339,7 @@ class Room extends React.Component {
       fold: true,
     });
     let data = {
-      roomId: this.props.detail.leagueId,
+      roomId: this.state.roomDetail.leagueId,
       userId: getLocalStorage(USER_ID),
     };
     foldBid(data);
@@ -315,6 +349,11 @@ class Room extends React.Component {
       let playersRemaining = 0;
       if(this.props.playerSet){
         playersRemaining = this.props.playerSet.length - this.state.currentIndex;
+      }
+
+      let leagueUsers = [];
+      if(this.state.roomDetail){
+        leagueUsers = this.state.roomDetail.leagueUsers;
       }
     const bidHistory = this.state.bidDetails ? this.state.bidDetails.bidHistory : [];
     if (this.state.role == 'moderator') {
@@ -328,7 +367,7 @@ class Room extends React.Component {
             currentBag={this.props.currentBag}
             futureBag={this.props.nextBag}
             onEndAuction={this.handleEndButton}
-            leagueId={this.props.detail.leagueId}
+            leagueId={this.state.roomDetail.leagueId}
           />
           <PlayerStats
             myTable={this.props.loggedUser}
@@ -345,7 +384,7 @@ class Room extends React.Component {
           <TeamSummary
             foldedArray={this.state.foldedArray}
             onOpenPopup={this.handlePopUp}
-            data={this.props.detail.leagueUsers}
+            data={leagueUsers}
             role={this.state.role}
           />
         </div>
@@ -369,7 +408,7 @@ class Room extends React.Component {
           <TeamSummary
             foldedArray={this.state.foldedArray}
             onOpenPopup={this.handlePopUp}
-            data={this.props.detail.leagueUsers}
+            data={leagueUsers}
             role={this.state.role}
           />
         </div>
@@ -388,7 +427,7 @@ class Room extends React.Component {
 
     return (
       <div>
-        <h4> Auction Room - {this.props.detail ? this.props.detail.leagueName : ''}</h4>
+        <h4> Auction Room - {this.state.roomDetail ? this.state.roomDetail.leagueName : ''}</h4>
         {!this.state.isActive ? this.getActionButtons() : ''}
         {/* {!this.state.isActive ? <Button onClick={this.enterAuctionRoom}>Enter Auction</Button> : ""} */}
         {this.state.isActive ? (

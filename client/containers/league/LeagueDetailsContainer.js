@@ -10,7 +10,7 @@ const LeagueDetailsContainer = (props) => {
     const { id } = useParams();
     const [refresh, setRefresh] = useState(false);
     let leagueUsers = [];
-    const url = `${API_URL}leagues/${id}`;;
+    const url = `${API_URL}leagues/${id}`;
     const { data , error } = getLeagueDetails(url, refresh);
     console.log(error);
 
