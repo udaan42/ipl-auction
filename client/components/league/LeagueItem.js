@@ -85,9 +85,9 @@ export default function LeagueItem(props) {
             <Typography className={classes.leagueName} variant="h6" align="center">
                 {props.item.leagueName}
             </Typography> 
-            <Typography  variant="subtitle1" >
+            {/* <Typography  variant="subtitle1" >
                 <span className={classes.leagueId}>League code - {props.item.leagueId}</span>
-            </Typography> 
+            </Typography>  */}
             <Typography className={classes.copyLink}>
               <Link href="#" onClick={copyCode}>
                 Copy League Code

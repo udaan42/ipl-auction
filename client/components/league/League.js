@@ -9,6 +9,9 @@ import JoinLeagueModal from './JoinLeagueModal';
 import { withStyles } from '@material-ui/core/styles';
 import LeagueItem from './LeagueItem';
 
+import { API_URL, API_ENDPOINT, USER_ID, JWT_TOKEN, BAG } from '../../config/config';
+import { getLocalStorage, setLocalStorage, clearLocalStorage } from '../../utils/storageUtil';
+
 const styles = {
     headerBlock:{
         marginBottom: 15
@@ -76,7 +79,21 @@ class League extends React.Component{
             })
         }
     }
+
+    getAdminRole = () => {
+        let userId = getLocalStorage(USER_ID);
+        if(userId == "72346570-bbda-49d5-9b32-ff2c4f550f5c"){
+            return true;
+        }else if(userId == "9f664500-8700-454b-8b1a-ff3214690885"){
+            return true;
+        }else if(userId == "6567cf2e-122d-476f-b50d-260fbe3b4b69"){
+            return true;
+        }
+        return false;
+    }
     render(){
+        const adminAccess = this.getAdminRole();
+        console.log(adminAccess);
         return(
                 <Box>
                     {this.props.leagues.list == 0? <Grid className={this.props.classes.headerBlock} container-fluid spacing={2}>
@@ -89,7 +106,7 @@ class League extends React.Component{
 
                     <Grid container spacing={2}>
                         <Grid item xs="3">
-                            <Button variant="primary" color="primary" onClick={this.onCreateFormOpen}>
+                            <Button disabled={!adminAccess} variant="primary" color="primary" onClick={this.onCreateFormOpen}>
                                 Create a New League
                             </Button>
                             <CreateLeagueModal form={this.state.form} onNext={this.onNextForm} show={this.state.showCreateLeagueForm} onExit={this.onCreateFormClose} onChangeFormType={this.changeType}/>
