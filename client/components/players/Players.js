@@ -16,10 +16,6 @@ class Players extends React.Component{
         super(props)
     }
 
-    createData = ({playerId, playerName, teamName, playerRole, basePrice, bagNumber, playerRace, matchesPlayed, runsScored, highestScore, battingAverage, battingStrikeRate, noOfWickets, bowlingEconomy, bowlingStrikeRate, noOfFourWickets, noOfFiveWickets}) => {
-        return { playerId, playerName, teamName, playerRole, basePrice, bagNumber, playerRace, matchesPlayed, runsScored, highestScore, battingAverage, battingStrikeRate, noOfWickets, bowlingEconomy, bowlingStrikeRate, noOfFourWickets, noOfFiveWickets };
-    }
-
     render(){
         return(
             <Box>

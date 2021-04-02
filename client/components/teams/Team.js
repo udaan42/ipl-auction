@@ -505,7 +505,21 @@ class Team extends React.Component{
 
         const captainOptions = this.getCaptainOptions();
 
-        if(this.props.detail.leagueRole == "player"){
+        if(this.props.detail.leagueRole == "moderator"){
+            return(
+                <Container fluid>
+                    <Row>
+                        <Typography className={this.props.classes.header} variant="h5"> My Team </Typography>
+                    </Row>
+                    <Row>
+                        <Typography className={this.props.classes.subHeader} variant="subtitle1"> League Name - {this.props.id} </Typography>   
+                    </Row>
+                    <Row>
+                        <Typography className={this.props.classes.subHeader} variant="subtitle1"> You are a moderator for this league. No team selection available </Typography>
+                    </Row>
+                </Container>
+            )
+        }else if(this.props.detail.leagueRole == "player"){
             return(
                 <Container fluid>
                     <Row>
@@ -567,7 +581,7 @@ class Team extends React.Component{
                     </Dialog>
                 </Container>
             )
-        }else{
+        }else {
             return(
                 <Container fluid>
                     <Row>
@@ -575,9 +589,6 @@ class Team extends React.Component{
                     </Row>
                     <Row>
                         <Typography className={this.props.classes.subHeader} variant="subtitle1"> League Name - {this.props.id} </Typography>   
-                    </Row>
-                    <Row>
-                        <Typography className={this.props.classes.subHeader} variant="subtitle1"> You are a moderator for this league. No team selection available </Typography>
                     </Row>
                 </Container>
             )
