@@ -35,7 +35,7 @@ const RoomsContainer = (props) => {
     
     
     const url = `${API_ENDPOINT}/iplauction/league/${id}`;
-    const { data, reload } = getLeagueDetails(url, refresh);
+    const { data, reload, error } = getLeagueDetails(url, refresh);
 
     const playerBagsURL =  `${API_ENDPOINT}/iplauction/player/getPlayersBag`;
     const { players, bagNumber } = getPlayerBagDetails(playerBagsURL, bagNumbers[index]);
@@ -129,6 +129,10 @@ const RoomsContainer = (props) => {
             history.push(url)
         }
         
+    }
+
+    if(error){
+        setTimeout(setRefresh(!refresh),4000);
     }
 
     const refreshData = () => {

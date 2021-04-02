@@ -290,7 +290,12 @@ class PlayerStats extends React.Component{
 
     getTeamName = (id) => {
         let bidTeam = _.find(this.props.teams, ['userId', id]);
-        return bidTeam.teamName;
+        if(bidTeam){
+            return bidTeam.teamName;
+        }else{
+            return id;
+        }
+        
     }
 
     getSoldDetails = () => {

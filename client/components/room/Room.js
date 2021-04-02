@@ -142,27 +142,29 @@ class Room extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.roomDetail !== nextProps.detail) {
-      const data = {
-        userId: getLocalStorage(USER_ID),
-        roomId: nextProps.detail.leagueId,
-      };
+      if(nextProps.detail){
+        const data = {
+          userId: getLocalStorage(USER_ID),
+          roomId: nextProps.detail.leagueId,
+        };
 
-      if (!prevState.joinedRoom) {
-        joinAuctionRoom(data);
+        if (!prevState.joinedRoom) {
+          joinAuctionRoom(data);
+        }
+
+        let idKey = `currentIndex#${nextProps.detail.leagueId}`;
+        
+        let index = prevState.currentIndex;
+        if(getLocalStorage(idKey)){
+          index = getLocalStorage(idKey);
+        }
+
+
+        return {
+          roomDetail: nextProps.detail,
+          currentIndex: index,
+        };
       }
-
-      let idKey = `currentIndex#${nextProps.detail.leagueId}`;
-      
-      let index = prevState.currentIndex;
-      if(getLocalStorage(idKey)){
-        index = getLocalStorage(idKey);
-      }
-
-
-      return {
-        roomDetail: nextProps.detail,
-        currentIndex: index,
-      };
     }
 
     // Return null to indicate no change to state.
