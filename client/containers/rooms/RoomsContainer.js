@@ -131,10 +131,6 @@ const RoomsContainer = (props) => {
         
     }
 
-    if(error){
-        setTimeout(setRefresh(!refresh),4000);
-    }
-
     const refreshData = () => {
         setRefresh(!refresh);
     }

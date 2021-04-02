@@ -14,8 +14,8 @@ export default function getLeagueData(url, userId) {
       withCredentials: true,
       credentials: 'include',
       headers: {
-          'Authorization': bearer,
-          'X-UserId': userId
+          'authorisation': bearer,
+          'userid': userId
       } });
     const data = await response.json();
     setData(data.payload.leagueInfos);

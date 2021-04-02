@@ -16,7 +16,7 @@ export default function getLeagueDetails(url, refresh) {
       withCredentials: true,
       credentials: 'include',
       headers: {
-          'Authorization': bearer
+          'authorisation': bearer
       } })
       .then(async response => {
         const data = await response.json()
