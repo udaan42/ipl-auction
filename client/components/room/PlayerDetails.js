@@ -202,7 +202,7 @@ const PlayerDetails = (props) => {
                                     <th scope="col">Wickets</th>
                                     <th scope="col">Best Figures</th>
                                     <th scope="col">Avg.</th>
-                                    <th scope="col">SR</th>
+                                    <th scope="col">Economy</th>
                                     <th scope="col">4 wkts</th>
                                     <th scope="col">5 wkts</th>
                                     <th scope="col">Catches</th>
@@ -216,7 +216,7 @@ const PlayerDetails = (props) => {
                                     <td>{props.data.noOfWickets}</td>
                                     <td>{props.data.bestBowlingFigures}</td>
                                     <td>{props.data.bowlingAverage}</td>
-                                    <td>{props.data.bowlingStrikeRate}</td>
+                                    <td>{props.data.bowlingEconomy}</td>
                                     <td>{props.data.noOfFourWickets}</td>
                                     <td>{props.data.noOfFiveWickets}</td> 
                                     <td>{props.data.noOfCatches}</td>

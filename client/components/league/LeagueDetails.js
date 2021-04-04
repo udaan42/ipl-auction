@@ -90,6 +90,9 @@ const useStyles = makeStyles((theme) => ({
   },
   captain: {
     fontWeight: 700
+  },
+  liveBtn: {
+    marginLeft: 35
   }
 }));
 
@@ -110,16 +113,19 @@ export default function LeagueDetails(props) {
     const handleClick = (id) => { console.log(id)};
 
     const handleEnterRoom = (id) => {
-      console.log(props.detail.leagueId)
       let url = `/rooms/${id}`
       history.push(url);
     }
 
     const handleEnterTeam = (id) => {
-      console.log(props.detail.leagueId)
       let url = `/my-teams/${id}`
       history.push(url);
     }
+
+    const handleLiveRoom = (id) => {
+      let url = `/live/${id}`
+      history.push(url);
+    } 
 
     const displayButton = () => {
       if(props.detail){
@@ -127,12 +133,14 @@ export default function LeagueDetails(props) {
           return (
             <Row className={classes.roomButton}>
                 <Button variant="secondary" onClick={()=>{handleEnterRoom(props.detail.leagueId)}}> Enter Auction Room</Button>
+                <Button variant="info" className={classes.liveBtn} onClick={()=>{handleLiveRoom(props.detail.leagueId)}}> View Live Squad details</Button>
             </Row>
           )
         }else{
           return (
             <Row className={classes.roomButton}>
                 <Button variant="secondary" onClick={()=>{handleEnterTeam(props.detail.leagueId)}}> View/ Change your playing 11</Button>
+                <Button variant="info" className={classes.liveBtn} onClick={()=>{handleLiveRoom(props.detail.leagueId)}}> View Live Squad details</Button>
             </Row>
           )
         }

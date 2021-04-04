@@ -483,7 +483,7 @@ class PlayerStats extends React.Component{
             });
             purseRemain = 10000 - purseSpent;
         }
-        let requiredBalance = (squadRemain + 1) * 30;
+        let requiredBalance = (squadRemain - 1) * 30;
         
         return ((purseRemain - this.state.nextBid) <= requiredBalance)
 

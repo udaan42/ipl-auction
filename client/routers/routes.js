@@ -18,6 +18,7 @@ const AsyncRules = loadable(()=> import('../containers/rules/RulesContainer'));
 const AsyncLeagueDetails = loadable(() => import('../containers/league/LeagueDetailsContainer'));
 const AsyncTeams = loadable(() => import('../containers/teams/TeamsContainer'));
 const AsyncTeam = loadable(() => import('../containers/teams/TeamContainer'));
+const AsyncLive = loadable(() => import('../containers/live/LiveContainer'));
 
 
 const Router = () => (
@@ -34,6 +35,7 @@ const Router = () => (
       <PrivateRoute exact path="/rules" layout={Layout} component={AsyncRules} />
       <PrivateRoute exact path="/my-teams" layout={Layout} component={AsyncTeams} />
       <PrivateRoute exact path="/my-teams/:id" layout={Layout} component={AsyncTeam} />
+      <PrivateRoute exact path="/live/:id" layout={Layout} component={AsyncLive} />
 
       <Route component={NotFound} />
     </Switch>
