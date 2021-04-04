@@ -400,46 +400,38 @@ class Team extends React.Component{
         let ar = team.filter((item)=> item.playerRole == "All Rounder").length;
         let overseas = team.filter((item)=> item.playerRace == "F").length;
 
-        let error = false;
 
         if(team.length < 11){
-            error = true;
             this.setState({
                 error: true,
                 errorMessage: "You need to pick a 11"
             })
         }else if(wk < 1){
-            error = true;
             this.setState({
                 error: true,
                 errorMessage: "Wicket Keeper minimum criteria not met! Need at least 1 wicket keeper in the 11"
             })
         }else if(bat < 3){
-            error = true;
             this.setState({
                 error: true,
                 errorMessage: "Batsman minimum criteria not met! Need at least 3 batsmen in the 11"
             })
         }else if(bowl < 3){
-            error = true;
             this.setState({
                 error: true,
                 errorMessage: "Bowler minimum criteria not met! Need at least 3 bowlers in the 11"
             })
         }else if(ar < 1){
-            error = true;
             this.setState({
                 error: true,
                 errorMessage: "All rounder minimum criteria not met! Need at least 1 all rounder in the 11"
             })
         }else if(overseas < 4){
-            error = true;
             this.setState({
                 error: true,
                 errorMessage: "Overseas player criteria not met! Need 4 overseas player in the 11"
             })
         }else if(wk > 1){
-            error = true;
             if(!this.state.selectedKeeper){
                 this.setState({
                     error: true,
@@ -449,7 +441,6 @@ class Team extends React.Component{
         }
         
         if(!this.state.selectedCaptain){
-            error = true;
             this.setState({
                 error: true,
                 errorMessage: "Please select a captain"
@@ -458,7 +449,6 @@ class Team extends React.Component{
 
         let captain = _.find(team, ['playerName', this.state.selectedCaptain.value]);
         if(!captain){
-            error = true;
             this.setState({
                 error: true,
                 errorMessage: "Your selected captain is not part of the playing 11"
@@ -468,7 +458,6 @@ class Team extends React.Component{
         if(wk > 1 && this.state.selectedKeeper){
             let keeper = _.find(team, ['playerName', this.state.selectedKeeper.value]);
             if(!keeper){
-                error = true;
                 this.setState({
                     error: true,
                     errorMessage: "Your selected Keeper is not part of the playing 11"
@@ -502,7 +491,7 @@ class Team extends React.Component{
 
         let finalSquad = [...team, ...this.state.squad];
 
-        if(!error){
+        if(!this.state.error){
             this.props.updateSquad(finalSquad);
         }
 
