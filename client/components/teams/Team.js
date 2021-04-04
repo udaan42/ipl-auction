@@ -438,9 +438,7 @@ class Team extends React.Component{
                     errorMessage: "You have more than 1 keeper. Please select your wicket keeper for the 11"
                 })
             }
-        }
-        
-        if(!this.state.selectedCaptain){
+        }else if(!this.state.selectedCaptain){
             this.setState({
                 error: true,
                 errorMessage: "Please select a captain"
@@ -453,46 +451,48 @@ class Team extends React.Component{
                 error: true,
                 errorMessage: "Your selected captain is not part of the playing 11"
             })
-        }
-        captain.captain = true;
-        if(wk > 1 && this.state.selectedKeeper){
-            let keeper = _.find(team, ['playerName', this.state.selectedKeeper.value]);
-            if(!keeper){
-                this.setState({
-                    error: true,
-                    errorMessage: "Your selected Keeper is not part of the playing 11"
-                })
-            }
-        }
-
-        
-        team.map((player)=> {
-            if(wk > 1){
-                if(player.playerRole == "Wicket Keeper" && player.playerName == this.state.selectedKeeper.value){
-                    player.wicketKeeper = true;
+        }else{
+            if(wk > 1 && this.state.selectedKeeper){
+                let keeper = _.find(team, ['playerName', this.state.selectedKeeper.value]);
+                if(!keeper){
+                    this.setState({
+                        error: true,
+                        errorMessage: "Your selected Keeper is not part of the playing 11"
+                    })
                 }else{
-                    player.wicketKeeper = false;
-                }
-            }else{
-                if(player.playerRole == "Wicket Keeper"){
-                    player.wicketKeeper = true;
+                    captain.captain = true;
+
+                    team.map((player)=> {
+                        if(wk > 1){
+                            if(player.playerRole == "Wicket Keeper" && player.playerName == this.state.selectedKeeper.value){
+                                player.wicketKeeper = true;
+                            }else{
+                                player.wicketKeeper = false;
+                            }
+                        }else{
+                            if(player.playerRole == "Wicket Keeper"){
+                                player.wicketKeeper = true;
+                            }
+                        }
+                    })
+                    
+            
+                    team.map((player) => {
+                        if(player.playerName == this.state.selectedCaptain.value){
+                            player.captain = true;
+                        }else{
+                            player.captain = false;
+                        }
+                    })
+            
+                    let finalSquad = [...team, ...this.state.squad];
+            
+                    if(!this.state.error){
+                        this.props.updateSquad(finalSquad);
+                    }
                 }
             }
-        })
-        
-
-        team.map((player) => {
-            if(player.playerName == this.state.selectedCaptain.value){
-                player.captain = true;
-            }else{
-                player.captain = false;
-            }
-        })
-
-        let finalSquad = [...team, ...this.state.squad];
-
-        if(!this.state.error){
-            this.props.updateSquad(finalSquad);
+            
         }
 
     }
