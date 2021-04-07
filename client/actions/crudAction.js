@@ -58,7 +58,7 @@ export const updateItem = (entity, data, id) => {
             history.goBack();
         })
             .catch((error) => {
-                dispatch(commonAction.failure(error));
+                dispatch(commonAction.failure(error.response.data));
             });
     };
 };

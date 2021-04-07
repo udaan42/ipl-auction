@@ -10,7 +10,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
-
+import { TYPE_WICKET_KEEPER, TYPE_ALL_ROUNDER, TYPE_BOWLER, TYPE_BATSMAN } from '../../constants/constants';
 
 function getPriceValue(value){
     if(value < 100){
@@ -239,10 +239,10 @@ export default function LiveTable(props) {
                       key={row.playerId}
                       selected={isItemSelected}
                       className = {clsx( {
-                        [classes.batsman] : row.playerRole == "Batsman",
-                        [classes.bowler] : row.playerRole == "Bowler",
-                        [classes.allrounder] : row.playerRole == "All Rounder",
-                        [classes.keeper] : row.playerRole == "Wicket Keeper",
+                        [classes.batsman] : row.playerRole == TYPE_BATSMAN,
+                        [classes.bowler] : row.playerRole == TYPE_BOWLER,
+                        [classes.allrounder] : row.playerRole == TYPE_ALL_ROUNDER,
+                        [classes.keeper] : row.playerRole == TYPE_WICKET_KEEPER,
                         })}
                     >
                       <TableCell className={classes.rowContent} id={labelId} scope="row">

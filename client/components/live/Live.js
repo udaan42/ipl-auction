@@ -6,7 +6,9 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import _ from 'lodash';
 import { useHistory } from "react-router-dom";
 import { Col, Button, Row } from 'react-bootstrap';
-import LiveTable from './LiveTable'
+import LiveTable from './LiveTable';
+
+import { ROLE_PLAYER, ROLE_MODERATOR } from '../../constants/constants';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -55,7 +57,7 @@ export default function Live(props) {
         <Button variant="info" className={classes.refreshBtn} onClick={handleClick}> Refresh</Button>
         <Row>
             {standings.map((item)=>{
-            if(item.leagueRole == "player"){         
+            if(item.leagueRole == ROLE_PLAYER){         
               return(
                     <Col md= {3} className={classes.liveTable}>
                         <Typography variant="subtitle1" className={classes.subTitle}> {item.teamName}</Typography>

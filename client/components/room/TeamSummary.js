@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Container, Image, Row, Col, Table} from 'react-bootstrap';
 import { withStyles } from '@material-ui/core/styles';
 import { Card, CardHeader, CardContent, Typography } from '@material-ui/core';
+import { ROLE_PLAYER } from '../../constants/constants';
 
 const styles = {
     teamSummary:{
@@ -66,7 +67,7 @@ const getModUI = (props) => {
     return(
         <Row>
             {props.data.map((item, index)=> {
-                if(item.leagueRole == "player"){
+                if(item.leagueRole == ROLE_PLAYER){
                     return(
                         <Col md={3} sm={3} xs={3} key={index}  onClick={()=> {handleClick(item.playersSquad)}}>
                             <div key={item.userId} className={props.classes.tab}>
@@ -101,7 +102,7 @@ const getPlayerUI = (props) => {
     return(
         <Row>
             {props.data.map((item, index)=> {
-                if(item.leagueRole == "player"){
+                if(item.leagueRole == ROLE_PLAYER){
                     return(
                         <Col md={3} sm={3} xs={3} key={index}  onClick={()=> {handleClick(item.playersSquad)}}>
                             <div className={props.classes.tab}>
@@ -123,7 +124,7 @@ const TeamSummary = (props) => {
     
     return(
         <Container className={props.classes.teamSummary} fluid>
-            {(props.role == "player")? getPlayerUI(props): getModUI(props)} 
+            {(props.role == ROLE_PLAYER)? getPlayerUI(props): getModUI(props)} 
         </Container>
     )
 }

@@ -2,15 +2,12 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-// import { Button } from '@material-ui/core';
-import { Button } from 'react-bootstrap';
+import { Button, Container, Table, Col } from 'react-bootstrap';
 import CreateLeagueModal from './CreateLeagueModal';
 import JoinLeagueModal from './JoinLeagueModal';
 import { withStyles } from '@material-ui/core/styles';
 import LeagueItem from './LeagueItem';
-
-import { API_URL, API_ENDPOINT, USER_ID, JWT_TOKEN, BAG } from '../../config/config';
-import { getLocalStorage, setLocalStorage, clearLocalStorage } from '../../utils/storageUtil';
+import { Link } from 'react-router-dom';
 
 const styles = {
     headerBlock:{
@@ -21,6 +18,14 @@ const styles = {
     },
     subTitleText:{
         fontWeight: 500
+    },
+    rowItems: {
+        paddingTop: 10,
+        paddingBottom: 10
+    },
+    leagueTableContainer:{
+        marginTop: 25,
+        fontSize: 16
     }
 };
   
@@ -80,22 +85,10 @@ class League extends React.Component{
         }
     }
 
-    getAdminRole = () => {
-        let userId = getLocalStorage(USER_ID);
-        if(userId == "72346570-bbda-49d5-9b32-ff2c4f550f5c"){
-            return true;
-        }else if(userId == "9f664500-8700-454b-8b1a-ff3214690885"){
-            return true;
-        }else if(userId == "6567cf2e-122d-476f-b50d-260fbe3b4b69"){
-            return true;
-        }
-        return false;
-    }
     render(){
-        const adminAccess = this.getAdminRole();
         return(
                 <Box>
-                    {this.props.leagues.list == 0? <Grid className={this.props.classes.headerBlock} container-fluid spacing={2}>
+                    {this.props.list.length == 0? <Grid className={this.props.classes.headerBlock} container-fluid spacing={2}>
                         <Grid item xs>
                             <Typography>
                                 You are not part of any league. Please create a new league or join an existing league
@@ -105,7 +98,7 @@ class League extends React.Component{
 
                     <Grid container spacing={2}>
                         <Grid item xs="3">
-                            <Button disabled={!adminAccess} variant="primary" color="primary" onClick={this.onCreateFormOpen}>
+                            <Button variant="primary" color="primary" onClick={this.onCreateFormOpen}>
                                 Create a New League
                             </Button>
                             <CreateLeagueModal form={this.state.form} onNext={this.onNextForm} show={this.state.showCreateLeagueForm} onExit={this.onCreateFormClose} onChangeFormType={this.changeType}/>
@@ -125,8 +118,48 @@ class League extends React.Component{
                             </Typography>
                         </Grid>
                     </Grid>
+                    <Container fluid>
+                        <Col className={this.props.classes.leagueTableContainer} md={8}>
+                            <Table striped hover size="md" className={this.props.classes.yourTable} >
+                                <thead>
+                                    <tr>
+                                    <th className={this.props.classes.rowItems}>#</th>
+                                    <th className={this.props.classes.rowItems}>Name</th>
+                                    <th className={this.props.classes.rowItems}>Position</th>
+                                    <th className={this.props.classes.rowItems}>Points</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.props.list.map((item)=>{
+                                        const url = `/leagues/${item.leagueId}`;
+                                        return(
+                                            <tr>
+                                                <td className={this.props.classes.rowItems}>
+                                                    #
+                                                </td>
+                                                <td className={this.props.classes.rowItems}>
+                                                    <Link to={url}>
+                                                        {item.leagueName}
+                                                    </Link>
+                                                </td>
+                                                <td className={this.props.classes.rowItems}>
+                                                    -
+                                                </td>
+                                                <td className={this.props.classes.rowItems}>
+                                                    {item.points}
+                                                </td>
 
-                    <Grid container spacing={1}>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </Table>
+
+                        </Col>
+                        
+                    </Container>
+
+                    {/* <Grid container spacing={1}>
                         {this.props.list.map((item)=>{
                             return (
                                 <Grid item md="4" xs="4">
@@ -134,7 +167,7 @@ class League extends React.Component{
                                 </Grid>
                             )    
                         })}
-                    </Grid>
+                    </Grid> */}
                     
                 </Box>
                 

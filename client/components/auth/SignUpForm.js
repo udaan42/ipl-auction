@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 
 // Import custom components
 import renderText from '../common/form/renderText';
+import CustomizedSnackbar from '../common/snakebar/CustomizedSnackbar';
 
 const styles = {
   root: {
@@ -45,9 +46,6 @@ const validateSignUp = (values) => {
     }
   });
 
-  // if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-  //   errors.email = '(Invalid email address.)';
-  // }
   return errors;
 };
 
@@ -58,8 +56,10 @@ const SignUpForm = (props) => {
     <div className={classes.root}>
       <Card className={classes.card}>
         <CardHeader className={classes.cardHeader} title="Sign Up" />
+        {props.errorMessage && (
+            <CustomizedSnackbar variant="error" className={classes.margin} message={props.errorMessage} />
+        )}
         <CardContent>
-
           <Form
             validate = {validateSignUp}
             onSubmit = {props.onSubmit}

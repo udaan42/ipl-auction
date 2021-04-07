@@ -8,7 +8,7 @@ import TeamSummary from './TeamSummary';
 import ModeratorZone from './ModeratorZone';
 import PlayerPopupModal from './PlayerPopupModal';
 import _ from 'lodash';
-import { push } from 'connected-react-router';
+import { ROLE_MODERATOR } from '../../constants/constants';
 import {
   joinAuctionRoom,
   onJoinRoom,
@@ -28,6 +28,8 @@ import {
   disconnect,
   onEndAuction
 } from '../../socket/socket';
+
+
 
 class Room extends React.Component {
   constructor(props) {
@@ -233,14 +235,6 @@ class Room extends React.Component {
     let userId = getLocalStorage(USER_ID);
 
     let user = {};
-    // if (!_.isEmpty(this.props.detail)) {
-    //   user = _.find(this.props.detail.leagueUsers, ['userId', userId]);
-    //   if (this.state.role != user.leagueRole) {
-    //     this.setState({
-    //       role: user.leagueRole,
-    //     });
-    //   }
-    // }
 
     if (this.state.roomDetail) {
       user = _.find(this.state.roomDetail.leagueUsers, ['userId', userId]);
@@ -253,7 +247,7 @@ class Room extends React.Component {
   };
 
   getActionButtons = () => {
-    if (this.state.role == 'moderator') {
+    if (this.state.role == ROLE_MODERATOR) {
       if (!this.state.isActive) {
         return <Button onClick={this.handleStartButton}>Start Auction</Button>;
       }
@@ -356,7 +350,7 @@ class Room extends React.Component {
         leagueUsers = this.state.roomDetail.leagueUsers;
       }
     const bidHistory = this.state.bidDetails ? this.state.bidDetails.bidHistory : [];
-    if (this.state.role == 'moderator') {
+    if (this.state.role == ROLE_MODERATOR) {
       return (
         <div>
           <ModeratorZone

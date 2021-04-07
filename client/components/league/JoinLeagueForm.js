@@ -13,7 +13,7 @@ import CustomizedSnackbar from '../common/snakebar/CustomizedSnackbar';
 import Select from 'react-select';
 
 const options = [
-  // { value: 'moderator', label: 'Moderator' },
+  { value: 'moderator', label: 'Moderator' },
   { value: 'player', label: 'Player' }
 ];
 
@@ -150,9 +150,9 @@ const JoinLeagueForm = (props) => {
                       { (props.form == 1) ? (<><Button disabled={leagueName ? leagueName.length == 0 : true} onClick={handleClick} className={classes.btn} type="submit" variant="contained" color="primary">
                           Join League
                         </Button>
-                      {/* <p className={classes.footer}>
+                      <p className={classes.footer}>
                         Want to create a new league? <Link onClick={joinLeague}>Create a new league</Link>.
-                      </p> */}
+                      </p>
                       </>) : <Button disabled={!selectedOption} className={classes.btn} onClick={handleClick} type="submit" variant="contained" color="primary">
                         Submit
                       </Button>}

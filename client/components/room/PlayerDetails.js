@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Row, Col, Container, Image, Table } from 'react-bootstrap';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { PLAYER_INDIAN } from '../../constants/constants';
 
 const useStyles = makeStyles((theme) => ({
     playerDetailsRow: {
@@ -132,7 +132,7 @@ const PlayerDetails = (props) => {
                         Role: <span className={classes.playerData}> {props.data.playerRole} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
-                        Category: <span className={classes.playerData}> {props.data.playerRace == "I" ? "Indian" : "Overseas"} </span>
+                        Category: <span className={classes.playerData}> {props.data.playerRace == PLAYER_INDIAN ? "Indian" : "Overseas"} </span>
                     </Row>
                     <Row className={classes.playerDetailsRow}>
                         Base Price: <span className={classes.playerData}> {getPrice(props.data.basePrice)} </span>

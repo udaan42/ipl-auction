@@ -3,7 +3,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TeamItem from './TeamItem';
-
+import { LEAGUE_STATUS_ENDED } from '../../constants/constants';
 import { withStyles } from '@material-ui/core/styles';
 
 
@@ -28,7 +28,7 @@ class MyTeams extends React.Component{
     }
 
     getCompletedLeagues = () => {
-        return this.props.list.filter(item => item.leagueStatus == "ENDED");
+        return this.props.list.filter(item => item.leagueStatus == LEAGUE_STATUS_ENDED);
     }
 
 

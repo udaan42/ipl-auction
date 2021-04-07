@@ -16,6 +16,7 @@ import _ from 'lodash';
 import { useHistory } from "react-router-dom";
 import { Col, Button, Row } from 'react-bootstrap';
 import FlightIcon from '@material-ui/icons/Flight';
+import { ROLE_PLAYER, ROLE_MODERATOR, PLAYER_OVERSEAS } from '../../constants/constants';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -149,7 +150,7 @@ export default function LeagueDetails(props) {
 
     const getModeratorNames = () => {
       let modUsers = standings.filter((item)=> {
-        return (item.leagueRole == "moderator")
+        return (item.leagueRole == ROLE_MODERATOR)
       })
 
       return modUsers.map((item) => {
@@ -179,7 +180,7 @@ export default function LeagueDetails(props) {
             </AccordionSummary>
         </Accordion>
         {standings.map((item)=>{
-            if(item.leagueRole == "player"){
+            if(item.leagueRole == ROLE_PLAYER){
               const squad = item.playersSquad.filter((player)=> player.playing);
               return(
                 <Accordion >
@@ -208,7 +209,7 @@ export default function LeagueDetails(props) {
                                     {squad.map((row) => (
                                         <TableRow key={row.name}>
                                             <TableCell component="th" scope="row">
-                                                {row.playerName} {row.playerRace == 'F' ? <FlightIcon className={classes.overseasIcon} />: ""}{row.captain? <span className={classes.captain}> - C</span>: ""}
+                                                {row.playerName} {row.playerRace == PLAYER_OVERSEAS ? <FlightIcon className={classes.overseasIcon} />: ""}{row.captain? <span className={classes.captain}> - C</span>: ""}
                                             </TableCell>
                                             <TableCell align="left">{row.playerRole}</TableCell>
                                             <TableCell align="right">{row.points}</TableCell>

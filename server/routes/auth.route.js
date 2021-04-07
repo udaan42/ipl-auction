@@ -88,8 +88,10 @@ router.route('/login')
                 console.log(response.data);
                 res.json(response.data);
             }, (error) => {
-                console.log('error from api call');
-                console.log(error);
+                console.log(error.response);
+                res.status(403).send({
+                    message: error.response.data.errorMessage
+                 })
             });
         //authCtrl.login(req, res);
     });

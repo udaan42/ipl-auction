@@ -25,9 +25,14 @@ class SignUpContainer extends Component {
   }
 
   render() {
-    return <SignUpForm onSubmit={this.submitForm} />;
+    return <SignUpForm onSubmit={this.submitForm} errorMessage={this.props.errorMessage} />;
   }
 }
+
+
+const mapStateToProps = (state) => ({
+  errorMessage: state.crud.errorMessage,
+});
 
 /**
  * Map the actions to props.
@@ -36,4 +41,4 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(Object.assign({}, crudAction), dispatch),
 });
 
-export default connect(null, mapDispatchToProps)(SignUpContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpContainer);

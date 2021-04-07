@@ -12,6 +12,8 @@ import Paper from '@material-ui/core/Paper';
 import FlightIcon from '@material-ui/icons/Flight';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 
+import { PLAYER_OVERSEAS, TYPE_BATSMAN, TYPE_BOWLER, TYPE_ALL_ROUNDER, TYPE_WICKET_KEEPER } from '../../constants/constants';
+
 const headCells = [
   { id: 'id', numeric: false, disablePadding: true, label: '#' },
   { id: 'playerName', numeric: false, disablePadding: false, label: 'Name' },
@@ -86,13 +88,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const getPlayerRole = (role) => {
-  if(role == "Batsman"){
+  if(role == TYPE_BATSMAN){
     return "Bat"
-  }else if(role == "Bowler"){
+  }else if(role == TYPE_BOWLER){
     return "Bowl"
-  }else if(role == "Wicket Keeper"){
+  }else if(role == TYPE_WICKET_KEEPER){
     return "WK"
-  }else if(role == "All Rounder"){
+  }else if(role == TYPE_ALL_ROUNDER){
     return "AR"
   }
 }
@@ -130,7 +132,7 @@ export default function TeamTable(props) {
                       </TableCell>:""}
                       <TableCell padding="none" align="left">{index + 1}</TableCell>
                       <TableCell className={classes.rowContent} component="th" id={labelId} scope="row">
-                        {row.playerName} {row.playerRace == 'F' ? <FlightIcon className={classes.overseasIcon} />: ""}
+                        {row.playerName} {row.playerRace == PLAYER_OVERSEAS ? <FlightIcon className={classes.overseasIcon} />: ""}
                       </TableCell>
                       <TableCell align="left">{row.teamName}</TableCell>
                       <TableCell align="left">{getPlayerRole(row.playerRole)}</TableCell>

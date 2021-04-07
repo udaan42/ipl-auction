@@ -6,7 +6,8 @@ import { useHistory } from "react-router-dom";
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import Link from '@material-ui/core/Link';
 import { Col } from 'react-bootstrap';
-const copy = require('clipboard-copy')
+import { LEAGUE_STATUS_STARTED, LEAGUE_STATUS_NOT_STARTED } from '../../constants/constants';
+const copy = require('clipboard-copy');
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,9 +70,9 @@ export default function LeagueItem(props) {
   }
 
   const getLeagueStatus = (status) => {
-    if(status == "NOT_STARTED"){
+    if(status == LEAGUE_STATUS_NOT_STARTED){
       return 'Not Started'
-    }else if(status == "STARTED"){
+    }else if(status == LEAGUE_STATUS_STARTED){
       return 'In progress'
     }else{
       return 'Ended'

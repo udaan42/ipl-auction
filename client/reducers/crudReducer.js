@@ -4,6 +4,7 @@ import {
   ENTITY_FETCH,
   SELECT_ENTITY_ITEM,
   ENTITY_DELETE,
+  ENTITY_FAILURE,
   CLEAR_ENTITY_LIST,
 } from '../constants/actionType';
 
@@ -29,6 +30,12 @@ export default function (state, action) {
     case ENTITY_UPDATE:
       newState[action.entity] = Object.assign({}, state, action.data);
       return newState;
+
+    case ENTITY_FAILURE:
+      return Object.assign({}, state, {
+        errorMessage: action.error.response.data.message || 'Something went wrong.'
+      });
+
 
     case ENTITY_FETCH:
       newState[action.entity] = Object.assign({}, state, action.data);

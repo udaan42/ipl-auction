@@ -4,7 +4,7 @@ import JoinLeagueForm from './JoinLeagueForm';
 import { JWT_TOKEN, API_ENDPOINT, USER_ID } from '../../config/config';
 import { getLocalStorage } from '../../utils/storageUtil';
 import axios from 'axios';
-
+import { ROLE_PLAYER, ROLE_MODERATOR } from '../../constants/constants';
 
 export default function JoinLeagueModal(props) {
   
@@ -49,7 +49,7 @@ export default function JoinLeagueModal(props) {
         props.onNext();
       }else{
         const userId = getLocalStorage(USER_ID);
-        if(selectedOption.value == "moderator"){
+        if(selectedOption.value == ROLE_MODERATOR){
           props.onExit();
           let data = {
             "leagueRole": selectedOption.value,

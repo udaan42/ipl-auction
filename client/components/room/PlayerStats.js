@@ -9,7 +9,6 @@ import WarningIcon from '@material-ui/icons/Warning';
 import LocalMallIcon from '@material-ui/icons/LocalMall';
 import PlayerTable from './PlayerTable';
 import PlayerDetails from './PlayerDetails';
-import classnames from 'classnames';
 import clsx from 'clsx';
 import { API_ENDPOINT, USER_ID, JWT_TOKEN } from '../../config/config';
 import { getLocalStorage } from '../../utils/storageUtil';
@@ -23,6 +22,9 @@ import Chatbox from './Chatbox';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { Paper } from '@material-ui/core';
+
+import { TYPE_BATSMAN, TYPE_BOWLER, TYPE_ALL_ROUNDER, TYPE_WICKET_KEEPER, PLAYER_INDIAN, PLAYER_OVERSEAS, ROLE_PLAYER, ROLE_MODERATOR } from '../../constants/constants';
+import MyTimer from './Timer';
 
 const styles = {
     playerDetailsRow: {
@@ -102,10 +104,12 @@ const styles = {
     nextBidDetails: {
         margin: 15,
         paddingTop: 10,
-        marginRight: 40
+        marginRight: 25,
+        fontSize: 16
     },
     nextBidLabel: {
-        fontWeight: 500
+        // fontWeight: 500,
+        fontSize: 16
     },
     nextBid: {
         fontWeight: 600,
@@ -176,6 +180,11 @@ const styles = {
     onlineUsersItem:{
         marginBottom: 5,
         marginTop: 10
+    },
+    timerText: {
+        marginTop: 25,
+        marginRight: 10,
+        fontSize: 16
     }
 
 };
@@ -185,16 +194,24 @@ class PlayerStats extends React.Component{
 
     constructor(props){
         super(props);
+        let time = new Date();
+        time.setSeconds(time.getSeconds()+ 45);
         this.state = {
             nextBid: null,
             bidDetails: null,
             data: null,
-            open: false
+            open: false,
+            time: time,
+            timeLimit: 30,
+            timeFreeze: false
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        
         if (prevState.bidDetails !== nextProps.bidDetails) {
+            let time = new Date();
+            time.setSeconds(time.getSeconds()+ prevState.timeLimit);
             let nextBid = null;
             if(nextProps.bidDetails){
                 if(nextProps.bidDetails.currentBid < 100){
@@ -211,16 +228,22 @@ class PlayerStats extends React.Component{
             }
             return {
                 bidDetails: nextProps.bidDetails,
-                nextBid: nextBid
+                nextBid: nextBid,
+                time: time,
+                timeFreeze: false
             };
         }
 
         if (prevState.data !== nextProps.data) {
+            let time = new Date();
+            time.setSeconds(time.getSeconds()+ 45);
             if(nextProps.data){
                 return {
                     data: nextProps.data,
-                    nextBid: nextProps.data.basePrice
-                  }
+                    nextBid: nextProps.data.basePrice,
+                    time: time,
+                    timeFreeze: false
+                }
             }
         }
     
@@ -355,13 +378,13 @@ class PlayerStats extends React.Component{
 
         if(this.props.myTable){
             this.props.myTable.playersSquad.map((player)=> {
-                if(player.playerRole == "Bowler"){
+                if(player.playerRole == TYPE_BOWLER){
                     balance.bowl++;
-                }else if(player.playerRole == "Batsman"){
+                }else if(player.playerRole == TYPE_BATSMAN){
                     balance.bat++;
-                }else if(player.playerRole == "All Rounder"){
+                }else if(player.playerRole == TYPE_ALL_ROUNDER){
                     balance.ar++;
-                }else if(player.playerRole == "Wicket Keeper"){
+                }else if(player.playerRole == TYPE_WICKET_KEEPER){
                     balance.wk++
                 }
             })
@@ -374,19 +397,19 @@ class PlayerStats extends React.Component{
         }
         
         if(currentPlayerRole){
-            if(currentPlayerRole == "Batsman"){
+            if(currentPlayerRole == TYPE_BATSMAN){
                 if(balance.bat > 4){
                     check = true
                 }
-            }else if(currentPlayerRole == "Bowler"){
+            }else if(currentPlayerRole == TYPE_BOWLER){
                 if(balance.bowl > 4){
                     check = true
                 }
-            }else if(currentPlayerRole == "All Rounder"){
+            }else if(currentPlayerRole == TYPE_ALL_ROUNDER){
                 if(balance.ar > 4){
                     check = true
                 }
-            }else if(currentPlayerRole == "Wicket Keeper"){
+            }else if(currentPlayerRole == TYPE_WICKET_KEEPER){
                 if(balance.wk > 2){
                     check = true;
                 }
@@ -403,18 +426,18 @@ class PlayerStats extends React.Component{
         let check = false;
         if(this.props.myTable){
             this.props.myTable.playersSquad.map((player)=> {
-                if(player.playerRace == "I"){
+                if(player.playerRace == PLAYER_INDIAN){
                     indian++;
-                }else if(player.playerRace == "F"){
+                }else if(player.playerRace == PLAYER_OVERSEAS){
                     overseas++;
                 }
             })
         }
 
         if(this.props.data){
-            if(this.props.data.playerRace == "I" && indian >= 10){
+            if(this.props.data.playerRace == PLAYER_INDIAN && indian >= 10){
                 check = true;
-            }else if(this.props.data.playerRace == "F" && overseas >= 6){
+            }else if(this.props.data.playerRace == PLAYER_OVERSEAS && overseas >= 6){
                 check = true;
             }
         }
@@ -489,23 +512,33 @@ class PlayerStats extends React.Component{
 
     }
 
+    countdownExpired = () => {
+        console.log("Freeze the raise buttons");
+        this.setState({
+            timeFreeze: true
+        })
+    }
+
 
     render(){
 
-        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota() || this.props.sold || this.props.fold || this.checkPurseBalance() || this.checkMaxPlayers();
+        const disabled = this.checkDisabledBtn() || this.checkSquadBalance() || this.checkForeignPlayerQuota() || this.props.sold || this.props.fold || this.checkPurseBalance() || this.checkMaxPlayers() || this.state.timeFreeze;
         const foldDisabled = this.props.sold || this.checkFoldDisabledBtn() || this.props.fold;
         
         const playerTableData = this.props.myTable ? this.props.myTable.playersSquad : [] 
 
-        if(this.props.role == "player"){
+        if(this.props.role == ROLE_PLAYER){
             return(
                 <Row>
                     <Col md={6} sm={12} className={this.props.classes.playerInfo}>
                         {(this.props.data)?<Container>
                             <PlayerDetails  teams={this.props.teams} bidDetails={this.props.bidDetails} data={this.props.data} />
                             {this.getSoldDetails()}
-                            <Row>
+                            {/* <Row>
                                 <div className={this.props.classes.nextBidDetails}><span className={this.props.classes.nextBidLabel}> Next Bid - </span> <span className={this.props.classes.nextBid}>{this.getPrice(this.state.nextBid)}</span></div>
+                                <span className={this.props.classes.timerText}> expires in </span>
+                                <MyTimer expiryTimestamp={time}/>
+                                <span className={this.props.classes.timerText}> seconds</span>
                                 <Button variant="success" disabled={disabled} onClick={this.submitBtn} className={this.props.classes.bidBtnRaise}> Raise <PanToolIcon className={this.props.classes.raise}/></Button>
                                 <Button variant="danger" disabled={foldDisabled} onClick={this.handleOpen} className={this.props.classes.bidBtnFold}> Fold <ThumbDownAltIcon className={this.props.classes.thumbsdown}/></Button>
                             </Row>
@@ -530,7 +563,7 @@ class PlayerStats extends React.Component{
                                     Yes
                                 </Button>
                                 </DialogActions>
-                            </Dialog>
+                            </Dialog> */}
                         </Container>: ""}
                     </Col>
                     <Col md={3} sm={12}>
@@ -538,6 +571,40 @@ class PlayerStats extends React.Component{
                     </Col>
                     <Col md={3} sm={12}>
                         <PlayerTable data= {playerTableData} />
+                    </Col>
+                    <Col md={12} >
+                        <Container fluid>
+                        <Row>
+                            <div className={this.props.classes.nextBidDetails}><span className={this.props.classes.nextBidLabel}> Next Bid - </span> <span className={this.props.classes.nextBid}>{this.getPrice(this.state.nextBid)}</span></div>
+                            <span className={this.props.classes.timerText}> expires in </span>
+                            <MyTimer expiryTimestamp={this.state.time} sold={this.props.sold}  countdownExpired={this.countdownExpired}/>
+                            <span className={this.props.classes.timerText}> seconds</span>
+                            <Button variant="success" disabled={disabled} onClick={this.submitBtn} className={this.props.classes.bidBtnRaise}> Raise <PanToolIcon className={this.props.classes.raise}/></Button>
+                            <Button variant="danger" disabled={foldDisabled} onClick={this.handleOpen} className={this.props.classes.bidBtnFold}> Fold <ThumbDownAltIcon className={this.props.classes.thumbsdown}/></Button>
+                        </Row>
+                        <Dialog
+                            open={this.state.open}
+                            keepMounted
+                            onClose={this.handleClose}
+                            aria-labelledby="alert-dialog-slide-title"
+                            aria-describedby="alert-dialog-slide-description"
+                        >
+                            <DialogTitle id="alert-dialog-slide-title">{"Are you sure want to fold?"}</DialogTitle>
+                            <DialogContent>
+                            <DialogContentText id="alert-dialog-slide-description">
+                                Once you fold then you cant bid for this player again this round. Are you sure ?
+                            </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                            <Button onClick={this.handleClose} variant="secondary">
+                                Cancel
+                            </Button>
+                            <Button onClick={this.confirmFold} variant="danger">
+                                Yes
+                            </Button>
+                            </DialogActions>
+                        </Dialog>
+                        </Container>
                     </Col>
                 </Row> 
             )
@@ -550,7 +617,9 @@ class PlayerStats extends React.Component{
                             {this.getSoldDetails()}
                             <Row>
                                 <div className={this.props.classes.nextBidDetails}><span className={this.props.classes.nextBidLabel}> Next Bid - </span> <span className={this.props.classes.nextBid}>{this.getPrice(this.state.nextBid)}</span></div>
-                            
+                                <span className={this.props.classes.timerText}> expires in </span>
+                                <MyTimer expiryTimestamp={this.state.time} sold={this.props.sold}  countdownExpired={this.countdownExpired}/>
+                                <span className={this.props.classes.timerText}> seconds</span>
                                 {this.getModButton()}
                                 
                             </Row>

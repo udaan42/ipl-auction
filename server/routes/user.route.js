@@ -132,6 +132,9 @@ router.route('/')
             }, (error) => {
                 console.log('error from api call');
                 console.log(error);
+                res.status(401).send({
+                    message: error.response.data.errorMessage
+                 })
             });
         //userCtrl.store(req, res);
     })

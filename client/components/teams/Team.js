@@ -12,6 +12,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Alert from '@material-ui/lab/Alert';
+import { ROLE_PLAYER, ROLE_MODERATOR, TYPE_BATSMAN, TYPE_BOWLER, TYPE_ALL_ROUNDER, TYPE_WICKET_KEEPER, PLAYER_OVERSEAS } from '../../constants/constants';
 
 const styles = {
     header:{
@@ -74,11 +75,11 @@ class Team extends React.Component{
                 let team = playersSquad.filter((item)=> item.playing);
                 let squad = playersSquad.filter((item) => !item.playing);
                 
-                let wk = team.filter((item)=> item.playerRole == "Wicket Keeper");
-                let bat = team.filter((item)=> item.playerRole == "Batsman");
-                let bowl = team.filter((item)=> item.playerRole == "Bowler");
-                let ar = team.filter((item)=> item.playerRole == "All Rounder");
-                let overseas = team.filter((item)=> item.playerRace == "F");
+                let wk = team.filter((item)=> item.playerRole == TYPE_WICKET_KEEPER);
+                let bat = team.filter((item)=> item.playerRole == TYPE_BATSMAN);
+                let bowl = team.filter((item)=> item.playerRole == TYPE_BOWLER);
+                let ar = team.filter((item)=> item.playerRole == TYPE_ALL_ROUNDER);
+                let overseas = team.filter((item)=> item.playerRace == PLAYER_OVERSEAS);
 
                 let selectedCaptain = null;
                 let selectedKeeper = null;
@@ -118,35 +119,35 @@ class Team extends React.Component{
     }
 
     wkCheck = (player) => {
-        if(player.playerRole == "Wicket Keeper" && this.state.wk == 2){
+        if(player.playerRole == TYPE_WICKET_KEEPER && this.state.wk == 2){
             return true;
         }
         return false;
     }
 
     batCheck = (player) => {
-        if(player.playerRole == "Batsman" && this.state.bat == 4){
+        if(player.playerRole == TYPE_BATSMAN && this.state.bat == 4){
             return true;
         }
         return false;
     }
 
     bowlCheck = (player) => {
-        if(player.playerRole == "Bowler" && this.state.bowl == 4){
+        if(player.playerRole == TYPE_BOWLER && this.state.bowl == 4){
             return true;
         }
         return false;
     }
 
     arCheck = (player) => {
-        if(player.playerRole == "All Rounder" && this.state.ar == 4){
+        if(player.playerRole == TYPE_ALL_ROUNDER && this.state.ar == 4){
             return true;
         }
         return false;
     }
 
     overseasCheck = (player) => {
-        if(player.playerRace == "F" && this.state.overseas == 4){
+        if(player.playerRace == PLAYER_OVERSEAS && this.state.overseas == 4){
             return true;
         }
         return false;
@@ -196,9 +197,9 @@ class Team extends React.Component{
             newSelected = newSelected.concat(tempTeam, selectedItem);
             _.remove(tempSquad,['playerName', item]);
             
-            if(selectedPlayerRole == "Wicket Keeper"){
+            if(selectedPlayerRole == TYPE_WICKET_KEEPER){
                 count = this.state.wk + 1;
-                if(selectedPlayerRace == "F"){
+                if(selectedPlayerRace == PLAYER_OVERSEAS){
                     this.setState({
                         squad: tempSquad,
                         team: newSelected,
@@ -212,9 +213,9 @@ class Team extends React.Component{
                         wk: count
                     })
                 }
-            }else if(selectedPlayerRole == "Batsman"){
+            }else if(selectedPlayerRole == TYPE_BATSMAN){
                 count = this.state.bat + 1;
-                if(selectedPlayerRace == "F"){
+                if(selectedPlayerRace == PLAYER_OVERSEAS){
                     this.setState({
                         squad: tempSquad,
                         team: newSelected,
@@ -228,9 +229,9 @@ class Team extends React.Component{
                         bat: count
                     })
                 }
-            }else if(selectedPlayerRole == "Bowler"){
+            }else if(selectedPlayerRole == TYPE_BOWLER){
                 count = this.state.bowl + 1;
-                if(selectedPlayerRace == "F"){
+                if(selectedPlayerRace == PLAYER_OVERSEAS){
                     this.setState({
                         squad: tempSquad,
                         team: newSelected,
@@ -244,9 +245,9 @@ class Team extends React.Component{
                         bowl: count
                     })
                 }
-            }else if(selectedPlayerRole == "All Rounder"){
+            }else if(selectedPlayerRole == TYPE_ALL_ROUNDER){
                 count = this.state.ar + 1;
-                if(selectedPlayerRace == "F"){
+                if(selectedPlayerRace == PLAYER_OVERSEAS){
                     this.setState({
                         squad: tempSquad,
                         team: newSelected,
@@ -283,9 +284,9 @@ class Team extends React.Component{
         let count = 0;
         selectedItem.playing = false;
 
-        if(selectedPlayerRole == "Wicket Keeper"){
+        if(selectedPlayerRole == TYPE_WICKET_KEEPER){
             count = this.state.wk - 1;
-            if(selectedPlayerRace == "F"){
+            if(selectedPlayerRace == PLAYER_OVERSEAS){
                 this.setState({
                     team: tempTeam,
                     squad: newSelected,
@@ -299,9 +300,9 @@ class Team extends React.Component{
                     wk: count
                 })
             }
-        }else if(selectedPlayerRole == "Batsman"){
+        }else if(selectedPlayerRole == TYPE_BATSMAN){
             count = this.state.bat - 1;
-            if(selectedPlayerRace == "F"){
+            if(selectedPlayerRace == PLAYER_OVERSEAS){
                 this.setState({
                     team: tempTeam,
                     squad: newSelected,
@@ -315,9 +316,9 @@ class Team extends React.Component{
                     bat: count
                 })
             }
-        }else if(selectedPlayerRole == "Bowler"){
+        }else if(selectedPlayerRole == TYPE_BOWLER){
             count = this.state.bowl - 1;
-            if(selectedPlayerRace == "F"){
+            if(selectedPlayerRace == PLAYER_OVERSEAS){
                 this.setState({
                     team: tempTeam,
                     squad: newSelected,
@@ -331,9 +332,9 @@ class Team extends React.Component{
                     bowl: count
                 })
             }
-        }else if(selectedPlayerRole == "All Rounder"){
+        }else if(selectedPlayerRole == TYPE_ALL_ROUNDER){
             count = this.state.ar - 1;
-            if(selectedPlayerRace == "F"){
+            if(selectedPlayerRace == PLAYER_OVERSEAS){
                 this.setState({
                     team: tempTeam,
                     squad: newSelected,
@@ -369,7 +370,7 @@ class Team extends React.Component{
     }
 
     getWicketKeeperSelection = () => {
-        let wkOptions = [...this.state.team].filter((item) => item.playerRole == "Wicket Keeper").map((player)=> {
+        let wkOptions = [...this.state.team].filter((item) => item.playerRole == TYPE_WICKET_KEEPER).map((player)=> {
             return {
                 value: player.playerName,
                 label: player. playerName
@@ -394,11 +395,11 @@ class Team extends React.Component{
     submitButtonClicked = () => {
 
         let team = [...this.state.team];
-        let wk = team.filter((item)=> item.playerRole == "Wicket Keeper").length;
-        let bat = team.filter((item)=> item.playerRole == "Batsman").length;
-        let bowl = team.filter((item)=> item.playerRole == "Bowler").length;
-        let ar = team.filter((item)=> item.playerRole == "All Rounder").length;
-        let overseas = team.filter((item)=> item.playerRace == "F").length;
+        let wk = team.filter((item)=> item.playerRole == TYPE_WICKET_KEEPER).length;
+        let bat = team.filter((item)=> item.playerRole == TYPE_BATSMAN).length;
+        let bowl = team.filter((item)=> item.playerRole == TYPE_BOWLER).length;
+        let ar = team.filter((item)=> item.playerRole == TYPE_ALL_ROUNDER).length;
+        let overseas = team.filter((item)=> item.playerRace == PLAYER_OVERSEAS).length;
 
 
         if(team.length < 11){
@@ -464,13 +465,13 @@ class Team extends React.Component{
 
                     team.map((player)=> {
                         if(wk > 1){
-                            if(player.playerRole == "Wicket Keeper" && player.playerName == this.state.selectedKeeper.value){
+                            if(player.playerRole == TYPE_WICKET_KEEPER && player.playerName == this.state.selectedKeeper.value){
                                 player.wicketKeeper = true;
                             }else{
                                 player.wicketKeeper = false;
                             }
                         }else{
-                            if(player.playerRole == "Wicket Keeper"){
+                            if(player.playerRole == TYPE_WICKET_KEEPER){
                                 player.wicketKeeper = true;
                             }
                         }
@@ -486,6 +487,7 @@ class Team extends React.Component{
                     })
             
                     let finalSquad = [...team, ...this.state.squad];
+                    console.log(finalSquad);
             
                     if(!this.state.error){
                         this.props.updateSquad(finalSquad);
@@ -512,7 +514,7 @@ class Team extends React.Component{
 
         const captainOptions = this.getCaptainOptions();
 
-        if(this.props.detail.leagueRole == "moderator"){
+        if(this.props.detail.leagueRole == ROLE_MODERATOR){
             return(
                 <Container fluid>
                     <Row>
@@ -526,7 +528,7 @@ class Team extends React.Component{
                     </Row>
                 </Container>
             )
-        }else if(this.props.detail.leagueRole == "player"){
+        }else if(this.props.detail.leagueRole == ROLE_PLAYER){
             return(
                 <Container fluid>
                     <Row>
