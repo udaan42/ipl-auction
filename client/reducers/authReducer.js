@@ -22,6 +22,7 @@ const authReducer = (state, action) => {
                 isAuthenticated: true,
                 isLoading: false,
                 token: action.data,
+                errorMessage: null
             });
 
         case LOG_IN_FAILURE:
