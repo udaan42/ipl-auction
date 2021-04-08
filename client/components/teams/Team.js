@@ -121,19 +121,23 @@ class Team extends React.Component{
     wkCheck = (player) => {
         if(player.playerRole == TYPE_WICKET_KEEPER && this.state.wk == 2){
             return true;
+        }else if(player.playerRole == TYPE_WICKET_KEEPER && this.state.bat == 5 && this.state.wk == 1){
+            return true;
         }
         return false;
     }
 
     batCheck = (player) => {
-        if(player.playerRole == TYPE_BATSMAN && this.state.bat == 4){
+        if(player.playerRole == TYPE_BATSMAN && this.state.bat == 5){
+            return true;
+        }else if(player.playerRole == TYPE_BATSMAN && this.state.bat == 4 && this.state.wk == 2){
             return true;
         }
         return false;
     }
 
     bowlCheck = (player) => {
-        if(player.playerRole == TYPE_BOWLER && this.state.bowl == 4){
+        if(player.playerRole == TYPE_BOWLER && this.state.bowl == 5){
             return true;
         }
         return false;
@@ -168,17 +172,17 @@ class Team extends React.Component{
         }else if(this.wkCheck(selectedItem)) {
             this.setState({
                 error: true,
-                errorMessage: "You already have 2 Wicket Keepers in the 11"
+                errorMessage: "You already have enough Wicket Keepers in the 11"
             })
         }else if(this.batCheck(selectedItem)) {
             this.setState({
                 error: true,
-                errorMessage: "You already have 4 Batsmen in the 11"
+                errorMessage: "You already have 5 Batsmen in the 11"
             })
         }else if(this.bowlCheck(selectedItem)) {
             this.setState({
                 error: true,
-                errorMessage: "You already have 4 Bowlers in the 11"
+                errorMessage: "You already have 5 Bowlers in the 11"
             })
         }else if(this.arCheck(selectedItem)) {
             this.setState({
