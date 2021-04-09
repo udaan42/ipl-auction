@@ -76,7 +76,7 @@ public class LeagueController {
             logger.info("getLeagueInfoById {leagueInfoId} is Complete <==", leagueInfoId);
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(SUCCESS, "leagueInfo", leagueInfoVO), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while getting scan requests", e);
+            logger.error("Error while getLeagueInfoById", e);
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -117,14 +117,14 @@ public class LeagueController {
     public ResponseEntity<GenericServiceResponse<List<LeagueInfoVO>>> getLeagueInfoByUserId(
             @RequestHeader(name = "X-UserId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "User-Id cannot be empty and should be Alpha-Numeric") final String userId) {
         try {
-            logger.info("getLeagueInfoByUserId {leagueInfoId} ==>", userId);
+            logger.info("getUserLeagues {leagueInfoId} ==>", userId);
 
             List<LeagueInfoVO> leagueInfoVOS = leagueInfoService.getLeagueInfoByUserId(userId);
 
-            logger.info("getLeagueInfoByUserId {leagueInfoId} is Complete <==", userId);
+            logger.info("getUserLeagues {leagueInfoId} is Complete <==", userId);
             return new ResponseEntity<GenericServiceResponse< List<LeagueInfoVO> >>(new GenericServiceResponse< List<LeagueInfoVO> >(SUCCESS, "leagueInfos", leagueInfoVOS), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while getting scan requests", e);
+            logger.error("Error while getUserLeagues", e);
             return new ResponseEntity<GenericServiceResponse< List<LeagueInfoVO> >>(new GenericServiceResponse< List<LeagueInfoVO> >(FAIL, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -151,7 +151,7 @@ public class LeagueController {
             logger.info("getLeagueInfoByUserId {leagueInfoId} is Complete <==", userId);
             return new ResponseEntity<GenericServiceResponse< LeagueInfoVO>>(new GenericServiceResponse< LeagueInfoVO >(SUCCESS, "leagueInfo", leagueInfoVOS), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while getting scan requests", e);
+            logger.error("Error while getLeagueInfoByUserId", e);
             return new ResponseEntity<GenericServiceResponse< LeagueInfoVO >>(new GenericServiceResponse<LeagueInfoVO>(FAIL, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -169,7 +169,7 @@ public class LeagueController {
             logger.info("getLeagueInfoByUserId {leagueInfoId} is Complete <==", userId);
             return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO>>>(new GenericServiceResponse<  List<PlayerInfoVO> >(SUCCESS, "squadInfo", playerInfoVOS), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while getting scan requests", e);
+            logger.error("Error while getLeagueInfoByUserId", e);
             return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO> >>(new GenericServiceResponse< List<PlayerInfoVO>>(FAIL, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -188,7 +188,7 @@ public class LeagueController {
             logger.info("updateTeamSquad {leagueInfoId} is Complete <==", userId);
             return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO>>>(new GenericServiceResponse<  List<PlayerInfoVO> >(SUCCESS, "squadInfo", playerInfoVOS1), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while getting scan requests", e);
+            logger.error("Error while updateTeamSquad", e);
             return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO> >>(new GenericServiceResponse< List<PlayerInfoVO>>(FAIL, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -205,7 +205,7 @@ public class LeagueController {
             logger.info("getUnsoldPlayers {leagueInfoId} is Complete <==", leagueId);
             return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO>>>(new GenericServiceResponse<  List<PlayerInfoVO> >(SUCCESS, "unSoldPlayers", playerInfoVOS), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while getting scan requests", e);
+            logger.error("Error while getUnsoldPlayers", e);
             return new ResponseEntity<GenericServiceResponse<  List<PlayerInfoVO> >>(new GenericServiceResponse< List<PlayerInfoVO>>(FAIL, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -223,7 +223,41 @@ public class LeagueController {
             logger.info("getLeagueInfoById {leagueInfoId} is Complete <==", leagueInfoId);
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(SUCCESS, "leagueInfo", leagueInfoVO), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while getting scan requests", e);
+            logger.error("Error while getLeagueInfoById", e);
+            return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping({"/updateFinalSquad/{leagueInfoId}"})
+    public ResponseEntity<GenericServiceResponse<LeagueInfoVO>> updateFinalSquad(
+            @PathVariable(name = "leagueInfoId")   @Valid @NotNull String leagueInfoId) {
+        try {
+            logger.info("getLeagueInfoById {leagueInfoId} ==>", leagueInfoId);
+
+            LeagueInfoVO leagueInfoVO = leagueInfoService.updateFinalSquad(leagueInfoId);
+
+            logger.info("getLeagueInfoById {leagueInfoId} is Complete <==", leagueInfoId);
+            return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(SUCCESS, "leagueInfo", leagueInfoVO), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while getLeagueInfoById", e);
+            return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping({"/updateScores/{leagueInfoId}"})
+    public ResponseEntity<GenericServiceResponse<LeagueInfoVO>> updateScores(
+            @PathVariable(name = "leagueInfoId")   @Valid @NotNull String leagueInfoId) {
+        try {
+            logger.info("updateScores {leagueInfoId} ==>", leagueInfoId);
+
+            LeagueInfoVO leagueInfoVO = leagueInfoService.updateScores(leagueInfoId);
+
+            logger.info("updateScores {leagueInfoId} is Complete <==", leagueInfoId);
+            return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(SUCCESS, "leagueInfo", leagueInfoVO), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while updateScores", e);
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }

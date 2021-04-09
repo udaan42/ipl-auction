@@ -2,12 +2,8 @@ package com.iplauction.jcrud.service;
 
 import com.iplauction.jcrud.mapper.PlayerInfoPlayerInfoVOMapper;
 import com.iplauction.jcrud.mapper.PlayerInfoVOPlayerInfoMapper;
-import com.iplauction.jcrud.model.PlayerInfo;
-import com.iplauction.jcrud.model.PlayerInfoVO;
-import com.iplauction.jcrud.model.UserInfo;
-import com.iplauction.jcrud.model.UserInfoVO;
+import com.iplauction.jcrud.model.*;
 import com.iplauction.jcrud.repository.PlayerInfoRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -18,6 +14,9 @@ import java.util.Optional;
 
 @Service
 public class PlayerService {
+
+    @Autowired
+    ScoreService scoreService;
 
     @Autowired
     PlayerInfoPlayerInfoVOMapper playerInfoPlayerInfoVOMapper;
@@ -83,4 +82,65 @@ public class PlayerService {
         }
         return playerInfoByBag;
     }
+
+    public List<PlayerInfoVO> calculatePoints(MatchStats matchStats) throws Exception {
+
+        List<String> playersWhoPlayedCurrentMatch = new ArrayList<>();
+        List<PlayerInfoVO> playerInfoVOS = new ArrayList<>();
+        double stumpingPoints = 0.0;
+        if(matchStats != null){
+            if(!CollectionUtils.isEmpty(matchStats.getPlayerMatchStatList())){
+                for(PlayerMatchStat playerMatchStat : matchStats.getPlayerMatchStatList()){
+                    playersWhoPlayedCurrentMatch.add(playerMatchStat.getPlayerId());
+                    playerMatchStat.setTotalMatchPoint(0.0);
+                    Optional<PlayerInfo> optionalPlayerInfo = playerInfoRepository.findById((playerMatchStat.getPlayerId()));
+                    PlayerInfo playerInfo = optionalPlayerInfo.get();
+
+                    if(playerInfo!=null){
+                        if(playerMatchStat.getBattingStats() != null) {
+                           double battingPoints = scoreService.calculateBattingPoints(playerMatchStat.getBattingStats(),playerInfo.getPlayerRole());
+                            playerMatchStat.getBattingStats().setBattingPoints(battingPoints);
+                            playerMatchStat.setTotalMatchPoint(playerMatchStat.getTotalMatchPoint() + battingPoints);
+                        }
+                        if(playerMatchStat.getBowlingStats() != null) {
+                           double bowlingPoints = scoreService.calculateBowlingPoints(playerMatchStat.getBowlingStats(),playerInfo.getPlayerRole());
+                            playerMatchStat.getBowlingStats().setBowlingPoints(bowlingPoints);
+                            playerMatchStat.setTotalMatchPoint(playerMatchStat.getTotalMatchPoint() + bowlingPoints);
+                        }
+                        if(playerMatchStat.getFieldingStats() != null) {
+                            double fieldingPoints = scoreService.calculateFieldingPoints(playerMatchStat.getFieldingStats(),playerInfo.getPlayerRole());
+                            playerMatchStat.getFieldingStats().setFieldingPoints(fieldingPoints);
+                            stumpingPoints = scoreService.calculateStumpingPoints(playerMatchStat.getFieldingStats(),playerInfo.getPlayerRole());
+                            playerMatchStat.setTotalMatchPoint(playerMatchStat.getTotalMatchPoint() + fieldingPoints + stumpingPoints);
+                        }
+                    }
+                    MatchesList matchesList = new MatchesList();
+                    matchesList.setMatchDate(matchStats.getMatchDate());
+                    matchesList.setMatchId(matchStats.getMatchId());
+                    matchesList.setMatchName(matchStats.getMatchName());
+                    matchesList.setPlayerMatchStat(playerMatchStat);
+                    matchesList.setLatest(true);
+                  if(CollectionUtils.isEmpty(playerInfo.getMatchesList())){
+                      List<MatchesList> matchesLists = new ArrayList<>();
+                      matchesLists.add(matchesList);
+                      playerInfo.setMatchesList(matchesLists);
+
+                  }else{
+                      playerInfo.getMatchesList().add(matchesList);
+                      for(MatchesList matchesList1 : playerInfo.getMatchesList()){
+                          if(matchesList1.getMatchId() != matchesList.getMatchId()){
+                              matchesList1.setLatest(false);
+                          }
+                      }
+                  }
+                  playerInfo.setLatestMatchPoint(playerMatchStat.getTotalMatchPoint());
+                  playerInfo.setLatestStumpingPoint(stumpingPoints);
+                  playerInfo =  playerInfoRepository.save(playerInfo);
+                  playerInfoVOS.add(playerInfoPlayerInfoVOMapper.map(playerInfo));
+                }
+            }
+        }
+        return playerInfoVOS;
+    }
+
 }

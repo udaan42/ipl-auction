@@ -51,6 +51,9 @@ public class PlayerInfoVOPlayerInfoMapper implements Mapper<PlayerInfoVO, Player
         playerInfo.setWicketKeeper(source.getWicketKeeper());
         playerInfo.setBagCode(source.getBagCode());
         playerInfo.setPlayerImageUrl(source.getPlayerImageUrl());
+        playerInfo.setMatchesList(source.getMatchesList());
+        playerInfo.setLatestMatchPoint(source.getLatestMatchPoint());
+        playerInfo.setLatestStumpingPoint(source.getLatestStumpingPoint());
         return playerInfo;
     }
 }
