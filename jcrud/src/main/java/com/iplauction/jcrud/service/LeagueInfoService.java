@@ -447,4 +447,111 @@ public class LeagueInfoService {
         }
        return leagueInfoVO;
     }
+
+    public LeagueInfoVO updateFinalSquad(String leagueInfoId) throws Exception {
+
+        Optional<LeagueInfo> leagueInfo = leagueInfoRepository.findById((leagueInfoId));
+        LeagueInfo leagueInfo1 = leagueInfo.get();
+        LeagueInfoVO leagueInfoVO = null;
+
+        if(leagueInfo1 != null){
+            if(!CollectionUtils.isEmpty(leagueInfo1.getLeagueUsers())){
+                for(LeagueUser leagueUser : leagueInfo1.getLeagueUsers()){
+                    List<FinalSquad> finalSquads = new ArrayList<>();
+                    if(leagueUser.getLeagueRole().equalsIgnoreCase("player")){
+                        if(!CollectionUtils.isEmpty(leagueUser.getPlayersSquad())){
+                            for(PlayerInfo playerInfo : leagueUser.getPlayersSquad()){
+                                if(playerInfo.getPlaying()){
+                                    FinalSquad finalSquad = new FinalSquad();
+                                    finalSquad.setPlayerId(playerInfo.getPlayerId());
+                                    finalSquad.setPlayerName(playerInfo.getPlayerName());
+                                    finalSquad.setCaptain(playerInfo.getCaptain());
+                                    finalSquad.setWicketKeeper(playerInfo.getWicketKeeper());
+                                    finalSquad.setTeamName(playerInfo.getTeamName());
+                                    if(leagueUser.getFinalSquad() != null){
+                                        for(FinalSquad finalSquad1 : leagueUser.getFinalSquad()){
+                                            if(finalSquad1.getPlayerId().equalsIgnoreCase(playerInfo.getPlayerId())){
+                                                finalSquad.setPoints(finalSquad1.getPoints());
+                                            }
+                                        }
+                                    }
+                                    finalSquads.add(finalSquad);
+                                }
+                            }
+                        }
+                    }
+                    leagueUser.setFinalSquad(finalSquads);
+                }
+            }
+            leagueInfo1 = leagueInfoRepository.save(leagueInfo1);
+            leagueInfoVO = leagueInfoLeagueInfoVOMapper.map(leagueInfo1);
+        }
+    return leagueInfoVO;
+    }
+
+    public LeagueInfoVO updateScores(String leagueInfoId) throws Exception {
+
+        Optional<LeagueInfo> leagueInfo = leagueInfoRepository.findById((leagueInfoId));
+        LeagueInfo leagueInfo1 = leagueInfo.get();
+        LeagueInfoVO leagueInfoVO = null;
+
+        if(leagueInfo1 != null){
+            if(!CollectionUtils.isEmpty(leagueInfo1.getLeagueUsers())){
+                for(LeagueUser leagueUser : leagueInfo1.getLeagueUsers()){
+
+                    if(leagueUser.getLeagueRole().equalsIgnoreCase("player")){
+                        if(!CollectionUtils.isEmpty(leagueUser.getFinalSquad())){
+                           for(FinalSquad finalSquad : leagueUser.getFinalSquad()){
+                              PlayerInfoVO playerInfoVO =  playerService.getPlayerInfoById(finalSquad.getPlayerId());
+                              if(playerInfoVO != null){
+                                  if(playerInfoVO.getLatestMatchPoint() != null){
+                                      double latestMatchPoint = playerInfoVO.getLatestMatchPoint();
+                                      if(playerInfoVO.getPlayerRole().equalsIgnoreCase("Wicket Keeper")){
+                                          if(!finalSquad.getWicketKeeper()){
+                                              if(playerInfoVO.getLatestStumpingPoint() != null) {
+                                                  latestMatchPoint = latestMatchPoint - playerInfoVO.getLatestStumpingPoint();
+                                              }
+                                          }
+                                      }
+                                      if(leagueUser.getPoints() != null){
+                                          if(finalSquad.getCaptain()){
+                                              leagueUser.setPoints(leagueUser.getPoints() + (latestMatchPoint*2));
+                                          }else {
+                                              leagueUser.setPoints(leagueUser.getPoints() + latestMatchPoint);
+                                          }
+                                      }else{
+                                          if(finalSquad.getCaptain()){
+                                              leagueUser.setPoints(latestMatchPoint*2);
+                                          }
+                                          else {
+                                              leagueUser.setPoints(latestMatchPoint);
+                                          }
+                                      }
+                                      if(finalSquad.getPoints() != null){
+                                          if(finalSquad.getCaptain()){
+                                              finalSquad.setPoints(finalSquad.getPoints() + (latestMatchPoint*2));
+                                          }else {
+                                              finalSquad.setPoints(finalSquad.getPoints() + latestMatchPoint);
+                                          }
+                                      }else{
+                                          if(finalSquad.getCaptain()){
+                                              finalSquad.setPoints(latestMatchPoint*2);
+                                          }
+                                          else {
+                                              finalSquad.setPoints(latestMatchPoint);
+                                          }
+                                      }
+                                  }
+                              }
+                           }
+                        }
+                    }
+
+                }
+            }
+            leagueInfo1 = leagueInfoRepository.save(leagueInfo1);
+            leagueInfoVO = leagueInfoLeagueInfoVOMapper.map(leagueInfo1);
+        }
+        return leagueInfoVO;
+    }
 }

@@ -1,6 +1,7 @@
 package com.iplauction.jcrud.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class PlayerInfoVO {
 
@@ -44,6 +45,10 @@ public class PlayerInfoVO {
     private Date lastModifiedDateTime;
     private String bagCode;
     private String playerImageUrl;
+    private List<MatchesList> matchesList;
+    private Double latestMatchPoint;
+    private Double latestStumpingPoint;
+
 
 
     public String getPlayerId() {
@@ -365,5 +370,29 @@ public class PlayerInfoVO {
 
     public void setPlayerImageUrl(String playerImageUrl) {
         this.playerImageUrl = playerImageUrl;
+    }
+
+    public List<MatchesList> getMatchesList() {
+        return matchesList;
+    }
+
+    public void setMatchesList(List<MatchesList> matchesList) {
+        this.matchesList = matchesList;
+    }
+
+    public Double getLatestMatchPoint() {
+        return latestMatchPoint;
+    }
+
+    public void setLatestMatchPoint(Double latestMatchPoint) {
+        this.latestMatchPoint = latestMatchPoint;
+    }
+
+    public Double getLatestStumpingPoint() {
+        return latestStumpingPoint;
+    }
+
+    public void setLatestStumpingPoint(Double latestStumpingPoint) {
+        this.latestStumpingPoint = latestStumpingPoint;
     }
 }

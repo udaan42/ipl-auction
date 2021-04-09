@@ -10,8 +10,9 @@ public class LeagueUserVO {
     private String userRole;
     private String leagueRole;
     private String teamName;
-    private Long points;
+    private Double points;
     private List<PlayerInfoVO> playersSquad;
+    private List<FinalSquadVO> finalSquad;
     private Long totalBudget;
     private Long spentAmount;
     private Long remainingBudget;
@@ -66,11 +67,11 @@ public class LeagueUserVO {
         this.lastModifiedDateTime = lastModifiedDateTime;
     }
 
-    public Long getPoints() {
+    public Double getPoints() {
         return points;
     }
 
-    public void setPoints(Long points) {
+    public void setPoints(Double points) {
         this.points = points;
     }
 
@@ -112,5 +113,13 @@ public class LeagueUserVO {
 
     public void setRemainingBudget(Long remainingBudget) {
         this.remainingBudget = remainingBudget;
+    }
+
+    public List<FinalSquadVO> getFinalSquad() {
+        return finalSquad;
+    }
+
+    public void setFinalSquad(List<FinalSquadVO> finalSquad) {
+        this.finalSquad = finalSquad;
     }
 }

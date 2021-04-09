@@ -1,10 +1,7 @@
 package com.iplauction.jcrud.mapper;
 
 import com.iplauction.jcrud.common.Mapper;
-import com.iplauction.jcrud.model.LeagueUser;
-import com.iplauction.jcrud.model.LeagueUserVO;
-import com.iplauction.jcrud.model.PlayerInfo;
-import com.iplauction.jcrud.model.PlayerInfoVO;
+import com.iplauction.jcrud.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -38,8 +35,21 @@ public class LeagueUserVOMapper implements Mapper<LeagueUser,LeagueUserVO> {
                 playerInfoVOS.add(playerInfoPlayerInfoVOMapper.map(playerInfo));
             }
         }
+        List<FinalSquadVO> finalSquadVOS = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(source.getFinalSquad())){
+            for(FinalSquad finalSquad : source.getFinalSquad()){
+                FinalSquadVO finalSquadVO = new FinalSquadVO();
+                finalSquadVO.setPlayerId(finalSquad.getPlayerId());
+                finalSquadVO.setPlayerName(finalSquad.getPlayerName());
+                finalSquadVO.setCaptain(finalSquad.getCaptain());
+                finalSquadVO.setWicketKeeper(finalSquad.getWicketKeeper());
+                finalSquadVO.setPoints(finalSquad.getPoints());
+                finalSquadVO.setTeamName(finalSquad.getTeamName());
+                finalSquadVOS.add(finalSquadVO);
+            }
+        }
         leagueUserVO.setPlayersSquad(playerInfoVOS);
-
+        leagueUserVO.setFinalSquad(finalSquadVOS);
         return leagueUserVO;
     }
 }
