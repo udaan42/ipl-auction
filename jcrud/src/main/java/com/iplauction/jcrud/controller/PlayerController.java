@@ -2,6 +2,7 @@ package com.iplauction.jcrud.controller;
 
 import com.iplauction.jcrud.http.GenericServiceResponse;
 import com.iplauction.jcrud.model.LeagueInfoVO;
+import com.iplauction.jcrud.model.MatchStats;
 import com.iplauction.jcrud.model.PlayerInfoVO;
 import com.iplauction.jcrud.model.UserInfoVO;
 import com.iplauction.jcrud.service.PlayerService;
@@ -81,6 +82,23 @@ public class PlayerController {
         }
     }
 
+    @GetMapping({"getPlayerById/{playerId}"})
+    public ResponseEntity<GenericServiceResponse<PlayerInfoVO>> getPlayerById(
+            @PathVariable(name = "playerId")   @Valid @NotNull String playerId) {
+        try {
+            logger.info("getPlayerById {leagueInfoId} ==>", playerId);
+
+            PlayerInfoVO playerInfoVO = playerService.getPlayerInfoById(playerId);
+
+            logger.info("getPlayerById {leagueInfoId} is Complete <==", playerId);
+            return new ResponseEntity<GenericServiceResponse<PlayerInfoVO>>(new GenericServiceResponse<PlayerInfoVO>(SUCCESS, "playerIfo", playerInfoVO), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while getting scan requests", e);
+            return new ResponseEntity<GenericServiceResponse<PlayerInfoVO>>(new GenericServiceResponse<PlayerInfoVO>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @GetMapping({"getPlayersBag/{bagNumber}"})
     public ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>> getPlayersByBag(@PathVariable(name = "bagNumber")   @Valid @NotNull String bagNumber) {
@@ -95,6 +113,25 @@ public class PlayerController {
         } catch (Exception e) {
             return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(new GenericServiceResponse<List<PlayerInfoVO>>(FAIL, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping({"/calculatePoints"})
+    public ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>> calculatePoints(
+            @RequestBody MatchStats matchStats) {
+
+        try {
+            List<PlayerInfoVO> playerInfoVOList = null;
+                    logger.info("calculatePoints started ==>");
+            if(matchStats != null) {
+                playerInfoVOList  = playerService.calculatePoints(matchStats);
+            }
+            logger.info("calculatePoints completed <==");
+            return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(
+                    new GenericServiceResponse<List<PlayerInfoVO>>(SUCCESS, "playerInfos", playerInfoVOList), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while calculatePoints", e);
+            return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(new GenericServiceResponse<List<PlayerInfoVO>>(FAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

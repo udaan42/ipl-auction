@@ -1,10 +1,13 @@
 package com.iplauction.jcrud.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.iplauction.jcrud.utils.LeagueUserListTypeConverter;
+import com.iplauction.jcrud.utils.MatchListTypeConverter;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
+import java.util.List;
 
 @DynamoDBTable(tableName = "player_info")
 public class PlayerInfo {
@@ -48,6 +51,9 @@ public class PlayerInfo {
     private Date lastModifiedDateTime;
     private String bagCode;
     private String playerImageUrl;
+    private List<MatchesList> matchesList;
+    private Double latestMatchPoint;
+    private Double latestStumpingPoint;
 
 
 
@@ -412,7 +418,34 @@ public class PlayerInfo {
         return playerImageUrl;
     }
 
+    @DynamoDBTypeConverted(converter = MatchListTypeConverter.class)
+    public List<MatchesList> getMatchesList() {
+        return matchesList;
+    }
+
+    public void setMatchesList(List<MatchesList> matchesList) {
+        this.matchesList = matchesList;
+    }
+
     public void setPlayerImageUrl(String playerImageUrl) {
         this.playerImageUrl = playerImageUrl;
+    }
+
+    @DynamoDBAttribute
+    public Double getLatestMatchPoint() {
+        return latestMatchPoint;
+    }
+
+    public void setLatestMatchPoint(Double latestMatchPoint) {
+        this.latestMatchPoint = latestMatchPoint;
+    }
+
+    @DynamoDBAttribute
+    public Double getLatestStumpingPoint() {
+        return latestStumpingPoint;
+    }
+
+    public void setLatestStumpingPoint(Double latestStumpingPoint) {
+        this.latestStumpingPoint = latestStumpingPoint;
     }
 }
