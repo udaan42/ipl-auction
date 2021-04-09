@@ -493,6 +493,29 @@ class Team extends React.Component{
                         this.props.updateSquad(finalSquad);
                     }
                 }
+            }else if(wk == 1){
+                captain.captain = true;
+
+                    team.map((player)=> {
+                        if(player.playerRole == TYPE_WICKET_KEEPER){
+                            player.wicketKeeper = true;
+                        }
+                    })
+            
+                    team.map((player) => {
+                        if(player.playerName == this.state.selectedCaptain.value){
+                            player.captain = true;
+                        }else{
+                            player.captain = false;
+                        }
+                    })
+            
+                    let finalSquad = [...team, ...this.state.squad];
+                    console.log(finalSquad);
+            
+                    if(!this.state.error){
+                        this.props.updateSquad(finalSquad);
+                    }
             }
             
         }

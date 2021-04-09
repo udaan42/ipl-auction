@@ -181,7 +181,7 @@ export default function LeagueDetails(props) {
         </Accordion>
         {standings.map((item)=>{
             if(item.leagueRole == ROLE_PLAYER){
-              const squad = item.playersSquad.filter((player)=> player.playing);
+              const squad = item.finalSquad;
               return(
                 <Accordion >
                     <AccordionSummary
@@ -201,6 +201,7 @@ export default function LeagueDetails(props) {
                                 <TableHead>
                                 <TableRow>
                                     <TableCell>Name</TableCell>
+                                    <TableCell>Team</TableCell>
                                     <TableCell align="left">Role</TableCell>
                                     <TableCell align="right">Points</TableCell>
                                 </TableRow>
@@ -211,6 +212,7 @@ export default function LeagueDetails(props) {
                                             <TableCell component="th" scope="row">
                                                 {row.playerName} {row.playerRace == PLAYER_OVERSEAS ? <FlightIcon className={classes.overseasIcon} />: ""}{row.captain? <span className={classes.captain}> - C</span>: ""}
                                             </TableCell>
+                                            <TableCell align="left">{row.teamName}</TableCell>
                                             <TableCell align="left">{row.playerRole}</TableCell>
                                             <TableCell align="right">{row.points}</TableCell>
                                         </TableRow>
