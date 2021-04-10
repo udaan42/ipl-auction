@@ -108,7 +108,18 @@ export default function LeagueDetails(props) {
 
     let standings = [];
     if(!_.isEmpty(props.detail)){
-      standings = props.detail.leagueUsers;
+      standings = [...props.detail.leagueUsers].sort((a, b) => parseFloat(b.points) - parseFloat(a.points));
+      standings.map((item) => {
+        return {...item, rank: 0}
+      })
+      let rank = 1;
+      for (let i = 0; i < standings.length; i++) {
+        // increase rank only if current score less than previous
+        if (i > 0 && standings[i].points < standings[i - 1].points) {
+          rank++;
+        }
+        standings[i].rank = rank;
+      }
     }
 
     const handleClick = (id) => { console.log(id)};
@@ -190,7 +201,7 @@ export default function LeagueDetails(props) {
                         id={item.userName}
                         onClick={()=> {handleClick(item.userName)}}
                     >
-                        <Typography className={classes.heading}>-</Typography>
+                        <Typography className={classes.heading}>{item.rank}</Typography>
                         <Typography className={classes.heading}>{item.userName} </Typography>
                         <Typography className={classes.secondaryHeading}>{item.teamName}</Typography>
                         <Typography className={classes.secondaryHeading}>{item.points}</Typography>
