@@ -7,6 +7,8 @@ public class FinalSquadVO {
     private boolean isWicketKeeper;
     private Double points;
     private String teamName;
+    private String playerRole;
+    private Integer rank;
 
     public String getPlayerId() {
         return playerId;
@@ -54,5 +56,21 @@ public class FinalSquadVO {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public String getPlayerRole() {
+        return playerRole;
+    }
+
+    public void setPlayerRole(String playerRole) {
+        this.playerRole = playerRole;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 }

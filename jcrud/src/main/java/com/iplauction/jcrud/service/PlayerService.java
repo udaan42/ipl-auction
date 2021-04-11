@@ -133,6 +133,9 @@ public class PlayerService {
                           }
                       }
                   }
+                  if(playerMatchStat.getMOM()){
+                      playerMatchStat.setTotalMatchPoint(playerMatchStat.getTotalMatchPoint() + 25);
+                  }
                   playerInfo.setLatestMatchPoint(playerMatchStat.getTotalMatchPoint());
                   playerInfo.setLatestStumpingPoint(stumpingPoints);
                   playerInfo =  playerInfoRepository.save(playerInfo);
@@ -143,4 +146,18 @@ public class PlayerService {
         return playerInfoVOS;
     }
 
+    public List<PlayerInfoVO> setLatestFlag(List<String> playerIds) throws Exception {
+
+        List<PlayerInfoVO> playerInfoVOS = new ArrayList<>();
+        for(String playerId: playerIds){
+            Optional<PlayerInfo> optionalPlayerInfo = playerInfoRepository.findById(playerId);
+            PlayerInfo playerInfo = optionalPlayerInfo.get();
+            if(playerInfo != null){
+                playerInfo.setPlayedToday(true);
+                playerInfo =  playerInfoRepository.save(playerInfo);
+                playerInfoVOS.add(playerInfoPlayerInfoVOMapper.map(playerInfo));
+            }
+        }
+        return playerInfoVOS;
+    }
 }

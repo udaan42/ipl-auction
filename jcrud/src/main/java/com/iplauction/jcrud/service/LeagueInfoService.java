@@ -468,6 +468,8 @@ public class LeagueInfoService {
                                     finalSquad.setCaptain(playerInfo.getCaptain());
                                     finalSquad.setWicketKeeper(playerInfo.getWicketKeeper());
                                     finalSquad.setTeamName(playerInfo.getTeamName());
+                                    finalSquad.setPlayerRole(playerInfo.getPlayerRole());
+                                    finalSquad.setRank(0);
                                     if(leagueUser.getFinalSquad() != null){
                                         for(FinalSquad finalSquad1 : leagueUser.getFinalSquad()){
                                             if(finalSquad1.getPlayerId().equalsIgnoreCase(playerInfo.getPlayerId())){
@@ -504,41 +506,43 @@ public class LeagueInfoService {
                            for(FinalSquad finalSquad : leagueUser.getFinalSquad()){
                               PlayerInfoVO playerInfoVO =  playerService.getPlayerInfoById(finalSquad.getPlayerId());
                               if(playerInfoVO != null){
-                                  if(playerInfoVO.getLatestMatchPoint() != null){
-                                      double latestMatchPoint = playerInfoVO.getLatestMatchPoint();
-                                      if(playerInfoVO.getPlayerRole().equalsIgnoreCase("Wicket Keeper")){
-                                          if(!finalSquad.getWicketKeeper()){
-                                              if(playerInfoVO.getLatestStumpingPoint() != null) {
-                                                  latestMatchPoint = latestMatchPoint - playerInfoVO.getLatestStumpingPoint();
+                                  if(playerInfoVO.getLatestMatchPoint() != null) {
+                                      if (playerInfoVO.getPlayedToday() != null) {
+                                          if (playerInfoVO.getPlayedToday()) {
+                                              double latestMatchPoint = playerInfoVO.getLatestMatchPoint();
+                                              if (playerInfoVO.getPlayerRole().equalsIgnoreCase("Wicket Keeper")) {
+                                                  if (!finalSquad.getWicketKeeper()) {
+                                                      if (playerInfoVO.getLatestStumpingPoint() != null) {
+                                                          latestMatchPoint = latestMatchPoint - playerInfoVO.getLatestStumpingPoint();
+                                                      }
+                                                  }
                                               }
-                                          }
-                                      }
-                                      if(leagueUser.getPoints() != null){
-                                          if(finalSquad.getCaptain()){
-                                              leagueUser.setPoints(leagueUser.getPoints() + (latestMatchPoint*2));
-                                          }else {
-                                              leagueUser.setPoints(leagueUser.getPoints() + latestMatchPoint);
-                                          }
-                                      }else{
-                                          if(finalSquad.getCaptain()){
-                                              leagueUser.setPoints(latestMatchPoint*2);
-                                          }
-                                          else {
-                                              leagueUser.setPoints(latestMatchPoint);
-                                          }
-                                      }
-                                      if(finalSquad.getPoints() != null){
-                                          if(finalSquad.getCaptain()){
-                                              finalSquad.setPoints(finalSquad.getPoints() + (latestMatchPoint*2));
-                                          }else {
-                                              finalSquad.setPoints(finalSquad.getPoints() + latestMatchPoint);
-                                          }
-                                      }else{
-                                          if(finalSquad.getCaptain()){
-                                              finalSquad.setPoints(latestMatchPoint*2);
-                                          }
-                                          else {
-                                              finalSquad.setPoints(latestMatchPoint);
+                                              if (leagueUser.getPoints() != null) {
+                                                  if (finalSquad.getCaptain()) {
+                                                      leagueUser.setPoints(leagueUser.getPoints() + (latestMatchPoint * 2));
+                                                  } else {
+                                                      leagueUser.setPoints(leagueUser.getPoints() + latestMatchPoint);
+                                                  }
+                                              } else {
+                                                  if (finalSquad.getCaptain()) {
+                                                      leagueUser.setPoints(latestMatchPoint * 2);
+                                                  } else {
+                                                      leagueUser.setPoints(latestMatchPoint);
+                                                  }
+                                              }
+                                              if (finalSquad.getPoints() != null) {
+                                                  if (finalSquad.getCaptain()) {
+                                                      finalSquad.setPoints(finalSquad.getPoints() + (latestMatchPoint * 2));
+                                                  } else {
+                                                      finalSquad.setPoints(finalSquad.getPoints() + latestMatchPoint);
+                                                  }
+                                              } else {
+                                                  if (finalSquad.getCaptain()) {
+                                                      finalSquad.setPoints(latestMatchPoint * 2);
+                                                  } else {
+                                                      finalSquad.setPoints(latestMatchPoint);
+                                                  }
+                                              }
                                           }
                                       }
                                   }

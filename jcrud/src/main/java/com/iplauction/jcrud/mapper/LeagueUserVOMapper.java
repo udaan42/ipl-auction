@@ -45,6 +45,8 @@ public class LeagueUserVOMapper implements Mapper<LeagueUser,LeagueUserVO> {
                 finalSquadVO.setWicketKeeper(finalSquad.getWicketKeeper());
                 finalSquadVO.setPoints(finalSquad.getPoints());
                 finalSquadVO.setTeamName(finalSquad.getTeamName());
+                finalSquadVO.setPlayerRole(finalSquad.getPlayerRole());
+                finalSquadVO.setRank(finalSquad.getRank());
                 finalSquadVOS.add(finalSquadVO);
             }
         }

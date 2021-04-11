@@ -53,6 +53,7 @@ public class PlayerInfoPlayerInfoVOMapper implements Mapper<PlayerInfo,PlayerInf
         playerInfoVO.setMatchesList(source.getMatchesList());
         playerInfoVO.setLatestMatchPoint(source.getLatestMatchPoint());
         playerInfoVO.setLatestStumpingPoint(source.getLatestStumpingPoint());
+        playerInfoVO.setPlayedToday(source.getPlayedToday());
         return playerInfoVO;
     }
 }

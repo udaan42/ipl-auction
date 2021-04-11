@@ -134,4 +134,23 @@ public class PlayerController {
             return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(new GenericServiceResponse<List<PlayerInfoVO>>(FAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping({"/setLatestFlag"})
+    public ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>> setLatestFlag(
+            @RequestBody List<String> playerIds) {
+
+        try {
+            List<PlayerInfoVO> playerInfoVOList = null;
+            logger.info("calculatePoints started ==>");
+            if(playerIds != null) {
+                playerInfoVOList  = playerService.setLatestFlag(playerIds);
+            }
+            logger.info("calculatePoints completed <==");
+            return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(
+                    new GenericServiceResponse<List<PlayerInfoVO>>(SUCCESS, "playerInfos", playerInfoVOList), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while calculatePoints", e);
+            return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(new GenericServiceResponse<List<PlayerInfoVO>>(FAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

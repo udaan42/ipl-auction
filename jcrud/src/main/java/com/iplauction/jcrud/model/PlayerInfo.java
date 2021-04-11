@@ -54,6 +54,7 @@ public class PlayerInfo {
     private List<MatchesList> matchesList;
     private Double latestMatchPoint;
     private Double latestStumpingPoint;
+    private Boolean isPlayedToday;
 
 
 
@@ -447,5 +448,14 @@ public class PlayerInfo {
 
     public void setLatestStumpingPoint(Double latestStumpingPoint) {
         this.latestStumpingPoint = latestStumpingPoint;
+    }
+
+    @DynamoDBAttribute
+    public Boolean getPlayedToday() {
+        return isPlayedToday;
+    }
+
+    public void setPlayedToday(Boolean playedToday) {
+        isPlayedToday = playedToday;
     }
 }

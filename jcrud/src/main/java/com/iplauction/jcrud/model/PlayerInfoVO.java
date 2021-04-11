@@ -48,6 +48,7 @@ public class PlayerInfoVO {
     private List<MatchesList> matchesList;
     private Double latestMatchPoint;
     private Double latestStumpingPoint;
+    private Boolean isPlayedToday;
 
 
 
@@ -394,5 +395,13 @@ public class PlayerInfoVO {
 
     public void setLatestStumpingPoint(Double latestStumpingPoint) {
         this.latestStumpingPoint = latestStumpingPoint;
+    }
+
+    public Boolean getPlayedToday() {
+        return isPlayedToday;
+    }
+
+    public void setPlayedToday(Boolean playedToday) {
+        isPlayedToday = playedToday;
     }
 }
