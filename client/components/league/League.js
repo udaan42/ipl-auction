@@ -88,13 +88,13 @@ class League extends React.Component{
     render(){
         return(
                 <Box>
-                    {this.props.list.length == 0? <Grid className={this.props.classes.headerBlock} container-fluid spacing={2}>
+                    {/* {this.props.list.length == 0? <Grid className={this.props.classes.headerBlock} container-fluid spacing={2}>
                         <Grid item xs>
                             <Typography>
                                 You are not part of any league. Please create a new league or join an existing league
                             </Typography>
                         </Grid>
-                    </Grid>: ""}
+                    </Grid>: ""} */}
 
                     <Grid container spacing={2}>
                         <Grid item xs="3">

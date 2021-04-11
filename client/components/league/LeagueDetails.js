@@ -108,7 +108,18 @@ export default function LeagueDetails(props) {
 
     let standings = [];
     if(!_.isEmpty(props.detail)){
-      standings = props.detail.leagueUsers;
+      standings = [...props.detail.leagueUsers].sort((a, b) => parseFloat(b.points) - parseFloat(a.points));
+      standings.map((item) => {
+        return {...item, rank: 0}
+      })
+      let rank = 1;
+      for (let i = 0; i < standings.length; i++) {
+        // increase rank only if current score less than previous
+        if (i > 0 && standings[i].points < standings[i - 1].points) {
+          rank++;
+        }
+        standings[i].rank = rank;
+      }
     }
 
     const handleClick = (id) => { console.log(id)};
@@ -181,7 +192,7 @@ export default function LeagueDetails(props) {
         </Accordion>
         {standings.map((item)=>{
             if(item.leagueRole == ROLE_PLAYER){
-              const squad = item.playersSquad.filter((player)=> player.playing);
+              const squad = item.finalSquad;
               return(
                 <Accordion >
                     <AccordionSummary
@@ -190,7 +201,7 @@ export default function LeagueDetails(props) {
                         id={item.userName}
                         onClick={()=> {handleClick(item.userName)}}
                     >
-                        <Typography className={classes.heading}>-</Typography>
+                        <Typography className={classes.heading}>{item.rank}</Typography>
                         <Typography className={classes.heading}>{item.userName} </Typography>
                         <Typography className={classes.secondaryHeading}>{item.teamName}</Typography>
                         <Typography className={classes.secondaryHeading}>{item.points}</Typography>
@@ -201,6 +212,7 @@ export default function LeagueDetails(props) {
                                 <TableHead>
                                 <TableRow>
                                     <TableCell>Name</TableCell>
+                                    <TableCell>Team</TableCell>
                                     <TableCell align="left">Role</TableCell>
                                     <TableCell align="right">Points</TableCell>
                                 </TableRow>
@@ -211,6 +223,7 @@ export default function LeagueDetails(props) {
                                             <TableCell component="th" scope="row">
                                                 {row.playerName} {row.playerRace == PLAYER_OVERSEAS ? <FlightIcon className={classes.overseasIcon} />: ""}{row.captain? <span className={classes.captain}> - C</span>: ""}
                                             </TableCell>
+                                            <TableCell align="left">{row.teamName}</TableCell>
                                             <TableCell align="left">{row.playerRole}</TableCell>
                                             <TableCell align="right">{row.points}</TableCell>
                                         </TableRow>
