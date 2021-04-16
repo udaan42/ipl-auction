@@ -1,7 +1,5 @@
 import express from 'express';
 import * as authCtrl from '../controllers/auth.controller';
-import { API_ENDPOINT } from '../../client/config/config';
-import axios from 'axios';
 
 const router = express.Router();
 
@@ -80,20 +78,7 @@ const router = express.Router();
 
 router.route('/login')
     .post((req, res) => {
-        axios.post(API_ENDPOINT + '/iplauction/authenticate', {
-            username: req.body.username,
-            password: req.body.password
-        })
-            .then((response) => {
-                console.log(response.data);
-                res.json(response.data);
-            }, (error) => {
-                console.log(error.response);
-                res.status(403).send({
-                    message: error.response.data.errorMessage
-                 })
-            });
-        //authCtrl.login(req, res);
-    });
+        authCtrl.login(req, res);
+    })
 
 export default router;

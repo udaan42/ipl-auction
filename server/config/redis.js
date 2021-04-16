@@ -18,10 +18,13 @@ redisClient.on("error", (error) => {
 const get = promisify(redisClient.get).bind(redisClient);
 const set = promisify(redisClient.set).bind(redisClient);
 const exists = promisify(redisClient.exists).bind(redisClient);
-
+const keys = promisify(redisClient.keys).bind(redisClient);
+const setex = promisify(redisClient.setex).bind(redisClient);
 
 module.exports = {
     get,
     set,
-    exists
+    exists,
+    keys,
+    setex
 };

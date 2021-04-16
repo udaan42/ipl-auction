@@ -3,8 +3,7 @@ import * as userCtrl from '../controllers/user.controller';
 import isAuthenticated from '../middlewares/authenticate';
 import validate from '../config/joi.validate';
 import schema from '../utils/validator';
-import { API_ENDPOINT } from '../../client/config/config';
-import axios from 'axios';
+
 
 const router = express.Router();
 
@@ -92,7 +91,7 @@ router.route('/')
     /**
      * @swagger
      * /users:
-     *   post:
+     *   register:
      *     tags:
      *       - user
      *     summary: "Create a new user"
@@ -122,150 +121,8 @@ router.route('/')
      */
 
     .post(validate(schema.storeUser), (req, res) => {
-        axios.post(API_ENDPOINT + '/iplauction/register', {
-            userName: req.body.username,
-            pwd: req.body.password
-        })
-            .then((response) => {
-                console.log(response.data);
-                res.json(response.data);
-            }, (error) => {
-                console.log('error from api call');
-                console.log(error);
-                res.status(401).send({
-                    message: error.response.data.errorMessage
-                 })
-            });
-        //userCtrl.store(req, res);
+        userCtrl.register(req, res);
     })
-
-    /**
-     * @swagger
-     * /users:
-     *   get:
-     *     tags:
-     *       - user
-     *     summary: "List all users"
-     *     operationId: findAll
-     *     consumes:
-     *       - application/json
-     *     produces:
-     *       - application/json
-     *     parameters: []
-     *     responses:
-     *       200:
-     *         description: OK
-     *         schema:
-     *            type: object
-     */
-
-    .get((req, res) => {
-        userCtrl.findAll(req, res);
-    });
-
-
-router.route('/:id')
-
-    /**
-     * @swagger
-     * /users/{id}:
-     *   get:
-     *     tags:
-     *       - user
-     *     summary: Find the user by ID
-     *     operationId: findById
-     *     consumes:
-     *       - application/json
-     *     produces:
-     *       - application/json
-     *     parameters:
-     *       - name: id
-     *         in: path
-     *         description: id of user that needs to be fetched
-     *         required: true
-     *         type: integer
-     *     responses:
-     *       200:
-     *         description: OK
-     *         schema:
-     *           $ref: "#/definitions/User"
-     *       404:
-     *          description: User not found
-     *          schema:
-     *             $ref: '#/definitions/Error'
-     */
-
-    .get((req, res) => {
-        userCtrl.findById(req, res);
-    })
-
-    /**
-     * @swagger
-     * /users/{id}:
-     *   put:
-     *     tags:
-     *       - user
-     *     summary: "Update an existing user by ID"
-     *     security:
-     *       - Bearer: []
-     *     operationId: update
-     *     consumes:
-     *       - application/json
-     *     produces:
-     *       - application/json
-     *     parameters:
-     *       - name: id
-     *         in: path
-     *         description: id that need to be updated
-     *         required: true
-     *         type: integer
-     *       - name: body
-     *         in: body
-     *         description: Updated user object
-     *         required: true
-     *         schema:
-     *           $ref: "#/definitions/User"
-     *     responses:
-     *       200:
-     *         description: OK
-     *         schema:
-     *           $ref: "#/definitions/User"
-     *       400:
-     *         description: Invalid user
-     */
-
-    .put(isAuthenticated, (req, res) => {
-        userCtrl.update(req, res);
-    })
-
-    /**
-     * @swagger
-     * /users/{id}:
-     *   delete:
-     *     tags:
-     *       - user
-     *     summary: Delete the user by ID
-     *     security:
-     *       - Bearer: []
-     *     operationId: destroy
-     *     produces:
-     *       - application/json
-     *     parameters:
-     *       - name: id
-     *         in: path
-     *         description: id of user that needs to be deleted
-     *         required: true
-     *         type: integer
-     *     responses:
-     *       200:
-     *         description: OK
-     *       400:
-     *          description: "Invalid ID"
-     */
-
-    .delete(isAuthenticated, (req, res) => {
-        userCtrl.destroy(req, res);
-    });
 
 
 export default router;
