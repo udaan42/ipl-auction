@@ -18,6 +18,8 @@ const AsyncRules = loadable(()=> import('../containers/rules/RulesContainer'));
 const AsyncLeagueDetails = loadable(() => import('../containers/league/LeagueDetailsContainer'));
 const AsyncTeams = loadable(() => import('../containers/teams/TeamsContainer'));
 const AsyncTeam = loadable(() => import('../containers/teams/TeamContainer'));
+const AsyncTransfers = loadable(() => import('../containers/transfers/TransfersContainer'));
+const AsyncTransfer = loadable(() => import('../containers/transfers/TransferContainer'));
 const AsyncLive = loadable(() => import('../containers/live/LiveContainer'));
 
 
@@ -36,7 +38,8 @@ const Router = () => (
       <PrivateRoute exact path="/my-teams" layout={Layout} component={AsyncTeams} />
       <PrivateRoute exact path="/my-teams/:id" layout={Layout} component={AsyncTeam} />
       <PrivateRoute exact path="/live/:id" layout={Layout} component={AsyncLive} />
-
+      <PrivateRoute exact path="/transfers" layout={Layout} component={AsyncTransfers} />
+      <PrivateRoute exact path="/transfers/:id" layout={Layout} component={AsyncTransfer} />
       <Route component={NotFound} />
     </Switch>
   </Fragment>

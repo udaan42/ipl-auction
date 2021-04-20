@@ -3,9 +3,12 @@ import openSocket from 'socket.io-client';
 const socket = openSocket();
 
 export const joinAuctionRoom = (data) => {
-  console.log(data);
   socket.emit('join-auction', data);
 };
+
+export const joinTransfersRoom = (data) => {
+  socket.emit('join-transfers', data);
+}
 
 export const startAuction = (data) => {
   socket.emit('start-auction', data);
@@ -27,10 +30,15 @@ export const playerSold = (cb) => {
 
 export const onJoinRoom = (cb) => {
   socket.on('notification', (data) => {
-    console.log(data);
     return cb(null, data);
   });
 };
+
+export const onJoinTransfers = (cb) => {
+  socket.on('transfers-joined-result', (data) => {
+    return cb(null, data);
+  })
+}
 
 export const onEndAuction = (cb) => {
   socket.on('auction-ended', (data) => {
@@ -72,8 +80,18 @@ export const submitBid = (data) => {
   socket.emit('submit-bid', data);
 };
 
+export const submitTransferBid = (data) => {
+  socket.emit('transfers-new-bid', data);
+};
+
 export const getBidUpdates = (cb) => {
   socket.on('bid-updates', (data) => {
+    return cb(null, data);
+  });
+};
+
+export const getTransferBidUpdates = (cb) => {
+  socket.on('transfer-bid-updates', (data) => {
     return cb(null, data);
   });
 };

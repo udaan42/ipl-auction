@@ -20,4 +20,18 @@ export const ALL_ROUNDER_TEAM_MIN = 1;
 export const WICKET_KEEPER_TEAM_MIN = 1;
 export const LEAGUE_STATUS_NOT_STARTED = "NOT_STARTED";
 export const LEAGUE_STATUS_STARTED = "STARTED";
-export const LEAGUE_STATUS_ENDED = "ENDED"
+export const LEAGUE_STATUS_ENDED = "ENDED";
+export const filterOptions = [
+    {title: "Batsman", category: "Role"},
+    {title: "Bowler", category: "Role"},
+    {title: "All Rounder", category: "Role"},
+    {title: "Wicket Keeper", category: "Role"},
+    {title: "Chennai Super Kings", category: "Team"},
+    {title: "Delhi Capitals", category: "Team"},
+    {title: "Royal Challengers Bangalore", category: "Team"},
+    {title: "Kolkata Knight Riders", category: "Team"},
+    {title: "Mumbai Indians", category: "Team"},
+    {title: "Punjab Kings", category: "Team"},
+    {title: "Rajasthan Royals", category: "Team"},
+    {title: "Sunrisers Hyderabad", category: "Team"}
+];

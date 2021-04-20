@@ -202,7 +202,7 @@ class PlayerStats extends React.Component{
             data: null,
             open: false,
             time: time,
-            timeLimit: 30,
+            timeLimit: 15,
             timeFreeze: false
         }
     }

@@ -448,8 +448,66 @@ class Team extends React.Component{
                     error: true,
                     errorMessage: "You have more than 1 keeper. Please select your wicket keeper for the 11"
                 })
+                return;
+            }else{
+                if(!this.state.selectedCaptain){
+                    this.setState({
+                        error: true,
+                        errorMessage: "Please select a captain"
+                    })
+                    return;
+                }else{
+                    let captain = _.find(team, ['playerName', this.state.selectedCaptain.value]);
+                    if(!captain){
+                        this.setState({
+                            error: true,
+                            errorMessage: "Your selected captain is not part of the playing 11"
+                        })
+                        return;
+                    }else{
+                        let keeper = _.find(team, ['playerName', this.state.selectedKeeper.value]);
+                        if(!keeper){
+                            this.setState({
+                                error: true,
+                                errorMessage: "Your selected Keeper is not part of the playing 11"
+                            })
+                        }else{
+                            captain.captain = true;
+
+                            team.map((player)=> {
+                                if(wk > 1){
+                                    if(player.playerRole == TYPE_WICKET_KEEPER && player.playerName == this.state.selectedKeeper.value){
+                                        player.wicketKeeper = true;
+                                    }else{
+                                        player.wicketKeeper = false;
+                                    }
+                                }else{
+                                    if(player.playerRole == TYPE_WICKET_KEEPER){
+                                        player.wicketKeeper = true;
+                                    }
+                                }
+                            })
+                            
+                    
+                            team.map((player) => {
+                                if(player.playerName == this.state.selectedCaptain.value){
+                                    player.captain = true;
+                                }else{
+                                    player.captain = false;
+                                }
+                            })
+                    
+                            let finalSquad = [...team, ...this.state.squad];
+                            console.log(finalSquad);
+                    
+                            if(!this.state.error){
+                                this.props.updateSquad(finalSquad);
+                            }
+                        }
+                    }
+                }
             }
-            return;
+            
         }else if(!this.state.selectedCaptain){
             this.setState({
                 error: true,

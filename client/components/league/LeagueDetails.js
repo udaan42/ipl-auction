@@ -113,10 +113,14 @@ export default function LeagueDetails(props) {
         return {...item, rank: 0}
       })
       let rank = 1;
+      let duplicates = 1;
       for (let i = 0; i < standings.length; i++) {
         // increase rank only if current score less than previous
         if (i > 0 && standings[i].points < standings[i - 1].points) {
-          rank++;
+          rank= rank+duplicates;
+          duplicates= 1;
+        }else if(i > 0 && standings[i].points == standings[i - 1].points){
+          duplicates++
         }
         standings[i].rank = rank;
       }

@@ -170,10 +170,10 @@ module.exports = function (io, socket) {
           playerOwnerUserId: data.userId,
           sold: null,
           bidHistory: [{ userId: data.userId, bid: data.nextBid, time: Date.now() }],
-          playerId = data.playerId
+          playerId : data.playerId
         };
       }
-      await set('AR:' + roomId + ':TRANSFERS:' + playerId, JSON.stringify(bidedPlayerInTransfer));
+      await set('AR:' + data.roomId + ':TRANSFERS:' + data.playerId, JSON.stringify(bidedPlayerInTransfer));
       io.in(data.roomId + 'TRANSFERS').emit('transfer-bid-updates', bidedPlayerInTransfer);
     });
 
