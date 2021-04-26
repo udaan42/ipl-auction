@@ -2,6 +2,7 @@ package com.iplauction.jcrud.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.iplauction.jcrud.utils.LeagueUserListTypeConverter;
+import com.iplauction.jcrud.utils.TransferListTypeConverter;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
@@ -17,6 +18,7 @@ public class LeagueInfo {
     private Date lastModifiedDateTime;
     private Boolean isActive = true;
     private String leagueStatus;
+    private List<TransferRequests> transferRequests;
 
     @Id
     @DynamoDBHashKey
@@ -80,5 +82,14 @@ public class LeagueInfo {
 
     public void setLeagueStatus(String leagueStatus) {
         this.leagueStatus = leagueStatus;
+    }
+
+    @DynamoDBTypeConverted(converter = TransferListTypeConverter.class)
+    public List<TransferRequests> getTransferRequests() {
+        return transferRequests;
+    }
+
+    public void setTransferRequests(List<TransferRequests> transferRequests) {
+        this.transferRequests = transferRequests;
     }
 }

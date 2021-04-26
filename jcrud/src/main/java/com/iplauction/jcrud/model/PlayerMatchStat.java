@@ -52,11 +52,11 @@ public class PlayerMatchStat {
         this.fieldingStats = fieldingStats;
     }
 
-    public boolean getMOM() {
+    public boolean getIsMOM() {
         return isMOM;
     }
 
-    public void setMOM(boolean isMOM) {
+    public void setIsMOM(Boolean isMOM) {
         this.isMOM = isMOM;
     }
 
