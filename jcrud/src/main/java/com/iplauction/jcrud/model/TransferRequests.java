@@ -11,6 +11,7 @@ public class TransferRequests implements Comparable<TransferRequests> {
     public String transferOutPlayerId;
     public List<TransferInList> transferInList;
     public Integer bidAmount;
+    public Integer transferOutAmount;
     public Date timeSubmitted;
     public String userId;
     private boolean duplicate;
@@ -61,6 +62,14 @@ public class TransferRequests implements Comparable<TransferRequests> {
 
     public void setDuplicate(boolean duplicate) {
         this.duplicate = duplicate;
+    }
+
+    public Integer getTransferOutAmount() {
+        return transferOutAmount;
+    }
+
+    public void setTransferOutAmount(Integer transferOutAmount) {
+        this.transferOutAmount = transferOutAmount;
     }
 
     @Override

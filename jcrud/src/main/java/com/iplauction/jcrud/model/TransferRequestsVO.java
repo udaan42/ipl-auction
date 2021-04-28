@@ -10,6 +10,7 @@ public class TransferRequestsVO {
     public List<TransferInListVO> transferInList;
     public Date timeSubmitted;
     public Integer bidAmount;
+    public Integer transferOutAmount;
     private boolean duplicate;
 
 
@@ -59,5 +60,13 @@ public class TransferRequestsVO {
 
     public void setDuplicate(boolean duplicate) {
         this.duplicate = duplicate;
+    }
+
+    public Integer getTransferOutAmount() {
+        return transferOutAmount;
+    }
+
+    public void setTransferOutAmount(Integer transferOutAmount) {
+        this.transferOutAmount = transferOutAmount;
     }
 }

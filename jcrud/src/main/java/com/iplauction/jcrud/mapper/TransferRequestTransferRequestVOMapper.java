@@ -22,6 +22,7 @@ public class TransferRequestTransferRequestVOMapper implements Mapper<TransferRe
         transferRequestsVO.setUserId(source.getUserId());
         transferRequestsVO.setBidAmount(source.getBidAmount());
         transferRequestsVO.setDuplicate(source.getDuplicate());
+        transferRequestsVO.setTransferOutAmount(source.getTransferOutAmount());
 
         List<TransferInListVO> transferInListVO = new ArrayList<>();
 
