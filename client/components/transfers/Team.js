@@ -27,6 +27,7 @@ import {
 import { USER_ID } from '../../config/config';
 import { clearLocalStorage, getLocalStorage, setLocalStorage } from '../../utils/storageUtil';
 import TransferPopUpModal from './TransferPopUpModal';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const styles = {
     header:{
@@ -40,6 +41,9 @@ const styles = {
         fontWeight: 600,
         marginLeft: 5
     },
+    transfersTitle: {
+        fontWeight: 600
+    },
     filterArea: {
 
     },
@@ -47,6 +51,41 @@ const styles = {
         marginBottom: 10,
         marginTop: -25,
         float: "right"
+    },
+    transferContent:{
+        marginBottom: 15
+    },
+    transferLabel: {
+        fontWeight: 600,
+        fontSize: 16
+    },
+    transferPlayer:{
+        fontSize: 16
+    },
+    transferBid:{
+        marginLeft: 5,
+        marginRight: 5,
+        marginTop: -6
+    },
+    list: {
+        padding : 0,
+        marginTop: 10
+    },
+    listItem: {
+        marginLeft: 15,
+        fontSize: 16
+    },
+    bidLabel: {
+        fontSize: 16
+    },
+    submitBtn: {
+        marginRight: 20
+    },
+    cancelIcon:{
+        fontSize: "medium",
+        marginLeft: 5,
+        marginBottom: 2,
+        cursor: "pointer"
     }
     
 };
@@ -69,8 +108,16 @@ class Team extends React.Component{
             selectedPlayer: null,
             success: false,
             transfers: [],
+            transfersHistory: [],
             transferPopUp: false,
-            transferOut: []
+            transferOut: null,
+            transferIn1: null,
+            transferIn2: null,
+            transferIn3: null,
+            bid: 0,
+            number: 1,
+            transferInitiated: false,
+            filter: ""
         }
     }
 
@@ -89,9 +136,9 @@ class Team extends React.Component{
 
         onJoinTransfers((err, data) => {
             console.log(data);
-            this.setState({
-                transfers: data
-            })
+            // this.setState({
+            //     transfers: data
+            // })
         });
 
         getTransferBidUpdates((err, data) => {
@@ -145,43 +192,83 @@ class Team extends React.Component{
         }
     }
 
-    wkCheck = (player) => {
-        if(player.playerRole == TYPE_WICKET_KEEPER && this.state.wk == 2){
-            return true;
-        }else if(player.playerRole == TYPE_WICKET_KEEPER && this.state.bat == 5 && this.state.wk == 1){
-            return true;
+    wkCheck = (playerRole, wk) => {
+        if(playerRole == TYPE_WICKET_KEEPER && (wk < 2 || wk ==3)){
+            return false;
         }
-        return false;
+        return true;
     }
 
-    batCheck = (player) => {
-        if(player.playerRole == TYPE_BATSMAN && this.state.bat == 5){
-            return true;
-        }else if(player.playerRole == TYPE_BATSMAN && this.state.bat == 4 && this.state.wk == 2){
-            return true;
+    batCheck = (playerRole, bat) => {
+        if(playerRole == TYPE_BATSMAN && (bat < 3 || bat == 5)){
+            return false;
         }
-        return false;
+        return true;
     }
 
-    bowlCheck = (player) => {
-        if(player.playerRole == TYPE_BOWLER && this.state.bowl == 5){
-            return true;
+    bowlCheck = (playerRole, bowl ) => {
+        if(playerRole == TYPE_BOWLER && (bat < 3 || bowl == 5)){
+            return false;
         }
-        return false;
+        return true;
     }
 
-    arCheck = (player) => {
-        if(player.playerRole == TYPE_ALL_ROUNDER && this.state.ar == 4){
-            return true;
+    arCheck = (playerRole, ar) => {
+        if(playerRole == TYPE_ALL_ROUNDER && (ar < 3 || ar == 5)){
+            return false;
         }
-        return false;
+        return true;
     }
 
-    overseasCheck = (player) => {
-        if(player.playerRace == PLAYER_OVERSEAS && this.state.overseas == 4){
+    overseasCheck = (playerRace, overseas) => {
+        if(playerRace == PLAYER_OVERSEAS && (overseas < 5 || overseas == 6)){
+            return false;
+        }
+        return true;
+    }
+
+    criteriaCheck = (player) => {
+        let team = [...this.state.squad, player];
+        let wk = team.filter((item)=> item.playerRole == TYPE_WICKET_KEEPER).length;
+        let bat = team.filter((item)=> item.playerRole == TYPE_BATSMAN).length;
+        let bowl = team.filter((item)=> item.playerRole == TYPE_BOWLER).length;
+        let ar = team.filter((item)=> item.playerRole == TYPE_ALL_ROUNDER).length;
+        let overseas = team.filter((item)=> item.playerRace == PLAYER_OVERSEAS).length;
+
+        if( wk < 2 || wk > 3 ){
+            this.setState({
+                error: true,
+                errorMessage: "You dont meet the Wicket Keeper criteria"
+            })
+            
+        }else if( bat < 3 || bat > 5){
+            this.setState({
+                error: true,
+                errorMessage: "You dont meet the Batsmen criteria"
+            })
+
+        }else if( bowl < 3 || bowl > 5){
+            this.setState({
+                error: true,
+                errorMessage: "You dont meet the Bowler criteria"
+            })
+            
+        }else if( ar < 3 || ar > 5){
+            this.setState({
+                error: true,
+                errorMessage: "You dont meet the All Rounder criteria"
+            })
+        }else if( overseas < 5 || overseas > 6){
+            this.setState({
+                error: true,
+                errorMessage: "You dont meet the Overseas players criteria"
+            })
+        }else{
             return true;
         }
+
         return false;
+
     }
 
     onSquadSelect = (item) => {
@@ -190,13 +277,15 @@ class Team extends React.Component{
         let selectedPlayerRole = selectedItem.playerRole;
         let selectedPlayerRace = selectedItem.playerRace;
         
-        let transferOut = [...this.state.transferOut];
+        let transferOut = [...this.state.transfers];
         transferOut.push(selectedItem);
         _.remove(tempSquad,['playerName', item]);
 
         this.setState({
             squad: tempSquad,
-            transferOut: transferOut
+            transferOut: selectedItem,
+            transfers: transferOut,
+            transferInitiated: true
         })        
     }
 
@@ -206,16 +295,42 @@ class Team extends React.Component{
         let selectedPlayerRole = selectedItem.playerRole;
         let selectedPlayerRace = selectedItem.playerRace;
 
-        if(this.state.squad.length >= 15){
+        _.remove(unsold,['playerName', item]);
+
+        if(this.state.squad.length >= 15 || !this.state.transferInitiated){
             this.setState({
                 error: true,
                 errorMessage: "You need to transfer out a player first"
             })
         }else{
-            this.setState({
-                selectedPlayer: selectedItem,
-                transferPopUp: true
-            })
+            if(this.criteriaCheck(selectedItem)){
+                if(this.state.number == 1){
+                    this.props.updateUnsold(item);
+                    this.setState({
+                        transferIn1: selectedItem,
+                        // transferPopUp: true,
+                        // unsold: unsold,
+                        number : this.state.number + 1
+                    })
+                }else if(this.state.number == 2){
+                    this.props.updateUnsold(item);
+                    this.setState({
+                        transferIn2: selectedItem,
+                        // transferPopUp: true,
+                        // unsold: unsold,
+                        number : this.state.number + 1
+                    })
+    
+                }else if(this.state.number == 3){
+                    this.props.updateUnsold(item);
+                    this.setState({
+                        transferIn3: selectedItem,
+                        // transferPopUp: true,
+                        // unsold: unsold,
+                        number : this.state.number + 1
+                    })
+                } 
+            }
         }
         
     }
@@ -251,6 +366,9 @@ class Team extends React.Component{
 
     handleUnsoldFilter = (value)=> {
         this.props.updateFilter(value);
+        this.setState({
+            filter: value
+        })
     }
 
     getTransferNews = () => {
@@ -261,6 +379,209 @@ class Team extends React.Component{
                     <div key={index}>{item.playerId}</div>
                 )
         })}
+    }
+
+    handleChange = (e) => {
+        this.setState({
+            bid: e.target.value
+        })
+    }
+
+    submitTransfers = () => {
+        let data = {};
+        data.transferOut = this.state.transferOut;
+        data.transferIn = [];
+        if(this.state.transferIn1){
+            data.transferIn.push(this.state.transferIn1)
+        }else{
+            this.setState({
+                error: true,
+                errorMessage: "You need to select atleast 1 player as replacement"
+            })
+            return;
+        }
+        if(this.state.transferIn2){
+            data.transferIn.push(this.state.transferIn2)
+        }
+        if(this.state.transferIn3){
+            data.transferIn.push(this.state.transferIn3)
+        }
+        if(parseInt(this.state.bid) <= 0){
+            this.setState({
+                error: true,
+                errorMessage: "You need to specify the bidding amount"
+            })
+            return;
+        }
+        data.bidPrice = parseInt(this.state.bid);
+        data.transferOutPrice = this.state.transferOut.soldPrice;
+        console.log(data);
+        let history = [...this.state.transfersHistory, data];
+        this.setState({
+            transfersHistory: history,
+            transfers: [],
+            transferOut: null,
+            transferIn1: null,
+            transferIn2: null,
+            transferIn3: null,
+            number: 1,
+            transferInitiated: false
+        })
+    }
+
+    getMinimumPrice = () => {
+        let minimum = 0;
+        if(this.state.transferIn1){
+            minimum = Math.max(minimum, this.state.transferIn1.basePrice); 
+        }
+        if(this.state.transferIn2){
+            minimum = Math.max(minimum, this.state.transferIn2.basePrice); 
+        }
+        if(this.state.transferIn3){
+            minimum = Math.max(minimum, this.state.transferIn3.basePrice); 
+        }
+        return minimum;
+    }
+
+    getTransfersList = () => {
+        let min = this.getMinimumPrice();
+        return this.state.transfers.map((player)=> {
+            return(
+                <Row className={this.props.classes.transferContent}>
+                    <Col md={2}>
+                        <span className={this.props.classes.transferLabel}>Transfer Out - </span>
+                        <ol className={this.props.classes.list}>
+                            <span className={this.props.classes.transferPlayer}>{player.playerName}</span>    
+                        </ol> 
+                    </Col>
+                    <Col md={2}>
+                        <span className={this.props.classes.transferLabel}>Transfer In - </span>
+                        <ol className={this.props.classes.list}>
+                            {this.state.transferIn1 ? <li className={this.props.classes.listItem}>
+                                        {this.state.transferIn1.playerName}
+                                        <CancelIcon className={this.props.classes.cancelIcon} onClick={()=>{this.cancelBtnClicked(this.state.transferIn1.playerName)}} />
+                                    </li>: ""}
+                            {this.state.transferIn2 ? <li className={this.props.classes.listItem}>
+                                        {this.state.transferIn2.playerName}
+                                        <CancelIcon className={this.props.classes.cancelIcon} onClick={()=>{this.cancelBtnClicked(this.state.transferIn2.playerName)}} />
+                                    </li>: ""}
+                            {this.state.transferIn3 ? <li className={this.props.classes.listItem}>
+                                        {this.state.transferIn3.playerName}
+                                        <CancelIcon className={this.props.classes.cancelIcon} onClick={()=>{this.cancelBtnClicked(this.state.transferIn3.playerName)}} />
+                                    </li>: ""}
+                        </ol>
+                    </Col>
+
+                    <Col md={2}>
+                        <span className={this.props.classes.transferLabel}>Your Bid - </span>
+                        <ol className={this.props.classes.list}>
+                            <TextField
+                                id="standard-number"
+                                label=""
+                                type="number"
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                InputProps={{
+                                    inputProps: {
+                                    max: getPurseBalance(this.state.squad),
+                                    min: min,
+                                    step: 5
+                                    }
+                                }}
+                                onChange={this.handleChange}
+                                className={this.props.classes.transferBid}
+                            /> 
+                            <span className={this.props.classes.bidLabel}> lakhs</span>
+                        </ol>
+                    </Col>
+                    <Col md={4}>
+                        <Button className={this.props.classes.submitBtn} variant="info" onClick={this.submitTransfers}>Submit</Button>
+                        <Button className={this.props.classes.cancelBtn} variant="secondary" onClick={this.cancelTransfers}>Cancel</Button>
+                    </Col>
+                </Row>
+            )
+        })
+    }
+
+    getTransfersHistory = () => {
+        return this.state.transfersHistory.map((player)=> {
+            return(
+                <Row className={this.props.classes.transferContent}>
+                    <Col md={2}>
+                        <span className={this.props.classes.transferLabel}>Transfer Out - </span>
+                        <ol className={this.props.classes.list}>
+                            <span className={this.props.classes.transferPlayer}>{player.transferOut.playerName}</span>    
+                        </ol>
+                    </Col>
+                    <Col md={3}>
+                        <span className={this.props.classes.transferLabel}>Transfer In - </span>
+                        <ol className={this.props.classes.list}>
+                            {player.transferIn.map((item, index) => {
+                                return(<li className={this.props.classes.listItem}>
+                                    {item.playerName}
+                                </li>)
+                            })}
+                        </ol>
+                        
+                    </Col>
+                    
+                    <Col md={2}>
+                        <span className={this.props.classes.transferLabel}>Your Bid - </span>
+                        <span className={this.props.classes.bidLabel}>{getPrice(player.bidPrice)}</span>
+                    </Col>
+                    <Col md={2}>
+                        <Button>Cancel Request</Button>
+                    </Col>
+                </Row>
+            )
+        })
+    }
+
+    cancelBtnClicked = (val)=> {
+        if(this.state.transferIn1){
+            if(this.state.transferIn1.playerName == val){
+                this.props.addUnsold([this.state.transferIn1]);
+                this.setState({
+                    transferIn1: this.state.transferIn2,
+                    transferIn2: this.state.transferIn3,
+                    transferIn3: null,
+                    number : this.state.number - 1
+                })
+            }
+        }
+        if(this.state.transferIn2){
+            if(this.state.transferIn2.playerName == val){
+                this.props.addUnsold([this.state.transferIn2]);
+                this.setState({
+                    transferIn2: this.state.transferIn3,
+                    number : this.state.number - 1,
+                    transferIn3: null
+                })
+            }
+        }
+        if(this.state.transferIn3){
+            if(this.state.transferIn3.playerName == val){
+                this.props.addUnsold([this.state.transferIn3]);
+                this.setState({
+                    transferIn3: null,
+                    number : this.state.number - 1
+                })
+            }
+        }
+    }
+
+    cancelTransfers = () => {
+        let squad = [...this.state.squad, this.state.transferOut];
+        this.props.updateFilter(this.state.filter);
+        this.setState({
+            transfers: [],
+            transferIn1: null,
+            transferIn2: null,
+            transferIn3: null,
+            number: 1,
+            squad: squad
+        })
     }
 
     render(){
@@ -303,9 +624,12 @@ class Team extends React.Component{
                     </Row>
                     <Row>
                         <Col>
-                            {this.getTransferNews()}
+                            <Typography className={this.props.classes.subHeader} variant="subtitle1"> <span className={this.props.classes.transfersTitle}> Your Transfer Requests</span></Typography>
                         </Col>
                     </Row>
+                    {this.getTransfersHistory()}
+                    {this.getTransfersList()}
+                    
                     <Row className={this.props.classes.tableData}>
                         <Col md={6} xs={12}>
                             <Typography variant="h6" className={this.props.classes.subHeader}> Your Squad</Typography>

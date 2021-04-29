@@ -56,7 +56,7 @@ export default function TeamItem(props) {
   const history = useHistory();
 
   const handleClick = () => {
-    let url = `/my-teams/${props.item.leagueId}`
+    let url = `/transfers/${props.item.leagueId}`
     history.push(url);
   }
 

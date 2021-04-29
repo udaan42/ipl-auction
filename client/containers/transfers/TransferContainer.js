@@ -48,8 +48,19 @@ const TransferContainer = (props) => {
         }
     }
 
+    const updateUnsold = (value) => {
+        let unsold = [...filteredPlayers];
+        _.remove(unsold,['playerName', value]);
+        setFilteredPlayers(unsold);
+    }
+
+    const addUnsold = (value) => {
+        let unsold = [...filteredPlayers, ...value];
+        setFilteredPlayers(unsold)
+    }
+
     return(
-        <Team detail={myTeam} leagueId={id} id={leagueName} updateFilter={updateFilter} unsoldPlayers ={filteredPlayers}/>
+        <Team detail={myTeam} leagueId={id} id={leagueName} addUnsold={addUnsold} updateUnsold={updateUnsold} updateFilter={updateFilter} unsoldPlayers ={filteredPlayers}/>
     )
 
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import MyTeams from '../../components/teams/MyTeams';
+import Transfers from '../../components/transfers/Transfers';
 
 import { API_URL, API_ENDPOINT, USER_ID } from '../../config/config';
 import { getLocalStorage } from '../../utils/storageUtil';
@@ -13,6 +13,6 @@ export default function TransfersContainer(props) {
     data = getLeagueData(url, userId);
 
     return(
-        <MyTeams list={data} />
+        <Transfers list={data} />
     )   
 }

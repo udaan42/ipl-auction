@@ -27,7 +27,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import ForumIcon from '@material-ui/icons/Forum';
-
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 
 
 function Copyright() {
@@ -193,6 +193,12 @@ export default function Layout(props) {
             <BarChartIcon />
             </ListItemIcon>
           <ListItemText primary="Players" />
+        </ListItem>
+        <ListItem button onClick={ () => {updateRoute("/transfers")}}>
+          <ListItemIcon>
+            <ImportExportIcon />
+            </ListItemIcon>
+          <ListItemText primary="Transfers" />
         </ListItem>
         </List>
         {/* <Divider />
