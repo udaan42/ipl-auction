@@ -29,6 +29,8 @@ import { clearLocalStorage, getLocalStorage, setLocalStorage } from '../../utils
 import TransferPopUpModal from './TransferPopUpModal';
 import CancelIcon from '@material-ui/icons/Cancel';
 
+import { requestTransfer } from '../../utils/transferUtil';
+
 const styles = {
     header:{
         fontWeight: 500
@@ -389,10 +391,14 @@ class Team extends React.Component{
 
     submitTransfers = () => {
         let data = {};
-        data.transferOut = this.state.transferOut;
-        data.transferIn = [];
+        // data.transferOut = this.state.transferOut;
+        data.transferInList = [];
         if(this.state.transferIn1){
-            data.transferIn.push(this.state.transferIn1)
+            let temp = {
+                "playerId": this.state.transferIn1.playerId,
+                "priority": 1
+            }
+            data.transferInList.push(temp)
         }else{
             this.setState({
                 error: true,
@@ -401,10 +407,18 @@ class Team extends React.Component{
             return;
         }
         if(this.state.transferIn2){
-            data.transferIn.push(this.state.transferIn2)
+            let temp = {
+                "playerId": this.state.transferIn2.playerId,
+                "priority": 2
+            }
+            data.transferInList.push(temp)
         }
         if(this.state.transferIn3){
-            data.transferIn.push(this.state.transferIn3)
+            let temp = {
+                "playerId": this.state.transferIn3.playerId,
+                "priority": 3
+            }
+            data.transferInList.push(temp);
         }
         if(parseInt(this.state.bid) <= 0){
             this.setState({
@@ -413,10 +427,13 @@ class Team extends React.Component{
             })
             return;
         }
-        data.bidPrice = parseInt(this.state.bid);
-        data.transferOutPrice = this.state.transferOut.soldPrice;
+        data.bidAmount = parseInt(this.state.bid);
+        data.transferOutAmount = this.state.transferOut.soldPrice;
+        data.userId = getLocalStorage(USER_ID);
+        data.transferOutPlayerId = this.state.transferOut.playerId;
         console.log(data);
-        let history = [...this.state.transfersHistory, data];
+        requestTransfer(data, this.props.leagueId);
+        let history = [...this.state.transfersHistory];
         this.setState({
             transfersHistory: history,
             transfers: [],
