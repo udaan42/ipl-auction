@@ -4,6 +4,7 @@ import com.iplauction.jcrud.http.GenericServiceResponse;
 import com.iplauction.jcrud.model.LeagueInfoVO;
 import com.iplauction.jcrud.model.LeagueUserVO;
 import com.iplauction.jcrud.model.PlayerInfoVO;
+import com.iplauction.jcrud.model.TransferRequestsVO;
 import com.iplauction.jcrud.service.LeagueInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -259,6 +260,76 @@ public class LeagueController {
         } catch (Exception e) {
             logger.error("Error while updateScores", e);
             return new ResponseEntity<GenericServiceResponse<LeagueInfoVO>>(new GenericServiceResponse<LeagueInfoVO>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping({"/updateData/{leagueInfoId}"})
+    public ResponseEntity<GenericServiceResponse<Void>> updateData(
+            @PathVariable(name = "leagueInfoId")   @Valid @NotNull String leagueInfoId) {
+        try {
+            logger.info("updateScores {leagueInfoId} ==>", leagueInfoId);
+
+            leagueInfoService.updateData(leagueInfoId);
+
+            logger.info("updateScores {leagueInfoId} is Complete <==", leagueInfoId);
+            return new ResponseEntity<GenericServiceResponse<Void>>(new GenericServiceResponse<Void>(SUCCESS, "Updated"), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while updateScores", e);
+            return new ResponseEntity<GenericServiceResponse<Void>>(new GenericServiceResponse<Void>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping({"/addTransferRequest/{leagueInfoId}"})
+    public ResponseEntity<GenericServiceResponse<Void>> addTransfer(
+            @PathVariable(name = "leagueInfoId")   @Valid @NotNull String leagueInfoId,
+            @RequestBody TransferRequestsVO transferRequestsVO) {
+        try {
+            logger.info("updateScores {leagueInfoId} ==>", leagueInfoId);
+
+            leagueInfoService.addTransfer(transferRequestsVO,leagueInfoId);
+
+            logger.info("updateScores {leagueInfoId} is Complete <==", leagueInfoId);
+            return new ResponseEntity<GenericServiceResponse<Void>>(new GenericServiceResponse<Void>(SUCCESS), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while updateScores", e);
+            return new ResponseEntity<GenericServiceResponse<Void>>(new GenericServiceResponse<Void>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping({"/getAllTransferRequest/{leagueInfoId}"})
+    public ResponseEntity<GenericServiceResponse<List<TransferRequestsVO>>> getTransferRequest(
+            @PathVariable(name = "leagueInfoId")   @Valid @NotNull String leagueInfoId) {
+        try {
+            logger.info("updateScores {leagueInfoId} ==>", leagueInfoId);
+
+            List<TransferRequestsVO> transferRequestsVO = leagueInfoService.getTransferRequest(leagueInfoId);
+
+            logger.info("updateScores {leagueInfoId} is Complete <==", leagueInfoId);
+            return new ResponseEntity<GenericServiceResponse<List<TransferRequestsVO>>>(new GenericServiceResponse<List<TransferRequestsVO>>(SUCCESS,"transferRequests", transferRequestsVO), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while updateScores", e);
+            return new ResponseEntity<GenericServiceResponse<List<TransferRequestsVO>>>(new GenericServiceResponse<List<TransferRequestsVO>>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping({"/getUserTransferRequests"})
+    public ResponseEntity<GenericServiceResponse<List<TransferRequestsVO>>> getUserTransferRequests(
+            @RequestHeader(name = "X-UserId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "User-Id cannot be empty and should be Alpha-Numeric") final String userId,
+            @RequestHeader(name = "X-LeagueId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "League-Id cannot be empty and should be Alpha-Numeric") final String leagueId) {
+        try {
+            logger.info("updateScores {leagueInfoId} ==>", leagueId);
+
+            List<TransferRequestsVO> transferRequestsVO = leagueInfoService.getUserTransferRequests(leagueId,userId);
+
+            logger.info("updateScores {leagueInfoId} is Complete <==", leagueId);
+            return new ResponseEntity<GenericServiceResponse<List<TransferRequestsVO>>>(new GenericServiceResponse<List<TransferRequestsVO>>(SUCCESS,"transferRequests", transferRequestsVO), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while updateScores", e);
+            return new ResponseEntity<GenericServiceResponse<List<TransferRequestsVO>>>(new GenericServiceResponse<List<TransferRequestsVO>>(FAIL, e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

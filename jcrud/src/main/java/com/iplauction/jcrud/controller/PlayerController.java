@@ -135,21 +135,21 @@ public class PlayerController {
         }
     }
 
-    @PostMapping({"/setLatestFlag"})
+    @PostMapping({"/setLatestFlag/{hasPlayedToday}"})
     public ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>> setLatestFlag(
-            @RequestBody List<String> playerIds) {
+            @RequestBody List<String> playerIds,@PathVariable(name = "hasPlayedToday")   @Valid @NotNull boolean hasPlayedToday) {
 
         try {
             List<PlayerInfoVO> playerInfoVOList = null;
-            logger.info("calculatePoints started ==>");
+            logger.info("setLatestFlag started ==>");
             if(playerIds != null) {
-                playerInfoVOList  = playerService.setLatestFlag(playerIds);
+                playerInfoVOList = playerService.setLatestFlag(playerIds, hasPlayedToday);
             }
-            logger.info("calculatePoints completed <==");
+            logger.info("setLatestFlag completed <==");
             return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(
                     new GenericServiceResponse<List<PlayerInfoVO>>(SUCCESS, "playerInfos", playerInfoVOList), HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("Error while calculatePoints", e);
+            logger.error("Error while setLatestFlag", e);
             return new ResponseEntity<GenericServiceResponse<List<PlayerInfoVO>>>(new GenericServiceResponse<List<PlayerInfoVO>>(FAIL, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

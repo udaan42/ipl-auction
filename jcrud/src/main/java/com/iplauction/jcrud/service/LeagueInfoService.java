@@ -1,10 +1,7 @@
 package com.iplauction.jcrud.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.iplauction.jcrud.mapper.LeagueInfoLeagueInfoVOMapper;
-import com.iplauction.jcrud.mapper.LeagueInfoVOLeagueInfoMapper;
-import com.iplauction.jcrud.mapper.LeagueUserMapper;
-import com.iplauction.jcrud.mapper.PlayerInfoVOPlayerInfoMapper;
+import com.iplauction.jcrud.mapper.*;
 import com.iplauction.jcrud.model.*;
 import com.iplauction.jcrud.repository.LeagueInfoRepository;
 import com.iplauction.jcrud.utility.LeagueStatus;
@@ -13,10 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class LeagueInfoService {
@@ -44,6 +40,12 @@ public class LeagueInfoService {
 
     @Autowired
     PlayerInfoVOPlayerInfoMapper playerInfoVOPlayerInfoMapper;
+
+    @Autowired
+    TransferRequestVOTransferRequestMapper transferRequestVOTransferRequestMapper;
+
+    @Autowired
+    TransferRequestTransferRequestVOMapper transferRequestTransferRequestVOMapper;
 
 
     public List<LeagueInfoVO> getAllLeagueDetails() throws Exception {
@@ -557,5 +559,159 @@ public class LeagueInfoService {
             leagueInfoVO = leagueInfoLeagueInfoVOMapper.map(leagueInfo1);
         }
         return leagueInfoVO;
+    }
+
+    public void updateData(String leagueInfoId) throws Exception {
+
+        Optional<LeagueInfo> leagueInfo = leagueInfoRepository.findById((leagueInfoId));
+        LeagueInfo leagueInfo1 = leagueInfo.get();
+        LeagueInfoVO leagueInfoVO = null;
+
+        if(leagueInfo1 != null) {
+            if (!CollectionUtils.isEmpty(leagueInfo1.getLeagueUsers())) {
+                for (LeagueUser leagueUser : leagueInfo1.getLeagueUsers()) {
+                    if(leagueUser.getLeagueRole().equalsIgnoreCase("player")){
+                        for(PlayerInfo playerInfo : leagueUser.getPlayersSquad()){
+                            PlayerInfoVO playerInfoVO =  playerService.getPlayerInfoById(playerInfo.getPlayerId());
+                            if(playerInfoVO != null){
+                                playerInfo.setPlayerRole(playerInfoVO.getPlayerRole());
+                                playerInfo.setPlayerName(playerInfoVO.getPlayerName());
+                                playerInfo.setTeamName(playerInfoVO.getTeamName());
+                            }
+                        }
+                    }
+                }
+            }
+          leagueInfoRepository.save(leagueInfo1);
+        }
+
+    }
+
+    public void addTransfer(TransferRequestsVO transferRequestsVO,String leagueInfoId) throws Exception {
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueInfoId));
+        LeagueInfo leagueInfo = optionalLeagueInfo.get();
+        int flag=0;
+        transferRequestsVO.setTimeSubmitted(new Date());
+        if(leagueInfo != null){
+                if(!CollectionUtils.isEmpty(leagueInfo.getTransferRequests())){
+                    for(TransferRequests transferRequests : leagueInfo.getTransferRequests()){
+                        if(transferRequests.getBidAmount().equals(transferRequestsVO.getBidAmount())){
+                            flag=1;
+                            break;
+                        }
+                    }
+                    if(flag == 1){
+                        transferRequestsVO.setDuplicate(true);
+                    }else{
+                        transferRequestsVO.setDuplicate(false);
+                    }
+                    leagueInfo.getTransferRequests().add(transferRequestVOTransferRequestMapper.map(transferRequestsVO));
+                }else{
+                    transferRequestsVO.setDuplicate(false);
+                    List<TransferRequests> transferRequests = new ArrayList<>();
+                    transferRequests.add(transferRequestVOTransferRequestMapper.map(transferRequestsVO));
+                    leagueInfo.setTransferRequests(transferRequests);
+                }
+            leagueInfoRepository.save(leagueInfo);
+            }
+    }
+
+    public List<TransferRequestsVO> getTransferRequest(String leagueInfoId) throws Exception {
+
+
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueInfoId));
+        LeagueInfo leagueInfo = optionalLeagueInfo.get();
+        List<TransferRequestsVO> transferRequestsVOS = new ArrayList<>();
+        if(leagueInfo != null){
+
+            if(!CollectionUtils.isEmpty(leagueInfo.getTransferRequests())){
+               for(TransferRequests transferRequests : leagueInfo.getTransferRequests()){
+                   transferRequestsVOS.add(transferRequestTransferRequestVOMapper.map(transferRequests));
+               }
+            }
+
+        }
+        return transferRequestsVOS;
+    }
+
+
+    public void lockTransfers(String leagueInfoId) throws Exception {
+
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueInfoId));
+        LeagueInfo leagueInfo = optionalLeagueInfo.get();
+
+        if(leagueInfo != null) {
+
+            if (!CollectionUtils.isEmpty(leagueInfo.getTransferRequests())) {
+                Collections.reverse(leagueInfo.getTransferRequests());
+                for(TransferRequests transferRequests : leagueInfo.getTransferRequests()){
+                    if(transferRequests.getDuplicate()){
+                        for(TransferRequests transferRequests1 : leagueInfo.getTransferRequests()){
+                            if(transferRequests1.getBidAmount() == transferRequests.getBidAmount()){
+                                String userIdEligibleToBuy = "";
+                                String playerToBeSold = "";
+                                int bidAmount = 0;
+                                if(transferRequests1.getTimeSubmitted().before(transferRequests.getTimeSubmitted())){
+                                    userIdEligibleToBuy = transferRequests1.getUserId();
+                                    playerToBeSold = transferRequests1.getTransferInList().get(0).getPlayerId();
+                                    bidAmount = transferRequests1.getBidAmount();
+                                }else{
+                                    userIdEligibleToBuy = transferRequests.getUserId();
+                                    playerToBeSold = transferRequests.getTransferInList().get(0).getPlayerId();
+                                    bidAmount = transferRequests1.getBidAmount();
+                                }
+                                if(!CollectionUtils.isEmpty(leagueInfo.getLeagueUsers())){
+                                    for (LeagueUser leagueUser : leagueInfo.getLeagueUsers()) {
+
+                                        if (!StringUtils.isEmpty(leagueUser.getUserId())) {
+                                            if (leagueUser.getUserId().equalsIgnoreCase(userIdEligibleToBuy)) {
+                                                PlayerInfoVO playerInfoVO = playerService.getPlayerInfoById(playerToBeSold);
+                                                playerInfoVO.setSoldPrice((long)bidAmount);
+                                                playerInfoVO.setWicketKeeper(false);
+                                                playerInfoVO.setCaptain(false);
+                                                playerInfoVO.setPlaying(false);
+                                                if(leagueUser.getSpentAmount() != null) {
+                                                    leagueUser.setSpentAmount(leagueUser.getSpentAmount() + bidAmount);
+                                                }
+                                                if(leagueUser.getRemainingBudget() != null) {
+                                                    leagueUser.setRemainingBudget(leagueUser.getRemainingBudget() - bidAmount);
+                                                }
+                                                if (playerInfoVO != null) {
+                                                    if (!CollectionUtils.isEmpty(leagueUser.getPlayersSquad())) {
+                                                        leagueUser.getPlayersSquad().add(playerInfoVOPlayerInfoMapper.map(playerInfoVO));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }else{
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public List<TransferRequestsVO> getUserTransferRequests(String leagueId, String userId) throws Exception {
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+        LeagueInfo leagueInfo = optionalLeagueInfo.get();
+        List<TransferRequestsVO> transferRequestsVOS = new ArrayList<>();
+        if(leagueInfo != null){
+
+            if(!CollectionUtils.isEmpty(leagueInfo.getTransferRequests())){
+                for(TransferRequests transferRequests : leagueInfo.getTransferRequests()){
+                    if(transferRequests.getUserId().equalsIgnoreCase(userId)) {
+                        transferRequestsVOS.add(transferRequestTransferRequestVOMapper.map(transferRequests));
+                    }
+                }
+            }
+
+        }
+        return transferRequestsVOS;
+
+
     }
 }
