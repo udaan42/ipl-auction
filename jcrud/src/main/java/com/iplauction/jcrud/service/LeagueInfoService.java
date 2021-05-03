@@ -714,4 +714,29 @@ public class LeagueInfoService {
 
 
     }
+
+    public void removeUserTransferRequest(String leagueId, String userId, String transferOutId) {
+
+        Optional<LeagueInfo> optionalLeagueInfo = leagueInfoRepository.findById((leagueId));
+        LeagueInfo leagueInfo = optionalLeagueInfo.get();
+        if(leagueInfo != null){
+
+            if(!CollectionUtils.isEmpty(leagueInfo.getTransferRequests())){
+                for(Iterator<TransferRequests> it = leagueInfo.getTransferRequests().iterator(); it.hasNext();){
+                    TransferRequests transferRequestsToDelete = it.next();
+                    if(transferRequestsToDelete.getUserId().equalsIgnoreCase(userId)) {
+                        if(transferRequestsToDelete.getTransferOutPlayerId().equalsIgnoreCase(transferOutId)){
+                            it.remove();
+                        }
+                    }
+                }
+            }
+
+            leagueInfoRepository.save(leagueInfo);
+
+        }
+
+
+
+    }
 }

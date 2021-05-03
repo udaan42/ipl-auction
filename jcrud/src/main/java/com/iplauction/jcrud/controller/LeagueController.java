@@ -334,4 +334,24 @@ public class LeagueController {
         }
     }
 
+    @DeleteMapping({"/removeUserTransferRequest/{transferOutId}"})
+    public ResponseEntity<GenericServiceResponse<Void>> removeUserTransferRequest(
+            @RequestHeader(name = "X-UserId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "User-Id cannot be empty and should be Alpha-Numeric") final String userId,
+            @RequestHeader(name = "X-LeagueId") @Pattern(regexp="^[a-zA-Z0-9@./#&+-]+$", message = "League-Id cannot be empty and should be Alpha-Numeric") final String leagueId,
+            @PathVariable(name = "transferOutId")   @Valid @NotNull String transferOutId) {
+        try {
+            logger.info("updateScores {leagueInfoId} ==>", leagueId);
+
+            leagueInfoService.removeUserTransferRequest(leagueId,userId,transferOutId);
+
+            logger.info("updateScores {leagueInfoId} is Complete <==", leagueId);
+            return new ResponseEntity<GenericServiceResponse<Void>>(new GenericServiceResponse<Void>(SUCCESS), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error while updateScores", e);
+            return new ResponseEntity<GenericServiceResponse<Void>>(new GenericServiceResponse<Void>(FAIL, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
