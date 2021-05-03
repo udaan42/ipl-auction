@@ -3,6 +3,7 @@ import authRoutes from './auth.route';
 import userRoutes from './user.route';
 import roomRoutes from './room.route';
 import userLeaguesRoutes from './league.route';
+import transferRoutes from "./transfer.route";
 
 const router = express.Router();
 
@@ -16,6 +17,8 @@ router.use('/users', userRoutes);
 router.use('/leagues', roomRoutes);
 
 router.use('/userLeagues', userLeaguesRoutes);
+
+router.use('/transfers', transferRoutes);
 
 
 

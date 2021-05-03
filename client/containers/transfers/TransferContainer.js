@@ -5,9 +5,8 @@ import { API_ENDPOINT, USER_ID, JWT_TOKEN, API_URL } from '../../config/config';
 import  getUnsoldPlayers  from '../../fetch/UnsoldPlayers';
 import { getLocalStorage } from '../../utils/storageUtil';
 import _ from 'lodash';
-import axios from 'axios';
 import  getLeagueDetails  from '../../fetch/LeagueDetails';
-
+import { getTransfers, getLeagueTransfers } from '../../fetch/Transfers';
 
 const TransferContainer = (props) => {
 
@@ -23,7 +22,10 @@ const TransferContainer = (props) => {
     let leagueName = "";
     
     const [filteredPlayers, setFilteredPlayers] = useState(players);
+
+    const transfersURL = `${API_ENDPOINT}/iplauction/league/getUserTransferRequests`;
     
+    const { transfers } = getTransfers(transfersURL, id, refresh);
 
     if(data){
         myTeam = _.find(data.leagueUsers, ['userId', userId]);
@@ -59,8 +61,18 @@ const TransferContainer = (props) => {
         setFilteredPlayers(unsold)
     }
 
+    const refreshTransfers = () => {
+        setRefresh(!refresh);
+    }
+
+    const lockTransfers = () => {
+        const lockUrl = `${API_URL}transfers/${id}`;
+        getLeagueTransfers(lockUrl);
+    }
+
     return(
-        <Team detail={myTeam} leagueId={id} id={leagueName} addUnsold={addUnsold} updateUnsold={updateUnsold} updateFilter={updateFilter} unsoldPlayers ={filteredPlayers}/>
+        <Team detail={myTeam} leagueId={id} id={leagueName} addUnsold={addUnsold} lockTransfers={lockTransfers}
+            updateUnsold={updateUnsold} updateFilter={updateFilter} unsoldPlayers ={filteredPlayers} refreshTransfers={refreshTransfers} transfers={transfers}/>
     )
 
 }

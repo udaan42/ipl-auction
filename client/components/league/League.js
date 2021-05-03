@@ -6,8 +6,10 @@ import { Button, Container, Table, Col } from 'react-bootstrap';
 import CreateLeagueModal from './CreateLeagueModal';
 import JoinLeagueModal from './JoinLeagueModal';
 import { withStyles } from '@material-ui/core/styles';
-import LeagueItem from './LeagueItem';
 import { Link } from 'react-router-dom';
+import { USER_ID } from '../../config/config';
+import { getLocalStorage } from '../../utils/storageUtil';
+import _ from 'lodash';
 
 const styles = {
     headerBlock:{
@@ -86,16 +88,9 @@ class League extends React.Component{
     }
 
     render(){
+        let userId = getLocalStorage(USER_ID);
         return(
                 <Box>
-                    {/* {this.props.list.length == 0? <Grid className={this.props.classes.headerBlock} container-fluid spacing={2}>
-                        <Grid item xs>
-                            <Typography>
-                                You are not part of any league. Please create a new league or join an existing league
-                            </Typography>
-                        </Grid>
-                    </Grid>: ""} */}
-
                     <Grid container spacing={2}>
                         <Grid item xs="3">
                             <Button variant="primary" color="primary" onClick={this.onCreateFormOpen}>
@@ -125,13 +120,13 @@ class League extends React.Component{
                                     <tr>
                                     <th className={this.props.classes.rowItems}>#</th>
                                     <th className={this.props.classes.rowItems}>Name</th>
-                                    <th className={this.props.classes.rowItems}>Position</th>
                                     <th className={this.props.classes.rowItems}>Points</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {this.props.list.map((item)=>{
                                         const url = `/leagues/${item.leagueId}`;
+                                        const player = _.find(item.leagueUsers, ['userId',userId]);
                                         return(
                                             <tr>
                                                 <td className={this.props.classes.rowItems}>
@@ -143,10 +138,7 @@ class League extends React.Component{
                                                     </Link>
                                                 </td>
                                                 <td className={this.props.classes.rowItems}>
-                                                    -
-                                                </td>
-                                                <td className={this.props.classes.rowItems}>
-                                                    {item.points}
+                                                    {player.points}
                                                 </td>
 
                                             </tr>

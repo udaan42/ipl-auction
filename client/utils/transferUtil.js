@@ -16,9 +16,11 @@ export const requestTransfer = (data, leagueId) => {
         headers: headers
     })
     .then((response) => {
+        return true;
         console.log(response);
     })
     .catch((error) => {
+        return false;
         console.log(error);
     });
 }
