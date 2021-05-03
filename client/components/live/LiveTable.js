@@ -55,7 +55,7 @@ function stableSort(array, comparator) {
 const headCells = [
   { id: 'playerName', numeric: false, disablePadding: false, label: 'Name', wide: true , sort: true},
   { id: 'playerRole', numeric: false, disablePadding: false, label: 'Role', wide: false , sort: true },
-  { id: 'playerRace', numeric: false, disablePadding: false, label: 'Category', wide: false, sort: true },
+  { id: 'soldPrice', numeric: true, disablePadding: false, label: 'Price', wide: false, sort: true },
 ];
 
 function EnhancedTableHead(props) {
@@ -249,8 +249,8 @@ export default function LiveTable(props) {
                         {row.playerName}
                       </TableCell>
                       <TableCell className={classes.rowContent} >{row.playerRole}</TableCell>
-                      <TableCell className={classes.rowContent} align="center">
-                      {row.playerRace == "I" ? "Indian" : "Overseas"}
+                      <TableCell className={classes.rowContent} align="right">
+                        {getPriceValue(row.soldPrice)}
                       </TableCell>
                     </TableRow>
                   );

@@ -223,19 +223,21 @@ class Team extends React.Component{
 
 
     onSquadSelect = (item) => {
-        let tempSquad = [...this.state.squad];
-        let selectedItem = _.find(tempSquad, ['playerName', item]);
-        
-        let transferOut = [...this.state.transfers];
-        transferOut.push(selectedItem);
-        _.remove(tempSquad,['playerName', item]);
+        if(!this.state.transferInitiated){
+            let tempSquad = [...this.state.squad];
+            let selectedItem = _.find(tempSquad, ['playerName', item]);
+            
+            let transferOut = [...this.state.transfers];
+            transferOut.push(selectedItem);
+            _.remove(tempSquad,['playerName', item]);
 
-        this.setState({
-            squad: tempSquad,
-            transferOut: selectedItem,
-            transfers: transferOut,
-            transferInitiated: true
-        })        
+            this.setState({
+                squad: tempSquad,
+                transferOut: selectedItem,
+                transfers: transferOut,
+                transferInitiated: true
+            }) 
+        }        
     }
 
     unsoldPlayerSelected = (item) => {
@@ -430,7 +432,25 @@ class Team extends React.Component{
     }
 
     cancelRequest = (transfer) => {
-        console.log(transfer);
+
+        let url = `${API_ENDPOINT}/iplauction/league/removeUserTransferRequest/${transfer.transferOutPlayerId}`;
+        const bearer_token = getLocalStorage(JWT_TOKEN);
+        const bearer = 'Bearer ' + bearer_token;
+        let userId = getLocalStorage(USER_ID);
+        let leagueId = this.props.leagueId;
+        const headers = {
+            'Authorization': bearer,
+            'X-LeagueId': leagueId,
+            'X-UserId': userId,
+        }
+        axios.delete(url, {headers})
+        .then((response) => {
+            console.log(response)
+            this.props.refreshTransfers();
+        })
+        .catch((error) => {
+            console.log(error);
+        });
     }
 
     getTransfersHistory = () => {
@@ -491,7 +511,8 @@ class Team extends React.Component{
         this.setState({
             transferOut: null,
             transferIn: null,
-            squad: squad
+            squad: squad,
+            transferInitiated: false
         })
     }
 

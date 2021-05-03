@@ -10,6 +10,6 @@ export const USER_ID = 'userId';
 export const BAG = 'bag';
 
 export const API_HOST = 'localhost';
-export const API_PORT = 8080;
-export const API_ENDPOINT = 'http://localhost:8080';
-// export const API_ENDPOINT = 'http://auction-fantasy-jcrud.us-east-2.elasticbeanstalk.com';
+export const API_PORT = 5000;
+// export const API_ENDPOINT = 'http://localhost:5000';
+export const API_ENDPOINT = 'http://auction-fantasy-jcrud.us-east-2.elasticbeanstalk.com';
