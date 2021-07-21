@@ -47,9 +47,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/authenticate")
+                .antMatchers(HttpMethod.POST,"/**")
                 .permitAll()
-                .antMatchers("/register", "/health")
+                //.antMatchers("/register", "/health")
+                .antMatchers("/**")
                 .permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest()
@@ -57,7 +58,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+       // http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         http.cors();
     }
 
